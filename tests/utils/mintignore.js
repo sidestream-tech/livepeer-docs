@@ -29,6 +29,15 @@ const { execFileSync } = require('child_process');
 
 const tempRepoCache = new Map();
 const trackedTempRepos = new Set();
+const GIT_ENV_STRIP_KEYS = ['GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE', 'GIT_PREFIX'];
+
+function getSanitizedGitEnv(overrides = {}) {
+  const env = { ...process.env, ...overrides };
+  GIT_ENV_STRIP_KEYS.forEach((key) => {
+    delete env[key];
+  });
+  return env;
+}
 
 function toPosix(filePath) {
   return String(filePath || '').split(path.sep).join('/');
@@ -38,7 +47,8 @@ function getRepoRoot(rootDir = process.cwd()) {
   try {
     return execFileSync('git', ['rev-parse', '--show-toplevel'], {
       cwd: rootDir,
-      encoding: 'utf8'
+      encoding: 'utf8',
+      env: getSanitizedGitEnv()
     }).trim();
   } catch (_error) {
     return rootDir;
@@ -74,7 +84,7 @@ function ensureTempGitRepo(repoRoot) {
   }
 
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'mintignore-check-'));
-  execFileSync('git', ['init', '-q'], { cwd: tempDir });
+  execFileSync('git', ['init', '-q'], { cwd: tempDir, env: getSanitizedGitEnv() });
   tempRepoCache.set(repoRoot, tempDir);
   trackedTempRepos.add(tempDir);
   return tempDir;
@@ -147,7 +157,8 @@ function listMintIgnoredRepoPaths(paths, options = {}) {
         cwd: checkerRepo,
         encoding: 'utf8',
         input: `${uniqueRelPaths.join('\n')}\n`,
-        maxBuffer: 64 * 1024 * 1024
+        maxBuffer: 64 * 1024 * 1024,
+        env: getSanitizedGitEnv()
       }
     );
 
