@@ -1,15 +1,6 @@
----
-title: 'Tasks Folder Audit: Reports Legacy Unmanaged Ungenerated Audit'
-sidebarTitle: 'Tasks Folder Audits'
-description: 'Generated tasks folder audit reports from tools/scripts/audit-tasks-folders.js.'
-keywords: ["livepeer","internal","reports","repo-ops","audit-tasks-folders"]
-og:image: "/snippets/assets/domain/SHARED/LivepeerDocsLogo.svg"
----
-Last Generated (UTC ISO): `2026-02-28T04:22:56.252Z`
-Last Generated (UTC Human): `February 28, 2026 04:22 UTC`
 # tasks/reports/_legacy-unmanaged/ungenerated Audit
 
-Generated: 2026-02-28T04:22:42.987Z
+Generated: 2026-03-03T09:45:12.427Z
 Scope: `tasks/reports/_legacy-unmanaged/ungenerated`
 Total files in scope: 1
 

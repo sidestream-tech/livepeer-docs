@@ -870,7 +870,7 @@ function compactText(value, max = 180) {
 function escapeMarkdownCell(value) {
   return String(value == null ? '' : value)
     .replace(/\|/g, '\\|')
-    .replace(/\n/g, '<br>');
+    .replace(/\n/g, '<br />');
 }
 
 function renderMarkdownTable(headers, rows) {
@@ -1162,7 +1162,7 @@ function splitMarkdownTableRow(line) {
     const ch = text[i];
     const prev = text[i - 1];
     if (ch === '|' && prev !== '\\') {
-      cells.push(current.trim().replace(/\\\|/g, '|').replace(/<br>/g, '\n'));
+      cells.push(current.trim().replace(/\\\|/g, '|').replace(/<br\s*\/?>/g, '\n'));
       current = '';
       continue;
     }
@@ -1170,7 +1170,7 @@ function splitMarkdownTableRow(line) {
   }
 
   if (current.length > 0 || !text.endsWith('|')) {
-    cells.push(current.trim().replace(/\\\|/g, '|').replace(/<br>/g, '\n'));
+    cells.push(current.trim().replace(/\\\|/g, '|').replace(/<br\s*\/?>/g, '\n'));
   }
   return cells;
 }
@@ -1764,8 +1764,8 @@ function buildFolderRows(folderRepoPath, context, toolDescriptors) {
         file.repoPath,
         script.usedFor,
         toMarkdownBool(script.stalePlanPaths),
-        script.exactDuplicates.join('<br>'),
-        script.purposeOverlap.join('<br>'),
+        script.exactDuplicates.join('<br />'),
+        script.purposeOverlap.join('<br />'),
         script.recommendation,
         script.reasons.join('; ')
       ]);

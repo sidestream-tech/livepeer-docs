@@ -1,18 +1,3 @@
----
-title: 'Script Audit Report'
-sidebarTitle: 'Script Audit'
-description: 'Generated script inventory audit report from tools/scripts/audit-scripts.js.'
-keywords: ["livepeer","internal","reports","repo-ops","audit-scripts"]
-og:image: "/snippets/assets/domain/SHARED/LivepeerDocsLogo.svg"
----
-Last Generated (UTC ISO): `2026-03-03T09:45:28.411Z`
-Last Generated (UTC Human): `March 03, 2026 09:45 UTC`
-Generator Script: `tools/scripts/audit-scripts.js`
-What It Does: Audit full-repo executable scripts, categorize usage/overlap, and overwrite SCRIPT_AUDIT reports.
-Audited Scope: `tools/scripts, tasks/reports, tests/unit/script-docs.test.js, tests/README.md`
-Outputs:
-- tasks/reports/repo-ops/SCRIPT_AUDIT.md
-- tasks/reports/repo-ops/SCRIPT_AUDIT.json
 # SCRIPT_AUDIT
 
 Generated: 2026-03-03T09:45:23.117Z

@@ -27,7 +27,7 @@
  * @outputs
  *   - Markdown report at tasks/reports/navigation-links/LINK_TEST_REPORT.md (or custom path)
  *   - JSON report at tasks/reports/navigation-links/LINK_TEST_REPORT.json (or custom path)
- *   - snippets/data/<domain>/hrefs.jsx files when write-links enabled
+ *   - snippets/data/{domain}/hrefs.jsx files when write-links enabled
  *
  * @exit-codes
  *   0 = success

@@ -732,7 +732,7 @@ function generateMarkdownReport(results) {
     md += `## Intentional Redirects (Not Errors)\n\n`;
     md += `These pages are intentional redirects and should not be reported as errors:\n\n`;
     intentionalRedirects.forEach(f => {
-      md += `- \`${f.pagePath}\` - ${f.note || 'Intentional redirect'}\n`;
+      md += `- \`${f.pagePath}\` - ${escapeMdxText(f.note || 'Intentional redirect')}\n`;
     });
     md += `\n`;
   }
@@ -742,7 +742,7 @@ function generateMarkdownReport(results) {
     results.mdxErrors.forEach(m => {
       md += `### ${m.pagePath}\n\n`;
       m.errors.forEach(e => {
-        md += `- ${e}\n`;
+        md += `- ${escapeMdxText(e)}\n`;
       });
       md += `\n`;
     });
@@ -753,7 +753,7 @@ function generateMarkdownReport(results) {
     results.brokenLinks.forEach(b => {
       md += `### ${b.pagePath}\n\n`;
       b.links.forEach(l => {
-        md += `- \`${l.url}\` - ${l.reason}\n`;
+        md += `- \`${l.url}\` - ${escapeMdxText(l.reason)}\n`;
         if (l.expected) {
           md += `  - Expected: \`${l.expected}\`\n`;
         }
@@ -772,7 +772,7 @@ function generateMarkdownReport(results) {
         md += `**URL:** ${r.url}\n\n`;
         md += `**Warnings:**\n`;
         r.warnings.forEach(w => {
-          md += `- ${w}\n`;
+          md += `- ${escapeMdxText(w)}\n`;
         });
         md += `\n`;
       });
@@ -787,13 +787,20 @@ function generateMarkdownReport(results) {
         md += `**URL:** ${r.url}\n\n`;
         md += `**Errors:**\n`;
         r.errors.forEach(e => {
-          md += `- ${e}\n`;
+          md += `- ${escapeMdxText(e)}\n`;
         });
         md += `\n`;
       });
   }
   
   return md;
+}
+
+function escapeMdxText(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
 
 // Run if called directly
