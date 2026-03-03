@@ -1,30 +1,28 @@
 ---
 title: 'AI Model Support on Livepeer'
 sidebarTitle: 'Model Support'
-description: 'Full compatibility matrix for AI model families on Livepeer via ComfyUI. Which models run, which are conditional, and which are incompatible — with reasons.'
+description: 'Full compatibility matrix for AI model families on Livepeer via ComfyUI. Which models run, which are conditional, and which are incompatible - with reasons.'
 keywords: ["livepeer", "comfyui", "ai models", "stable diffusion", "controlnet", "sdxl", "vision models", "support", "compatibility"]
 og:image: "/snippets/assets/domain/SHARED/LivepeerDocsLogo.svg"
 ---
 
-import { PreviewCallout } from '/snippets/components/domain/SHARED/previewCallouts.jsx'
 import { DynamicTable } from '/snippets/components/layout/table.jsx'
 import { GotoCard } from '/snippets/components/primitives/links.jsx'
 
-<PreviewCallout />
 
 This page answers one question:
 
 > **What models can run on Livepeer, and why might some not?**
 
-It lists all known model families commonly used via ComfyUI, with compatibility ratings for Livepeer's real-time, GPU-worker constraints. Nothing here implies that a listed model is officially supported or pre-loaded on the network — it reflects whether a model's execution shape fits Livepeer well.
+It lists all known model families commonly used via ComfyUI, with compatibility ratings for Livepeer's real-time, GPU-worker constraints. Nothing here implies that a listed model is officially supported or pre-loaded on the network - it reflects whether a model's execution shape fits Livepeer well.
 
 ---
 
 ## Legend
 
-- <Badge color="green">✓ Likely runnable</Badge> — fits real-time / GPU-worker constraints
-- <Badge color="yellow">⚠ Conditional</Badge> — depends on latency, VRAM, orchestration, or batching
-- <Badge color="red">✗ Not suitable</Badge> — design mismatch: stateful, CPU-bound, or non-deterministic
+- <Badge color="green">✓ Likely runnable</Badge> - fits real-time / GPU-worker constraints
+- <Badge color="yellow">⚠ Conditional</Badge> - depends on latency, VRAM, orchestration, or batching
+- <Badge color="red">✗ Not suitable</Badge> - design mismatch: stateful, CPU-bound, or non-deterministic
 
 ---
 
@@ -37,7 +35,7 @@ It lists all known model families commonly used via ComfyUI, with compatibility 
   itemsList={[
     { "Model": "Stable Diffusion 1.4 / 1.5 / 2.0 / 2.1", "Fit": "✓", "Notes": "Foundation of most ComfyUI workflows, including frame-by-frame video processing." },
     { "Model": "SDXL (Base / Refiner / Turbo)", "Fit": "⚠", "Notes": "VRAM + latency. Higher-capacity SD variant; Turbo trades quality for speed." },
-    { "Model": "SD-Turbo / LCM / Lightning", "Fit": "✓", "Notes": "Accelerated diffusion converging in very few steps — ideal for low-latency generation." },
+    { "Model": "SD-Turbo / LCM / Lightning", "Fit": "✓", "Notes": "Accelerated diffusion converging in very few steps - ideal for low-latency generation." },
     { "Model": "Kandinsky", "Fit": "⚠", "Notes": "Less optimised, heavier. Semantic understanding focus." },
     { "Model": "DeepFloyd IF", "Fit": "✗", "Notes": "Multi-stage, extreme VRAM. Cascaded pipeline with large frozen text encoders." }
   ]}
@@ -50,12 +48,12 @@ It lists all known model families commonly used via ComfyUI, with compatibility 
 <DynamicTable
   headerList={["Model", "Fit", "Notes"]}
   itemsList={[
-    { "Model": "StreamDiffusion", "Fit": "✓", "Notes": "Real-time architecture that reuses latent states across frames — purpose-built for live video." },
+    { "Model": "StreamDiffusion", "Fit": "✓", "Notes": "Real-time architecture that reuses latent states across frames - purpose-built for live video." },
     { "Model": "Stable Video Diffusion (SVD)", "Fit": "⚠", "Notes": "Latency + frame buffering. Temporal consistency model for short clips." },
     { "Model": "AnimateDiff", "Fit": "⚠", "Notes": "Temporal batching required. Adds motion modules to SD for animated sequences." },
     { "Model": "VideoCrafter", "Fit": "✗", "Notes": "Offline batch generation only. Not designed for interactive use." },
     { "Model": "Wan / Wan 2.x", "Fit": "⚠", "Notes": "VRAM heavy; real-time guarantees unclear. Emerging world-style video diffusion." },
-    { "Model": "Gen-2–style world models", "Fit": "✗", "Notes": "Stateful, non-deterministic. Maintains long-term scene memory — incompatible." }
+    { "Model": "Gen-2–style world models", "Fit": "✗", "Notes": "Stateful, non-deterministic. Maintains long-term scene memory - incompatible." }
   ]}
 />
 
@@ -113,7 +111,7 @@ It lists all known model families commonly used via ComfyUI, with compatibility 
   headerList={["Model", "Fit", "Notes"]}
   itemsList={[
     { "Model": "YOLO (v5–v8)", "Fit": "⚠", "Notes": "CPU/GPU mix. Real-time object detection; latency varies by GPU availability." },
-    { "Model": "SAM / SAM2", "Fit": "⚠", "Notes": "VRAM + latency. Pixel-level mask generation — works but heavy." },
+    { "Model": "SAM / SAM2", "Fit": "⚠", "Notes": "VRAM + latency. Pixel-level mask generation - works but heavy." },
     { "Model": "GroundingDINO", "Fit": "⚠", "Notes": "Vision–language detection linking text prompts to detected objects." },
     { "Model": "Detectron2", "Fit": "✗", "Notes": "CPU-heavy, batch-oriented. Research framework not suited to real-time." }
   ]}
@@ -137,7 +135,7 @@ It lists all known model families commonly used via ComfyUI, with compatibility 
 <DynamicTable
   headerList={["Model", "Fit", "Notes"]}
   itemsList={[
-    { "Model": "OpenPose", "Fit": "✓", "Notes": "Body, hand, and face keypoint extraction — well-suited for live video." },
+    { "Model": "OpenPose", "Fit": "✓", "Notes": "Body, hand, and face keypoint extraction - well-suited for live video." },
     { "Model": "DensePose", "Fit": "⚠", "Notes": "Heavy. Maps pixels to 3D body surface representation." },
     { "Model": "Face parsing", "Fit": "⚠", "Notes": "Segments facial regions (eyes, mouth, hair, skin)." },
     { "Model": "FaceSwap / ReFace models", "Fit": "✗", "Notes": "Legal + state constraints. Identity replacement raises compliance issues." },
@@ -152,7 +150,7 @@ It lists all known model families commonly used via ComfyUI, with compatibility 
 <DynamicTable
   headerList={["Model", "Fit", "Notes"]}
   itemsList={[
-    { "Model": "Audio diffusion (Riffusion-style)", "Fit": "⚠", "Notes": "Conditional. Generates audio via diffusion — marginal real-time fit." },
+    { "Model": "Audio diffusion (Riffusion-style)", "Fit": "⚠", "Notes": "Conditional. Generates audio via diffusion - marginal real-time fit." },
     { "Model": "MusicGen", "Fit": "✗", "Notes": "Long-running, batch. Text-to-music generation for full clips." },
     { "Model": "Bark / TTS models", "Fit": "✗", "Notes": "Stateful, streaming mismatch. Long context windows." }
   ]}
@@ -172,9 +170,9 @@ It lists all known model families commonly used via ComfyUI, with compatibility 
   headerList={["Model", "Fit", "Notes"]}
   itemsList={[
     { "Model": "CLIP", "Fit": "✓", "Notes": "Joint image–text embedding for scoring, ranking, and guidance." },
-    { "Model": "BLIP / BLIP-2", "Fit": "⚠", "Notes": "Vision–language for captioning and visual Q&A — conditional on latency." },
+    { "Model": "BLIP / BLIP-2", "Fit": "⚠", "Notes": "Vision–language for captioning and visual Q&A - conditional on latency." },
     { "Model": "LLaVA", "Fit": "✗", "Notes": "LLM state + latency. Combines vision encoders with large LLMs." },
-    { "Model": "Qwen-VL", "Fit": "✗", "Notes": "Vision–language with LLM reasoning — orchestration mismatch." }
+    { "Model": "Qwen-VL", "Fit": "✗", "Notes": "Vision–language with LLM reasoning - orchestration mismatch." }
   ]}
 />
 
@@ -186,7 +184,7 @@ It lists all known model families commonly used via ComfyUI, with compatibility 
   headerList={["Model", "Fit", "Notes"]}
   itemsList={[
     { "Model": "LLaMA / Mistral / Qwen", "Fit": "✗", "Notes": "Autoregressive text generation; token streaming + memory residency incompatible." },
-    { "Model": "GPT-style decoders", "Fit": "✗", "Notes": "Token-by-token state — fundamental orchestration mismatch." }
+    { "Model": "GPT-style decoders", "Fit": "✗", "Notes": "Token-by-token state - fundamental orchestration mismatch." }
   ]}
 />
 
@@ -199,7 +197,7 @@ It lists all known model families commonly used via ComfyUI, with compatibility 
 <DynamicTable
   headerList={["Model", "Fit", "Notes"]}
   itemsList={[
-    { "Model": "NeRF", "Fit": "✗", "Notes": "Offline training. 3D scene reconstruction from images — multi-hour jobs." },
+    { "Model": "NeRF", "Fit": "✗", "Notes": "Offline training. 3D scene reconstruction from images - multi-hour jobs." },
     { "Model": "Gaussian Splatting", "Fit": "✗", "Notes": "Stateful scenes. Learned Gaussian primitives for 3D rendering." },
     { "Model": "DreamFusion", "Fit": "✗", "Notes": "Multi-hour optimisation jobs. Not real-time compatible." }
   ]}
@@ -239,6 +237,6 @@ This matrix is intentionally conservative. If your model doesn't appear here, ap
     Decision tree for evaluating whether your use case belongs on Livepeer.
   </Card>
   <Card title="BYOC" icon="box" href="./byoc">
-    Bring your own container — run custom models via ComfyUI or a custom server.
+    Bring your own container - run custom models via ComfyUI or a custom server.
   </Card>
 </CardGroup>

@@ -6,15 +6,13 @@ keywords: ["livepeer", "orchestrator", "ai models", "comfyui", "comfystream", "b
 og:image: "/snippets/assets/domain/SHARED/LivepeerDocsLogo.svg"
 ---
 
-import { PreviewCallout } from '/snippets/components/domain/SHARED/previewCallouts.jsx'
 import { DynamicTable } from '/snippets/components/layout/table.jsx'
 import { GotoCard, GotoLink } from '/snippets/components/primitives/links.jsx'
 import { StyledSteps, StyledStep } from '/snippets/components/layout/steps.jsx'
 import { BorderedBox } from '/snippets/components/primitives/containers.jsx'
 
-<PreviewCallout />
 
-Hosting AI models on a Livepeer orchestrator means running inference workloads on GPU-backed nodes and making those models available for consumption via Livepeer Gateways. This is not training and not a generic GPU cloud — it is decentralised, real-time AI inference optimised for video and streaming workloads.
+Hosting AI models on a Livepeer orchestrator means running inference workloads on GPU-backed nodes and making those models available for consumption via Livepeer Gateways. This is not training and not a generic GPU cloud - it is decentralised, real-time AI inference optimised for video and streaming workloads.
 
 <Note>
   **Consumers never talk to orchestrators directly.** All traffic flows through gateways, which handle routing, auth, pricing, and QoS.
@@ -32,7 +30,7 @@ Hosting AI models on a Livepeer orchestrator means running inference workloads o
 
 ## Models best suited for orchestrators
 
-Livepeer orchestrators are best for low-latency, real-time inference — especially:
+Livepeer orchestrators are best for low-latency, real-time inference - especially:
 
 - Diffusion models (Stable Diffusion, StreamDiffusion)
 - Image-to-image and video-to-video models
@@ -57,7 +55,7 @@ As an orchestrator operator, you focus on running excellent inference infrastruc
 - Service discovery
 - Brand or user trust
 
-These are handled by Gateways and the protocol layer. Orchestrators compete on performance — lower latency, better GPUs, higher uptime, better-optimised pipelines, specialised or niche models.
+These are handled by Gateways and the protocol layer. Orchestrators compete on performance - lower latency, better GPUs, higher uptime, better-optimised pipelines, specialised or niche models.
 
 ---
 
@@ -105,7 +103,7 @@ The orchestrator advertises: hardware specs, supported capabilities, pricing, se
 
 Livepeer does not mandate a single runtime. The two common approaches:
 
-**Option A — ComfyUI (most common)**
+**Option A - ComfyUI (most common)**
 
 - Load models via `.safetensors`
 - Build inference pipelines as DAGs
@@ -121,7 +119,7 @@ python scripts/download.py --model sdxl
 python scripts/download.py --model depth-anything
 ```
 
-**Option B — Custom inference server**
+**Option B - Custom inference server**
 
 - Torch / TensorRT / ONNX
 - HTTP or gRPC interface
@@ -148,7 +146,7 @@ You control: which models are loaded, VRAM usage and batching, precision (fp16 /
 
   <StyledStep title="Advertise AI capabilities">
 
-Your orchestrator declares machine-readable capability descriptors. These are not marketing labels — gateways use them to route jobs.
+Your orchestrator declares machine-readable capability descriptors. These are not marketing labels - gateways use them to route jobs.
 
 Edit your `aiModels.json`:
 
@@ -270,10 +268,10 @@ From a developer's perspective, consumption looks like:
 
 Examples already running on Livepeer that consume orchestrator-hosted models:
 
-- **Daydream** — generative AI video platform
-- **StreamDiffusionTD** — real-time diffusion via TouchDesigner
-- **ComfyStream** — browser-based ComfyUI pipelines
-- **OBS plugins** — live stream AI effects
+- **Daydream** - generative AI video platform
+- **StreamDiffusionTD** - real-time diffusion via TouchDesigner
+- **ComfyStream** - browser-based ComfyUI pipelines
+- **OBS plugins** - live stream AI effects
 
 Developers target capability types, not your specific node. If you advertise `image-to-image` with competitive latency and pricing, you'll receive their jobs.
 
@@ -291,10 +289,10 @@ Relevant contacts: Cloud SPE operators, Daydream gateway team. See [Gateway Prov
 
 <CardGroup cols={2}>
   <Card title="BYOC" icon="box" href="/v2/developers/ai-pipelines/byoc">
-    Developer guide to building BYOC containers — how to structure your inference server.
+    Developer guide to building BYOC containers - how to structure your inference server.
   </Card>
   <Card title="Model Support" icon="microchip-ai" href="/v2/developers/ai-pipelines/model-support">
-    Full model family compatibility matrix — which models work on Livepeer and why.
+    Full model family compatibility matrix - which models work on Livepeer and why.
   </Card>
   <Card title="ComfyStream" icon="diagram-project" href="/v2/developers/ai-pipelines/comfystream">
     How ComfyStream works as the AI pipeline runtime for orchestrator nodes.

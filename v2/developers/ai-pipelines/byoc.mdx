@@ -1,30 +1,25 @@
 ---
-title: 'BYOC — Bring Your Own Container'
+title: 'BYOC - Bring Your Own Container'
 sidebarTitle: 'BYOC'
 description: 'Run custom AI models on Livepeer orchestrators via BYOC: architecture, implementation patterns, hard constraints, and step-by-step setup.'
 keywords: ["livepeer", "byoc", "bring your own container", "custom ai", "inference", "docker", "comfystream", "orchestrator"]
 og:image: "/snippets/assets/domain/SHARED/LivepeerDocsLogo.svg"
 ---
 
-import { PreviewCallout } from '/snippets/components/domain/SHARED/previewCallouts.jsx'
 import { DynamicTable } from '/snippets/components/layout/table.jsx'
 import { GotoCard, GotoLink } from '/snippets/components/primitives/links.jsx'
 import { StyledSteps, StyledStep } from '/snippets/components/layout/steps.jsx'
 import { BorderedBox } from '/snippets/components/primitives/containers.jsx'
 
-<PreviewCallout />
-
-BYOC (Bring Your Own Container) lets you run your own AI inference server inside a Docker container on a Livepeer orchestrator, and the network treats it as a callable AI capability. Livepeer does not restrict you to a fixed model catalogue or pre-approved models.
-
 <Note>
-  **This is not model hosting in the Hugging Face sense.** You are hosting an **inference service**, not a model artefact. The distinction matters — see [How Livepeer routes by capability, not model](#how-livepeer-routes-by-capability-not-model) below.
+  **This is not model hosting in the Hugging Face sense.** You are hosting an **inference service**, not a model artefact. The distinction matters - see [How Livepeer routes by capability, not model](#how-livepeer-routes-by-capability-not-model) below.
 </Note>
-
----
 
 ## What BYOC is (and isn't)
 
-Technically, any Hugging Face model can be containerised and run via BYOC. But Livepeer is optimised for low-latency, GPU-bound, real-time inference — especially for video and vision workloads. Models that violate these assumptions will be inefficient, poorly routed, or uneconomic.
+BYOC (Bring Your Own Container) lets you run your own AI inference server inside a Docker container on a Livepeer orchestrator, and the network treats it as a callable AI capability. Livepeer does not restrict you to a fixed model catalogue or pre-approved models.
+
+Technically, any Hugging Face model can be containerised and run via BYOC. But Livepeer is optimised for low-latency, GPU-bound, real-time inference - especially for video and vision workloads. Models that violate these assumptions will be inefficient, poorly routed, or uneconomic.
 
 <DynamicTable
   headerList={["Fit", "Model / workload types"]}
@@ -37,8 +32,6 @@ Technically, any Hugging Face model can be containerised and run via BYOC. But L
 
 **Rule of thumb:** If the workload is frame-based or stream-based, it fits Livepeer well.
 
----
-
 ## How Livepeer routes by capability, not model
 
 Livepeer intentionally avoids model marketplaces, model-branded APIs, and centralised catalogues. Instead, it routes by **capability descriptors**:
@@ -49,18 +42,17 @@ Livepeer intentionally avoids model marketplaces, model-branded APIs, and centra
 - `segmentation`
 - `style-transfer`
 
-Your orchestrator advertises capabilities, not model names. Gateways route on capability, price, and performance — not on which Hugging Face weights you load internally. This means:
+Your orchestrator advertises capabilities, not model names. Gateways route on capability, price, and performance - not on which Hugging Face weights you load internally. This means:
 
 - Models can be swapped or updated without breaking downstream apps
 - No vendor lock-in at the model layer
 - Performance-based competition between orchestrators
 - Apps never need direct knowledge of which model runs their job
 
----
 
 ## Implementation patterns
 
-### Pattern A — Real-time diffusion
+### Pattern A - Real-time diffusion
 
 Best for style transfer, image-to-image, live video effects.
 
@@ -69,7 +61,7 @@ Best for style transfer, image-to-image, live video effects.
 - Frame-in → frame-out processing
 - Persistent GPU residency
 
-### Pattern B — Vision utility node
+### Pattern B - Vision utility node
 
 Best for sub-tasks inside larger video pipelines.
 
@@ -77,7 +69,7 @@ Best for sub-tasks inside larger video pipelines.
 - Extremely fast per-frame inference
 - Used as conditioning steps feeding into diffusion
 
-### Pattern C — Hybrid pipeline
+### Pattern C - Hybrid pipeline
 
 Best for differentiated orchestrator offerings.
 
@@ -238,7 +230,7 @@ Contract and ABI references: [Contract Addresses](/v2/gateways/references/contra
 
 <CardGroup cols={2}>
   <Card title="ComfyStream" icon="diagram-project" href="./comfystream">
-    ComfyUI-based pipelines for real-time video AI — node graphs, plugins, and gateway binding.
+    ComfyUI-based pipelines for real-time video AI - node graphs, plugins, and gateway binding.
   </Card>
   <Card title="Workload Fit" icon="circle-question" href="../ai-inference-on-livepeer/workload-fit">
     Decide whether your model or use case belongs on Livepeer before you build.

@@ -1,7 +1,7 @@
 ---
 title: 'Using the Livepeer Studio Gateway'
 sidebarTitle: 'Livepeer Studio'
-description: 'Livepeer Studio is a hosted, production-grade gateway for live streaming and video-on-demand. Get a REST API, SDK support, and a management dashboard — no infrastructure to run.'
+description: 'Livepeer Studio is a hosted, production-grade gateway for live streaming and video-on-demand. Get a REST API, SDK support, and a management dashboard - no infrastructure to run.'
 keywords: ["livepeer", "livepeer studio", "gateway", "live streaming", "video on demand", "vod", "rtmp", "api key", "sdk", "hosted gateway"]
 og:image: "/snippets/assets/domain/04_GATEWAYS/social-preview-gateways.jpg"
 pageType: guide
@@ -9,13 +9,11 @@ audience: developer
 status: current
 ---
 
-import { PreviewCallout } from '/snippets/components/domain/SHARED/previewCallouts.jsx'
 import { BorderedBox } from '/snippets/components/primitives/containers.jsx'
 import { StyledTable, TableRow, TableCell } from '/snippets/components/primitives/tables.jsx'
 
-<PreviewCallout />
 
-Livepeer Studio is a **developer-friendly hosted gateway** for the Livepeer network. It provides a REST API, SDKs, and a dashboard to add live streaming and video-on-demand to your application — without running your own gateway node.
+Livepeer Studio is a **developer-friendly hosted gateway** for the Livepeer network. It provides a REST API, SDKs, and a dashboard to add live streaming and video-on-demand to your application - without running your own gateway node.
 
 <Info>
   Livepeer Studio has its own full product documentation. This page covers Studio as a gateway provider in the context of the Livepeer network. For complete product guides, visit the [Livepeer Studio product section](/v2/solutions/livepeer-studio/overview) or [livepeer.studio](https://livepeer.studio).
@@ -36,12 +34,12 @@ Livepeer Studio is a **developer-friendly hosted gateway** for the Livepeer netw
 
 ## What Studio Gives You
 
-- **Livestreaming** — Create streams, ingest via RTMP or WebRTC WHIP, play back via low-latency WebRTC or HLS, record sessions, and multistream to other platforms
-- **Video on demand** — Upload video assets (TUS resumable or URL), transcode, play back with the Livepeer Player or any HLS/MP4 player
-- **AI inference** — Access the Livepeer AI network via Studio's `/api/beta/generate` endpoints (text-to-image, image-to-image, image-to-video, and more). As of 02-March-2026, this remains the managed Studio AI base path.
-- **Access control** — Gate playback with webhooks or JWTs for subscriptions and token-gating
-- **Analytics** — Viewership and engagement metrics via the viewership API
-- **Webhooks** — Event-driven notifications for stream and asset lifecycle events
+- **Livestreaming** - Create streams, ingest via RTMP or WebRTC WHIP, play back via low-latency WebRTC or HLS, record sessions, and multistream to other platforms
+- **Video on demand** - Upload video assets (TUS resumable or URL), transcode, play back with the Livepeer Player or any HLS/MP4 player
+- **AI inference** - Access the Livepeer AI network via Studio's `/api/beta/generate` endpoints (text-to-image, image-to-image, image-to-video, and more). As of 02-March-2026, this remains the managed Studio AI base path.
+- **Access control** - Gate playback with webhooks or JWTs for subscriptions and token-gating
+- **Analytics** - Viewership and engagement metrics via the viewership API
+- **Webhooks** - Event-driven notifications for stream and asset lifecycle events
 
 ---
 
@@ -51,7 +49,7 @@ Livepeer Studio is a **developer-friendly hosted gateway** for the Livepeer netw
 
 1. Go to [livepeer.studio](https://livepeer.studio) and create an account
 2. Open **Developers → API Keys** and create a new key
-3. Store your API key in environment variables — never expose it in client-side code
+3. Store your API key in environment variables - never expose it in client-side code
 
 <Warning>
   API keys grant full account access. Always make API requests from your backend. CORS-enabled keys are deprecated and not recommended for new integrations.

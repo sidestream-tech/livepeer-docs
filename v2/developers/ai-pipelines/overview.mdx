@@ -1,7 +1,7 @@
 ---
 title: 'AI Pipelines Overview'
 sidebarTitle: 'Overview'
-description: "How Livepeer AI pipelines work: choosing between standard API endpoints, ComfyStream, and BYOC — with the right starting point for each use case."
+description: "How Livepeer AI pipelines work: choosing between standard API endpoints, ComfyStream, and BYOC - with the right starting point for each use case."
 keywords: ["livepeer", "ai pipelines", "comfystream", "byoc", "text-to-image", "image-to-image", "image-to-video", "audio-to-text", "llm", "inference", "gateway"]
 og:image: "/snippets/assets/domain/SHARED/LivepeerDocsLogo.svg"
 pageType: guide
@@ -9,19 +9,16 @@ audience: developer
 status: current
 ---
 
-import { PreviewCallout } from '/snippets/components/domain/SHARED/previewCallouts.jsx'
 import { StyledTable, TableRow, TableCell } from '/snippets/components/primitives/tables.jsx'
 import { BorderedBox } from '/snippets/components/primitives/containers.jsx'
-
-<PreviewCallout />
 
 Livepeer's AI network routes inference jobs from your application to a distributed pool of GPU operators (orchestrators). You submit a job, a gateway routes it to a capable orchestrator, the orchestrator runs inference, and the result comes back.
 
 Three integration patterns are available depending on what you need:
 
-1. **Standard API Pipelines** — call a hosted endpoint, get a result. No infrastructure needed.
-2. **ComfyStream** — run ComfyUI-based workflows on live video frames in real time.
-3. **BYOC (Bring Your Own Compute)** — bring your own model container; Livepeer routes jobs to it.
+1. **Standard API Pipelines** - call a hosted endpoint, get a result. No infrastructure needed.
+2. **ComfyStream** - run ComfyUI-based workflows on live video frames in real time.
+3. **BYOC (Bring Your Own Compute)** - bring your own model container; Livepeer routes jobs to it.
 
 ## Start here in 5 minutes
 
@@ -154,7 +151,7 @@ const result = await livepeer.generate.textToImage({
 ```
 
 <Note>
-  **Model selection matters.** Lightning-suffix models (e.g. `RealVisXL_V4.0_Lightning`) are optimized for speed — use 4-8 inference steps and guidance scale 1.0-2.0. Standard SDXL models need 20-50 steps and guidance 7.0-9.0. Check [available models and warm status](https://tools.livepeer.cloud/ai/network-capabilities) before selecting.
+  **Model selection matters.** Lightning-suffix models (e.g. `RealVisXL_V4.0_Lightning`) are optimized for speed - use 4-8 inference steps and guidance scale 1.0-2.0. Standard SDXL models need 20-50 steps and guidance 7.0-9.0. Check [available models and warm status](https://tools.livepeer.cloud/ai/network-capabilities) before selecting.
 </Note>
 
 ### Available Gateways for AI
@@ -195,7 +192,7 @@ ComfyStream targets 15-30 FPS throughput with TensorRT-accelerated models achiev
 
 ## BYOC (Bring Your Own Compute)
 
-BYOC lets you bring a custom model container into the Livepeer AI network. Your container receives jobs routed by gateways, executes inference, and returns results — while Livepeer handles routing, payment, and coordination.
+BYOC lets you bring a custom model container into the Livepeer AI network. Your container receives jobs routed by gateways, executes inference, and returns results - while Livepeer handles routing, payment, and coordination.
 
 **BYOC is the right path when:**
 - Your model is fine-tuned or proprietary (not available in the standard pipeline set)
@@ -225,7 +222,7 @@ flowchart LR
     B -->|Response| A
 ```
 
-The gateway selects the best orchestrator based on capability (does it have the requested model warm?), performance history, pricing, and latency. **Warm models** — models already loaded in GPU memory — return results significantly faster than cold models that need to load first.
+The gateway selects the best orchestrator based on capability (does it have the requested model warm?), performance history, pricing, and latency. **Warm models** - models already loaded in GPU memory - return results significantly faster than cold models that need to load first.
 
 <Tip>
   Check [tools.livepeer.cloud/ai/network-capabilities](https://tools.livepeer.cloud/ai/network-capabilities) to see which models are currently warm on the network before choosing your model ID.
