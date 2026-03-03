@@ -46,7 +46,7 @@ const {
 } = require('./lib/provenance');
 const { hasGeneratedNote, removeGeneratedNotes } = require('../../lib/generated-file-banners');
 const { createTranslator } = require('./lib/providers');
-const { getRepoRoot, writeJson, writeTextIfChanged } = require('./lib/common');
+const { getRepoRoot, normalizeRepoRel, writeJson, writeTextIfChanged } = require('./lib/common');
 
 function printHelp() {
   console.log(
@@ -111,6 +111,89 @@ function buildRouteMapIndex(entries) {
     index.get(sourceRoute).set(language, localizedRoute);
   }
   return index;
+}
+
+function normalizeFileKey(value) {
+  return normalizeRepoRel(String(value || '').replace(/\\/g, '/'));
+}
+
+function isQuarantinedLocalizedFile(localizedFile) {
+  const normalized = normalizeFileKey(localizedFile);
+  return /^v2\/[^/]+\/group\/x-orphaned\//.test(normalized);
+}
+
+function resolveSolutionsEquivalent(localizedFile) {
+  const normalized = normalizeFileKey(localizedFile);
+  if (!normalized.includes('/platforms/')) return '';
+  let next = normalized.replace('/platforms/', '/solutions/');
+  if (next.endsWith('/ecosystem-products.mdx')) {
+    next = next.replace('/ecosystem-products.mdx', '/solution-providers.mdx');
+  }
+  if (next.endsWith('/ecosystem-products.md')) {
+    next = next.replace('/ecosystem-products.md', '/solution-providers.md');
+  }
+  return next;
+}
+
+function resolveOrphanQuarantinePath(localizedFile, language) {
+  const normalized = normalizeFileKey(localizedFile);
+  if (!normalized.startsWith('v2/')) return '';
+  const parts = normalized.split('/');
+  const lang = parts[1] || String(language || '').trim();
+  const suffix = parts.slice(2).join('/');
+  if (!lang || !suffix) return '';
+  return `v2/${lang}/group/x-orphaned/${suffix}`;
+}
+
+function cleanupLocalizedOrphans({ repoRoot, existingLocalizedEntries, validSourceRoutes, runtime }) {
+  const deletedFiles = new Set();
+  const movedFiles = new Set();
+  const warnings = [];
+
+  if (runtime.dryRun) {
+    return { deletedFiles, movedFiles, warnings };
+  }
+
+  for (const entry of existingLocalizedEntries || []) {
+    const localizedFile = normalizeFileKey(entry.localizedFile || '');
+    if (!localizedFile) continue;
+    if (isQuarantinedLocalizedFile(localizedFile)) continue;
+
+    const sourceRoute = normalizeRouteKey(entry.sourceRoute || '');
+    if (!sourceRoute || validSourceRoutes.has(sourceRoute)) continue;
+
+    const absPath = path.join(repoRoot, localizedFile);
+    if (!fs.existsSync(absPath)) continue;
+
+    if (localizedFile.includes('/platforms/')) {
+      const equivalent = resolveSolutionsEquivalent(localizedFile);
+      if (equivalent) {
+        const equivalentAbs = path.join(repoRoot, equivalent);
+        if (fs.existsSync(equivalentAbs)) {
+          fs.unlinkSync(absPath);
+          deletedFiles.add(localizedFile);
+          continue;
+        }
+        warnings.push(`platform orphan missing solutions equivalent: ${localizedFile} -> ${equivalent}`);
+      }
+    }
+
+    const orphanPath = resolveOrphanQuarantinePath(localizedFile, entry.language);
+    if (!orphanPath) {
+      warnings.push(`orphan cleanup skipped (invalid path): ${localizedFile}`);
+      continue;
+    }
+    const orphanAbs = path.join(repoRoot, orphanPath);
+    if (fs.existsSync(orphanAbs)) {
+      warnings.push(`orphan cleanup skipped (target exists): ${localizedFile} -> ${orphanPath}`);
+      continue;
+    }
+    fs.mkdirSync(path.dirname(orphanAbs), { recursive: true });
+    fs.renameSync(absPath, orphanAbs);
+    movedFiles.add(localizedFile);
+  }
+
+  return { deletedFiles, movedFiles, warnings };
 }
 
 function createPlannedEntries(selectedItems, languages, generatedRoot, generatedPathStyle, runtime) {
@@ -304,6 +387,7 @@ async function run(argv = process.argv.slice(2)) {
   }
 
   const inventory = buildV2EnglishRouteInventory(repoRoot);
+  const validSourceRoutes = new Set(inventory.items.map((item) => normalizeRouteKey(item.route)));
   const scope = selectScopeItems({
     repoRoot,
     inventory,
@@ -430,6 +514,35 @@ async function run(argv = process.argv.slice(2)) {
     }
   }
 
+  const cleanup = cleanupLocalizedOrphans({
+    repoRoot,
+    existingLocalizedEntries: existingLocalized,
+    validSourceRoutes,
+    runtime
+  });
+
+  if (cleanup.deletedFiles.size > 0 || cleanup.movedFiles.size > 0) {
+    const deleted = cleanup.deletedFiles;
+    const moved = cleanup.movedFiles;
+    for (let i = routeMapEntries.length - 1; i >= 0; i -= 1) {
+      const entryFile = normalizeFileKey(routeMapEntries[i].localizedFile || '');
+      if (entryFile && (deleted.has(entryFile) || moved.has(entryFile))) {
+        routeMapEntries.splice(i, 1);
+      }
+    }
+  }
+
+  report.cleanup = {
+    deletedCount: cleanup.deletedFiles.size,
+    movedCount: cleanup.movedFiles.size,
+    deletedFiles: [...cleanup.deletedFiles],
+    movedFiles: [...cleanup.movedFiles],
+    warnings: cleanup.warnings
+  };
+  if (cleanup.warnings.length > 0) {
+    report.warnings.push(...cleanup.warnings.map((warning) => `cleanup: ${warning}`));
+  }
+
   if (runtime.routeMapPath) {
     const routeMapPath = path.resolve(repoRoot, runtime.routeMapPath);
     writeJson(routeMapPath, {
@@ -477,7 +590,9 @@ async function run(argv = process.argv.slice(2)) {
     `- translated: ${report.counts.translated}`,
     `- dry-run translated: ${report.counts.dryRunTranslated}`,
     `- skipped up-to-date: ${report.counts.skippedUpToDate}`,
-    `- failures: ${report.counts.failed}`
+    `- failures: ${report.counts.failed}`,
+    `- cleanup deleted: ${report.cleanup.deletedCount}`,
+    `- cleanup moved: ${report.cleanup.movedCount}`
   ];
   if (report.warnings.length > 0) {
     summary.push(`- warnings: ${report.warnings.length}`);
