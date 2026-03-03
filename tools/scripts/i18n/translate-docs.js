@@ -162,12 +162,6 @@ function buildQuarantineCollisionPath(basePath, hash, counter) {
   return `${stem}.dup-${hash}${suffix}${ext}`;
 }
 
-function gitMoveFile(repoRoot, fromRel, toRel) {
-  execSync(`git -C ${JSON.stringify(repoRoot)} mv -f -- ${JSON.stringify(fromRel)} ${JSON.stringify(toRel)}`, {
-    stdio: 'ignore'
-  });
-}
-
 function moveLocalizedToQuarantine({ repoRoot, localizedFile, language, reason }) {
   const normalized = normalizeFileKey(localizedFile);
   const absPath = path.join(repoRoot, normalized);
@@ -193,7 +187,7 @@ function moveLocalizedToQuarantine({ repoRoot, localizedFile, language, reason }
     }
   }
   fs.mkdirSync(path.dirname(targetAbs), { recursive: true });
-  gitMoveFile(repoRoot, normalized, target);
+  fs.renameSync(absPath, targetAbs);
   return { movedTo: target, warning: `${reason}: ${localizedFile} -> ${target}` };
 }
 
@@ -441,7 +435,7 @@ function cleanupLocalizedOrphans({ repoRoot, existingLocalizedEntries, runtime, 
             if (warning) warnings.push(warning);
           } else {
             fs.mkdirSync(path.dirname(targetLocalizedAbs), { recursive: true });
-            gitMoveFile(repoRoot, localizedFile, targetLocalized);
+            fs.renameSync(absPath, targetLocalizedAbs);
             movedFiles.add(localizedFile);
             movedTargets.set(localizedFile, targetLocalized);
             continue;
@@ -483,7 +477,7 @@ function cleanupLocalizedOrphans({ repoRoot, existingLocalizedEntries, runtime, 
               if (warning) warnings.push(warning);
             } else {
               fs.mkdirSync(path.dirname(targetLocalizedAbs), { recursive: true });
-              gitMoveFile(repoRoot, localizedFile, targetLocalized);
+              fs.renameSync(absPath, targetLocalizedAbs);
               movedFiles.add(localizedFile);
               movedTargets.set(localizedFile, targetLocalized);
               continue;
@@ -508,7 +502,7 @@ function cleanupLocalizedOrphans({ repoRoot, existingLocalizedEntries, runtime, 
     }
     try {
       fs.mkdirSync(path.dirname(orphanAbs), { recursive: true });
-      gitMoveFile(repoRoot, localizedFile, orphanPath);
+      fs.renameSync(absPath, orphanAbs);
       movedFiles.add(localizedFile);
     } catch (error) {
       warnings.push(`orphan cleanup skipped (missing file): ${localizedFile} (${error.message})`);
@@ -644,7 +638,7 @@ function recoverQuarantinedLocalizedFiles({ repoRoot, runtime, config }) {
           if (warning) warnings.push(warning);
         } else {
           fs.mkdirSync(path.dirname(targetLocalizedAbs), { recursive: true });
-          gitMoveFile(repoRoot, localizedFile, targetLocalized);
+          fs.renameSync(absPath, targetLocalizedAbs);
           movedFiles.add(localizedFile);
           movedTargets.set(localizedFile, targetLocalized);
         }
