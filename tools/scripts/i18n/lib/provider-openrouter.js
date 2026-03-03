@@ -269,8 +269,14 @@ function createOpenRouterTranslator(providerConfig, translationRules = {}) {
               break;
             } catch (error) {
               modelExhaustedError = error;
+              const status = Number(error?.status);
+              const rateLimited = status === 429;
               const retryable = isRetryableError(error);
               const failoverEligible = isModelFailoverError(error);
+              if (rateLimited) {
+                await sleep(Math.min(5000, getRetryDelayMs(error, attempt)));
+                break;
+              }
               if (retryable && attempt < maxRetries) {
                 await sleep(getRetryDelayMs(error, attempt));
                 continue;
