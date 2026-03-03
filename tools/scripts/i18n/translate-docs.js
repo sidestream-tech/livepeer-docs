@@ -149,6 +149,48 @@ function resolveOrphanQuarantinePath(localizedFile, language) {
   return `v2/${lang}/group/x-orphaned/${suffix}`;
 }
 
+function resolveQuarantineBasePath(localizedFile, language) {
+  const normalized = normalizeFileKey(localizedFile);
+  if (isQuarantinedLocalizedFile(normalized)) return normalized;
+  return resolveOrphanQuarantinePath(normalized, language);
+}
+
+function buildQuarantineCollisionPath(basePath, hash, counter) {
+  const ext = path.extname(basePath);
+  const stem = ext ? basePath.slice(0, -ext.length) : basePath;
+  const suffix = counter ? `-${counter}` : '';
+  return `${stem}.dup-${hash}${suffix}${ext}`;
+}
+
+function moveLocalizedToQuarantine({ repoRoot, localizedFile, language, reason }) {
+  const normalized = normalizeFileKey(localizedFile);
+  const absPath = path.join(repoRoot, normalized);
+  if (!fs.existsSync(absPath)) {
+    return { movedTo: '', warning: `${reason} (missing file): ${localizedFile}` };
+  }
+  const basePath = resolveQuarantineBasePath(normalized, language);
+  if (!basePath) {
+    return { movedTo: '', warning: `${reason} (invalid quarantine path): ${localizedFile}` };
+  }
+  const raw = fs.readFileSync(absPath, 'utf8');
+  const hash = sha256(`${normalized}:${raw}`).slice(0, 8);
+  let target = basePath;
+  let targetAbs = path.join(repoRoot, target);
+  if (fs.existsSync(targetAbs)) {
+    target = buildQuarantineCollisionPath(basePath, hash);
+    targetAbs = path.join(repoRoot, target);
+    let counter = 2;
+    while (fs.existsSync(targetAbs)) {
+      target = buildQuarantineCollisionPath(basePath, hash, counter);
+      targetAbs = path.join(repoRoot, target);
+      counter += 1;
+    }
+  }
+  fs.mkdirSync(path.dirname(targetAbs), { recursive: true });
+  fs.renameSync(absPath, targetAbs);
+  return { movedTo: target, warning: `${reason}: ${localizedFile} -> ${target}` };
+}
+
 function findRenameTarget(repoRoot, sourcePath) {
   if (!sourcePath) return '';
   try {
@@ -346,8 +388,17 @@ function cleanupLocalizedOrphans({ repoRoot, existingLocalizedEntries, runtime, 
       if (equivalent) {
         const equivalentAbs = path.join(repoRoot, equivalent);
         if (fs.existsSync(equivalentAbs)) {
-          fs.unlinkSync(absPath);
-          deletedFiles.add(localizedFile);
+          const { movedTo, warning } = moveLocalizedToQuarantine({
+            repoRoot,
+            localizedFile,
+            language: entry.language,
+            reason: 'orphan cleanup moved to quarantine (solutions equivalent exists)'
+          });
+          if (movedTo) {
+            movedFiles.add(localizedFile);
+            movedTargets.set(localizedFile, movedTo);
+          }
+          if (warning) warnings.push(warning);
           continue;
         }
         warnings.push(`platform orphan missing solutions equivalent: ${localizedFile} -> ${equivalent}`);
@@ -371,9 +422,17 @@ function cleanupLocalizedOrphans({ repoRoot, existingLocalizedEntries, runtime, 
         }
         try {
           if (fs.existsSync(targetLocalizedAbs)) {
-            fs.unlinkSync(absPath);
-            deletedFiles.add(localizedFile);
-            warnings.push(`orphan cleanup deleted (rename target exists): ${localizedFile} -> ${targetLocalized}`);
+            const { movedTo, warning } = moveLocalizedToQuarantine({
+              repoRoot,
+              localizedFile,
+              language: entry.language,
+              reason: `orphan cleanup moved to quarantine (rename target exists: ${targetLocalized})`
+            });
+            if (movedTo) {
+              movedFiles.add(localizedFile);
+              movedTargets.set(localizedFile, movedTo);
+            }
+            if (warning) warnings.push(warning);
           } else {
             fs.mkdirSync(path.dirname(targetLocalizedAbs), { recursive: true });
             fs.renameSync(absPath, targetLocalizedAbs);
@@ -405,9 +464,17 @@ function cleanupLocalizedOrphans({ repoRoot, existingLocalizedEntries, runtime, 
           }
           try {
             if (fs.existsSync(targetLocalizedAbs)) {
-              fs.unlinkSync(absPath);
-              deletedFiles.add(localizedFile);
-              warnings.push(`orphan cleanup deleted (rename target exists): ${localizedFile} -> ${targetLocalized}`);
+              const { movedTo, warning } = moveLocalizedToQuarantine({
+                repoRoot,
+                localizedFile,
+                language: entry.language,
+                reason: `orphan cleanup moved to quarantine (rename target exists: ${targetLocalized})`
+              });
+              if (movedTo) {
+                movedFiles.add(localizedFile);
+                movedTargets.set(localizedFile, movedTo);
+              }
+              if (warning) warnings.push(warning);
             } else {
               fs.mkdirSync(path.dirname(targetLocalizedAbs), { recursive: true });
               fs.renameSync(absPath, targetLocalizedAbs);
@@ -515,8 +582,17 @@ function recoverQuarantinedLocalizedFiles({ repoRoot, runtime, config }) {
         if (equivalent) {
           const equivalentAbs = path.join(repoRoot, equivalent);
           if (fs.existsSync(equivalentAbs)) {
-            fs.unlinkSync(absPath);
-            deletedFiles.add(localizedFile);
+            const { movedTo, warning } = moveLocalizedToQuarantine({
+              repoRoot,
+              localizedFile,
+              language,
+              reason: 'quarantine moved to quarantine (solutions equivalent exists)'
+            });
+            if (movedTo) {
+              movedFiles.add(localizedFile);
+              movedTargets.set(localizedFile, movedTo);
+            }
+            if (warning) warnings.push(warning);
             continue;
           }
           warnings.push(`quarantine platform orphan missing solutions equivalent: ${localizedFile} -> ${equivalent}`);
@@ -549,9 +625,17 @@ function recoverQuarantinedLocalizedFiles({ repoRoot, runtime, config }) {
       if (normalizeFileKey(targetLocalized) === normalizeFileKey(localizedFile)) continue;
       try {
         if (fs.existsSync(targetLocalizedAbs)) {
-          fs.unlinkSync(absPath);
-          deletedFiles.add(localizedFile);
-          warnings.push(`quarantine deleted (rename target exists): ${localizedFile} -> ${targetLocalized}`);
+          const { movedTo, warning } = moveLocalizedToQuarantine({
+            repoRoot,
+            localizedFile,
+            language,
+            reason: `quarantine moved to quarantine (rename target exists: ${targetLocalized})`
+          });
+          if (movedTo) {
+            movedFiles.add(localizedFile);
+            movedTargets.set(localizedFile, movedTo);
+          }
+          if (warning) warnings.push(warning);
         } else {
           fs.mkdirSync(path.dirname(targetLocalizedAbs), { recursive: true });
           fs.renameSync(absPath, targetLocalizedAbs);
