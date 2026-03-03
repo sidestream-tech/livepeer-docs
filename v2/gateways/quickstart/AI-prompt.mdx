@@ -19,7 +19,7 @@ og:image: "/snippets/assets/domain/SHARED/LivepeerDocsLogo.svg"
 1. Copy the full prompt from the block below.
 2. Paste it into your AI coding agent (Cursor, Claude Code, GitHub Copilot Workspace, etc.).
 3. Answer any clarifying questions the agent asks (OS, gateway mode, wallet address, etc.).
-4. Let the agent do the work — it will run commands, create config files, and verify each step.
+4. Let the agent do the work - it will run commands, create config files, and verify each step.
 
 ```markdown lines icon="robot" livepeer-gateway-setup-prompt.txt
 # LIVEPEER GATEWAY SETUP
@@ -29,7 +29,7 @@ verify success before continuing, and fix errors before moving on.
 
 ---
 
-## STAGE 0 — ASK ME FIRST
+## STAGE 0 - ASK ME FIRST
 
 Before doing anything, ask me:
 1. OS: Linux, macOS, or Windows?
@@ -42,9 +42,9 @@ Then follow the correct path below based on the answers.
 
 ---
 
-## STAGE 1 — OS-SPECIFIC INSTALL
+## STAGE 1 - OS-SPECIFIC INSTALL
 
-### Linux (recommended for production — supports all gateway types)
+### Linux (recommended for production - supports all gateway types)
 
 Download and install the pre-built binary:
   curl -LO https://github.com/livepeer/go-livepeer/releases/latest/download/livepeer-linux-amd64.tar.gz
@@ -56,7 +56,7 @@ Or use Docker (also fully supported on Linux):
   docker pull livepeer/go-livepeer:master
   docker volume create gateway-lpData
 
-### macOS (dev/local only — Video Only or off-chain only; Docker often fails on macOS)
+### macOS (dev/local only - Video Only or off-chain only; Docker often fails on macOS)
 
 Use the binary instead of Docker:
   # Intel:
@@ -70,7 +70,7 @@ Use the binary instead of Docker:
 Warn the user: macOS cannot run AI or Dual gateway types in production.
 AI and Dual modes require Linux. macOS is suitable for off-chain Video Only only.
 
-### Windows (run via WSL2 — Video Only or Docker-based)
+### Windows (run via WSL2 - Video Only or Docker-based)
 
 Native Windows binaries are not supported for production. Use WSL2:
   # In PowerShell (Admin):
@@ -103,7 +103,7 @@ For a Windows-native .bat launcher (Video Only, off-chain):
 
 ---
 
-## STAGE 2 — GATEWAY TYPE CONFIGURATION
+## STAGE 2 - GATEWAY TYPE CONFIGURATION
 
 Use the correct config for the type chosen in Stage 0.
 For Docker, create a docker-compose.yml. For binary, run the equivalent flags directly.
@@ -151,7 +151,7 @@ For Docker, create a docker-compose.yml. For binary, run the equivalent flags di
 
   On-chain adds the same ETH flags as Video Only above.
 
-### DUAL (AI + VIDEO) — Linux only
+### DUAL (AI + VIDEO) - Linux only
 
   Combines both. Needs aiModels.json and models/ directory (same as AI Only above).
 
@@ -178,7 +178,7 @@ SECURITY: never commit keystore files, aiModels.json with tokens, or password fi
 
 ---
 
-## STAGE 3 — WALLET SETUP (on-chain only)
+## STAGE 3 - WALLET SETUP (on-chain only)
 
 If no wallet exists, generate one by starting the gateway interactively:
   docker run -it --rm -v gateway-lpData:/root/.lpData livepeer/go-livepeer:master \
@@ -189,7 +189,7 @@ Keystore location: /root/.lpData/arbitrum-one-mainnet/keystore/
 
 ---
 
-## STAGE 4 — FUND (on-chain only)
+## STAGE 4 - FUND (on-chain only)
 
 Send ETH on Arbitrum One to the gateway wallet.
 Minimum for testing: 0.1 ETH. Production: 0.5+ ETH.
@@ -198,15 +198,15 @@ Set deposit and reserve via the Livepeer CLI:
   docker run -it --network host livepeer/go-livepeer:master \
     livepeer_cli --host=localhost --http=5935
 
-  Choose Option 11 — "deposit broadcasting funds":
+  Choose Option 11 - "deposit broadcasting funds":
     Deposit: 0.065 ETH (testing minimum)
     Reserve: 0.03 ETH (use 0.36 ETH for production)
 
-  Verify with Option 1 — "get node status".
+  Verify with Option 1 - "get node status".
 
 ---
 
-## STAGE 5 — START & VERIFY
+## STAGE 5 - START & VERIFY
 
   docker compose up -d
   docker compose logs --tail=50
@@ -226,10 +226,10 @@ AI test: POST to http://localhost:8935/ai/text-to-image, confirm a response.
 
 ---
 
-## DONE — REPORT BACK
+## DONE - REPORT BACK
 
   - OS, gateway type, and mode used
-  - Wallet address (public key only — never the private key)
+  - Wallet address (public key only - never the private key)
   - Start/stop commands
   - Any steps needing manual follow-up (funding, DNS, SSL)
 ```

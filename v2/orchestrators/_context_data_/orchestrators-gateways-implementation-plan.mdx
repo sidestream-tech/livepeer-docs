@@ -1,5 +1,5 @@
 ---
-title: "Orchestrators & Gateways Docs — Implementation Plan"
+title: "Orchestrators & Gateways Docs - Implementation Plan"
 description: "Complete phased guide for implementing ecosystem builder feedback across v2/orchestrators and v2/gateways sections"
 sidebarTitle: "Implementation Plan"
 keywords: ["livepeer", "orchestrators", "gateways", "go-livepeer", "documentation", "implementation"]
@@ -20,7 +20,7 @@ The feedback identified four interconnected problems:
 
 | Problem | Section Affected | Impact |
 |---|---|---|
-| No real deployment path — architecture without operations | `v2/orchestrators` | Orchestrators can't self-serve |
+| No real deployment path - architecture without operations | `v2/orchestrators` | Orchestrators can't self-serve |
 | Studio abstraction dominates; go-livepeer is invisible | Both | Network value not communicated to builders |
 | Transcoding / Realtime AI / Batch AI are not differentiated | Both | Wrong prerequisites, wrong config |
 | Factual error: gateways don't need NVIDIA drivers | `v2/gateways/run-a-gateway/install/` | Trust issue |
@@ -29,7 +29,7 @@ Everything below derives from those four root problems.
 
 ---
 
-## Phase 1 — Immediate Fixes (No SME dependency, ship now)
+## Phase 1 - Immediate Fixes (No SME dependency, ship now)
 
 These require no new content from external contributors. They are corrections and structural stubs.
 
@@ -78,7 +78,7 @@ Replace the inline install steps with a reference out to the official Docker doc
   arrow 
   horizontal
 >
-  Official Docker Engine installation guide — covers Linux, Windows, and macOS.
+  Official Docker Engine installation guide - covers Linux, Windows, and macOS.
 </Card>
 
 <Tip>
@@ -132,7 +132,7 @@ Add both stubs to `docs.json` navigation so they appear in the sidebar.
 
 ---
 
-## Phase 2 — Orchestrator Quickstart (Docker assets now available)
+## Phase 2 - Orchestrator Quickstart (Docker assets now available)
 
 Docker compose and installation assets have been provided by eliteproxy. This phase 
 structures them into a working quickstart.
@@ -176,7 +176,7 @@ Structure the steps as follows. eliteproxy's Docker compose slots into Step 3.
 
 ---
 
-#### Step 1 — Create and fund your ETH account
+#### Step 1 - Create and fund your ETH account
 
 This is the actual first entrypoint. The ETH account creation is currently missing or buried. 
 It needs to be Step 1, not a reference page.
@@ -194,7 +194,7 @@ skip to [funding it](#fund-your-account).
 ./livepeer -network arbitrum-one-mainnet -ethKeystorePath ~/.lpData/keystore
 ````
 
-Follow the prompts to set a password. Store your keystore and password securely — 
+Follow the prompts to set a password. Store your keystore and password securely - 
 this controls your node's funds and identity.
 
 <Warning>
@@ -213,7 +213,7 @@ Your node needs ETH on Arbitrum One for gas and ticket payments.
 
 ---
 
-#### Step 2 — Prerequisites checklist
+#### Step 2 - Prerequisites checklist
 
 ```mdx
 ## Step 2: Prerequisites
@@ -226,15 +226,15 @@ Before pulling the Docker image, confirm:
 | Docker Compose v2 | Verify with `docker compose version` |
 | ETH account funded | See Step 1 |
 | Ports open | `8935` (orchestrator), `7935` (metrics, optional) |
-| NVIDIA drivers | Required for GPU transcoding — optional for CPU-only mode |
+| NVIDIA drivers | Required for GPU transcoding - optional for CPU-only mode |
 ```
 
 ---
 
-#### Step 3 — Pull and configure
+#### Step 3 - Pull and configure
 
 Slot eliteproxy's Docker compose here. Add annotation comments to explain each environment variable. 
-Do not leave compose variables unexplained — this is where first-time operators will get lost.
+Do not leave compose variables unexplained - this is where first-time operators will get lost.
 
 Example annotation pattern:
 
@@ -264,7 +264,7 @@ services:
 
 ---
 
-#### Step 4 — Register on-chain
+#### Step 4 - Register on-chain
 
 ```mdx
 ## Step 4: Register as an orchestrator
@@ -294,7 +294,7 @@ livepeer_cli
 
 ---
 
-#### Step 5 — Verify
+#### Step 5 - Verify
 
 ```mdx
 ## Step 5: Verify your node
@@ -327,7 +327,7 @@ Import it into both the orchestrator quickstart and the gateway on-chain setup g
 
 ---
 
-## Phase 3 — Orchestrator Section Review Pass
+## Phase 3 - Orchestrator Section Review Pass
 
 eliteproxy has offered to review the full `v2/orchestrators` section and submit PRs. 
 When those PRs arrive, your role is editorial review, not authoring.
@@ -409,7 +409,7 @@ without latency constraints.
 
 ---
 
-## Phase 4 — Gateway Section Completion
+## Phase 4 - Gateway Section Completion
 
 ### 4.1 Slot the go-livepeer Transcoding Gateway Guide
 
@@ -426,7 +426,7 @@ When his guide arrives, ensure:
 ### 4.2 Establish the Orchestrator ↔ Gateway Test Loop
 
 Currently there is no documented user journey that says: "I have an orchestrator running, 
-now test it by sending it a job from a gateway." This is a critical gap — it's the end-to-end 
+now test it by sending it a job from a gateway." This is a critical gap - it's the end-to-end 
 verification path.
 
 **Add to:** Both the orchestrator quickstart conclusion and the gateway quickstart:
@@ -456,9 +456,9 @@ From the index, the following are marked `⚠️` (incomplete or placeholder):
 | `about-gateways/overview.mdx` | ⚠️ | Review and complete, or remove if redundant with portal |
 | `about-gateways/quickstart-home.mdx` | ⚠️ | Ensure this links cleanly to the working quickstart |
 | `gateway-tools/gateway-middleware.mdx` | ⚠️ | Add or mark Coming Soon |
-| `guides-and-resources/gateway-job-pipelines/byoc.mdx` | ⚠️ | BYOC content needed — flag for SME |
+| `guides-and-resources/gateway-job-pipelines/byoc.mdx` | ⚠️ | BYOC content needed - flag for SME |
 | `references/orchestrator-offerings.mdx` | ⚠️ | Validate protobuf fields against current go-livepeer |
-| `references/configuration-flags-old.mdx` | ⚠️ | Archive or remove — superseded by `configuration-flags.mdx` |
+| `references/configuration-flags-old.mdx` | ⚠️ | Archive or remove - superseded by `configuration-flags.mdx` |
 | `references/contract-addresses.mdx` | ⚠️ | Add current Arbitrum contract addresses |
 
 ---
@@ -470,7 +470,7 @@ eliteproxy's most important systemic observation:
 > *"IMO the Livepeer Studio guides should be their own community of practice, for Studio's own API. 
 > They do not communicate network value to technically minded builders."*
 
-This isn't a Phase 1 change — it's a longer-term IA decision — but the groundwork should be laid now.
+This isn't a Phase 1 change - it's a longer-term IA decision - but the groundwork should be laid now.
 
 **Immediate action:** Ensure every guide that is Studio-specific is clearly labelled as such. 
 Add a callout at the top of Studio-specific pages:
@@ -519,5 +519,5 @@ For eliteproxy's incoming PRs:
 | 10 | Slot gateway transcoding guide (go-livepeer native) | eliteproxy + You | Awaiting his PR |
 | 11 | Add Orchestrator ↔ Gateway test loop to both quickstarts | You | With #10 |
 | 12 | Complete remaining ⚠️ gateway stubs | You | SME input needed for BYOC |
-| 13 | Python-based gateway | Future | Alpha — do not block |
+| 13 | Python-based gateway | Future | Alpha - do not block |
 | 14 | NaaP / single-click full content | Future | Awaiting eliteproxy + Qiang |

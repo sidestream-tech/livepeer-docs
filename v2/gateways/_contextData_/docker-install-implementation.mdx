@@ -1,5 +1,5 @@
 ---
-title: 'Docker Install Page — Implementation Checklist'
+title: 'Docker Install Page - Implementation Checklist'
 description: 'Actionable steps to finalise docker-install.mdx before it goes live as the primary gateway install entry point.'
 ---
 
@@ -26,7 +26,7 @@ import { PreviewCallout } from '/snippets/components/domain/SHARED/previewCallou
 
 ---
 
-## Step 1 — Test the ETH account creation flow end-to-end
+## Step 1 - Test the ETH account creation flow end-to-end
 
 **Why:** The `docker compose run -it gateway` command is the riskiest part of the page. The step assumes the container starts, prompts for a password interactively, and exits cleanly on Ctrl+C. This may not match actual image behaviour.
 
@@ -48,9 +48,9 @@ docker logs gateway
 
 ---
 
-## Step 2 — Verify the next step card path
+## Step 2 - Verify the next step card path
 
-**Why:** The bottom card links to `/v2/gateways/run-a-gateway/configure/configuration-overview`. The existing quickstart links to `../../references/configuration-flags` — suggesting `configuration-overview` may not be the correct slug.
+**Why:** The bottom card links to `/v2/gateways/run-a-gateway/configure/configuration-overview`. The existing quickstart links to `../../references/configuration-flags` - suggesting `configuration-overview` may not be the correct slug.
 
 **Action:** Check `docs.json` for the correct path.
 
@@ -58,16 +58,16 @@ docker logs gateway
 - If it doesn't exist → update the `href` to the correct path, e.g.:
 
 ```mdx
-// Option A — configuration flags reference (confirmed in quickstart)
+// Option A - configuration flags reference (confirmed in quickstart)
 href="/v2/gateways/run-a-gateway/references/configuration-flags"
 
-// Option B — configuration overview if that page exists
+// Option B - configuration overview if that page exists
 href="/v2/gateways/run-a-gateway/configure/configuration-overview"
 ```
 
 ---
 
-## Step 3 — Add a funded gateway note before the streaming section
+## Step 3 - Add a funded gateway note before the streaming section
 
 **Why:** On-chain mode requires a funded gateway before orchestrators will accept transcoding jobs. Without ETH/LPT in the gateway account, streams will fail silently or produce no output. This is a common first-run failure.
 
@@ -86,7 +86,7 @@ href="/v2/gateways/run-a-gateway/configure/configuration-overview"
 
 ---
 
-## Step 4 — Add a production firewall note to the streaming section
+## Step 4 - Add a production firewall note to the streaming section
 
 **Why:** Cloud VM users will be able to push RTMP locally but won't see HLS output because ports 1935 and 8935 are closed by default. This is a recurring support question.
 
@@ -101,7 +101,7 @@ href="/v2/gateways/run-a-gateway/configure/configuration-overview"
 
 ---
 
-## Step 5 — Align Steps component with surrounding pages
+## Step 5 - Align Steps component with surrounding pages
 
 **Why:** The ETH account creation flow uses Mintlify native `<Steps>` / `<Step>`. Other pages in this section use the custom `<StyledSteps>` / `<StyledStep>` from the snippets component library.
 
@@ -128,11 +128,11 @@ import { StyledSteps, StyledStep } from '/snippets/components/layout/steps.jsx'
 
 ---
 
-## Step 6 — Surface Docker as the recommended path upstream
+## Step 6 - Surface Docker as the recommended path upstream
 
 **Why:** The dev's intention is for this to be the primary entry point for go-livepeer installs. The page is already in the right location. The fix is making the upstream pages point to it more clearly.
 
-**Action — `install-overview.mdx`:** Mark Docker as recommended:
+**Action - `install-overview.mdx`:** Mark Docker as recommended:
 
 ```mdx
 // Find the installation methods list and update to:
@@ -141,7 +141,7 @@ import { StyledSteps, StyledStep } from '/snippets/components/layout/steps.jsx'
 3. <Icon icon="wand-sparkles" size={18} /> **GWID** community tooling
 ```
 
-**Action — `quickstart-a-gateway.mdx`:** Move the Docker tab first (if it isn't already) and add a tip:
+**Action - `quickstart-a-gateway.mdx`:** Move the Docker tab first (if it isn't already) and add a tip:
 
 ```mdx
 // Add above the <Tabs> in the Docker view:
