@@ -19,10 +19,10 @@ You can create **clips** from active Livepeer Studio streams via the API. A clip
 
 Use the [Create Clip API](https://livepeer.studio/docs/api-reference/stream/create-clip) with:
 
-- `playbackId` — The **active stream’s** playback ID.
-- `startTime` — Start of the clip (UNIX ms, from playhead).
-- `endTime` — End of the clip (UNIX ms).
-- `name` — (Optional) Name for the clip asset.
+- `playbackId` - The **active stream’s** playback ID.
+- `startTime` - Start of the clip (UNIX ms, from playhead).
+- `endTime` - End of the clip (UNIX ms).
+- `name` - (Optional) Name for the clip asset.
 
 Ensure `startTime` is at or after the stream start and `endTime` is not in the future.
 
@@ -44,8 +44,8 @@ The Player’s [Clip trigger](https://www.npmjs.com/package/@livepeer/react#play
 
 ## Monitor clip status
 
-- **Polling** — Call `GET /asset/{assetId}` until `asset.status` is `ready`.
-- **Webhooks** — Subscribe to `asset.ready` (and optionally `asset.failed`). Use the `assetId` from the create-clip response to match the event.
+- **Polling** - Call `GET /asset/{assetId}` until `asset.status` is `ready`.
+- **Webhooks** - Subscribe to `asset.ready` (and optionally `asset.failed`). Use the `assetId` from the create-clip response to match the event.
 - The clip asset has `source.type === "clip"` and a `sessionId` so you can tell it’s a clip.
 
 Clips get **source playback** first (playable quickly); transcoded renditions are added when processing finishes. Use the clip’s `playbackId` with the [Playback Info API](https://livepeer.studio/docs/api-reference/playback/get) or the [Player](../player) to play it.

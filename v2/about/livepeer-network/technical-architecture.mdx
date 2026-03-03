@@ -37,11 +37,11 @@ The Orchestrator node runs **go-livepeer** (the `livepeer` binary), available at
 
 ### Key components
 
-- **Transcoder selection** — Internal or external workers; configured via `orchSecret` and `orchAddr` for remote transcoders
-- **Ticket validation** — L2 `TicketBroker` on Arbitrum for ETH payment redemption
-- **Reward claim** — Merkle submission to `BondingManager` each round
-- **LPT staking** — BondingManager for self-bond and delegator stake
-- **Region advertisement** — For Gateway routing (latency, capacity)
+- **Transcoder selection** - Internal or external workers; configured via `orchSecret` and `orchAddr` for remote transcoders
+- **Ticket validation** - L2 `TicketBroker` on Arbitrum for ETH payment redemption
+- **Reward claim** - Merkle submission to `BondingManager` each round
+- **LPT staking** - BondingManager for self-bond and delegator stake
+- **Region advertisement** - For Gateway routing (latency, capacity)
 
 ### Deployment modes
 
@@ -51,8 +51,8 @@ The Orchestrator node runs **go-livepeer** (the `livepeer` binary), available at
 
 ### Tools
 
-- **livepeer_cli** — Stake, set fee/reward cut, monitor sessions
-- **livepeer_exporter** — Prometheus metrics exporter for observability
+- **livepeer_cli** - Stake, set fee/reward cut, monitor sessions
+- **livepeer_exporter** - Prometheus metrics exporter for observability
 
 ## Worker layer
 
@@ -81,7 +81,7 @@ Gateways manage:
 
 - [Studio Gateway](https://github.com/livepeer/studio-gateway)
 - [Daydream Gateway](https://github.com/livepeer/daydream)
-- [Cascade](https://github.com/livepeer/cascade) — Load balancer and AI workflow coordination
+- [Cascade](https://github.com/livepeer/cascade) - Load balancer and AI workflow coordination
 
 **Features:** Rate limiting, region scoring, health probes, fallback Orchestrators, credit tracking (e.g. Postgres/Redis).
 
@@ -98,8 +98,8 @@ Gateways manage:
 
 **Endpoints:**
 
-- `https://livepeer.studio/api` — Studio REST
-- `https://explorer.livepeer.org/graphql` — Explorer GraphQL
+- `https://livepeer.studio/api` - Studio REST
+- `https://explorer.livepeer.org/graphql` - Explorer GraphQL
 
 ## CLI and SDKs
 
@@ -111,8 +111,8 @@ Gateways manage:
 
 **SDKs:**
 
-- **[Livepeer JS SDK](https://github.com/livepeer/js-sdk)** — Playback, ingest, AI session tools; works in Node.js and browser
-- **Python AI pipelines** — Used in internal and community projects (e.g. dotSimulate, MetaDJ)
+- **[Livepeer JS SDK](https://github.com/livepeer/js-sdk)** - Playback, ingest, AI session tools; works in Node.js and browser
+- **Python AI pipelines** - Used in internal and community projects (e.g. dotSimulate, MetaDJ)
 
 ## Monitoring and observability
 
@@ -136,11 +136,11 @@ Node software exposes explicit metrics (e.g. segment success rate, ticket value 
 
 ## See also
 
-- [Interfaces](./interfaces) — REST, gRPC, GraphQL, JS SDK, CLI, and smart contract access
-- [Marketplace](./marketplace) — How Gateways route jobs and how pricing works
-- [Job lifecycle](./job-lifecycle) — End-to-end flow and state machine
-- [Protocol technical architecture](../livepeer-protocol/technical-architecture) — On-chain contracts and node types from protocol perspective
-- [Blockchain contracts](../resources/blockchain-contracts) — Contract addresses (Arbitrum)
+- [Interfaces](./interfaces) - REST, gRPC, GraphQL, JS SDK, CLI, and smart contract access
+- [Marketplace](./marketplace) - How Gateways route jobs and how pricing works
+- [Job lifecycle](./job-lifecycle) - End-to-end flow and state machine
+- [Protocol technical architecture](../livepeer-protocol/technical-architecture) - On-chain contracts and node types from protocol perspective
+- [Blockchain contracts](../resources/blockchain-contracts) - Contract addresses (Arbitrum)
 
 ## References
 

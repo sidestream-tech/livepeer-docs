@@ -14,21 +14,21 @@ After [installing go-livepeer](../install-go-livepeer), configure the node so ga
 
 ### Network and wallet
 
-- **-ethUrl** — Arbitrum RPC URL. See [Connect to Arbitrum](../connect-to-arbitrum).
-- **-ethAcctAddr** — (Optional) ETH account address if you already have a keystore.
-- **-network** — Use `arbitrum-one-mainnet` for production.
+- **-ethUrl** - Arbitrum RPC URL. See [Connect to Arbitrum](../connect-to-arbitrum).
+- **-ethAcctAddr** - (Optional) ETH account address if you already have a keystore.
+- **-network** - Use `arbitrum-one-mainnet` for production.
 
 ### Orchestrator identity and pricing
 
-- **-serviceAddr** — Public hostname or IP and port (e.g. `orchestrator.example.com:8935`). Prefer a hostname you control; changing it later requires an on-chain update.
-- **-pricePerUnit** — Price in wei per pixel (transcoding). Required at startup; can be updated later via CLI or on-chain.
-- **-pixelsPerUnit** — Pixels per pricing unit (default 1). Affects how price is calculated per segment.
+- **-serviceAddr** - Public hostname or IP and port (e.g. `orchestrator.example.com:8935`). Prefer a hostname you control; changing it later requires an on-chain update.
+- **-pricePerUnit** - Price in wei per pixel (transcoding). Required at startup; can be updated later via CLI or on-chain.
+- **-pixelsPerUnit** - Pixels per pricing unit (default 1). Affects how price is calculated per segment.
 
 ### GPU and mode
 
-- **-orchestrator** — Run in orchestrator mode.
-- **-transcoder** — Enable GPU transcoding.
-- **-nvidia** — Comma-separated NVIDIA GPU IDs (e.g. `0,1`). Omit for CPU-only.
+- **-orchestrator** - Run in orchestrator mode.
+- **-transcoder** - Enable GPU transcoding.
+- **-nvidia** - Comma-separated NVIDIA GPU IDs (e.g. `0,1`). Omit for CPU-only.
 
 Example minimal run:
 

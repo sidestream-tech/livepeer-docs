@@ -6,11 +6,11 @@ keywords: ["livepeer", "internal", "docs philosophy", "docs", "philosophy", "doc
 og:image: "/snippets/assets/domain/SHARED/LivepeerDocsLogo.svg"
 ---
 
-This section articulates the philosophical framework that underpinned the v2 engagement and demonstrates, with full implementation evidence, how every element of the RFP's three stated aims — **stakeholder-focused**, **AI-first**, and **future-proofed** — was delivered across every layer of the system.
+This section articulates the philosophical framework that underpinned the v2 engagement and demonstrates, with full implementation evidence, how every element of the RFP's three stated aims - **stakeholder-focused**, **AI-first**, and **future-proofed** - was delivered across every layer of the system.
 
 <iframe height="200px" width="100%" frameborder="no" scrolling="no" seamless src="https://player.simplecast.com/27863aa4-9767-4c51-a1b9-7d220bb0af69?dark=true"></iframe>
 <Accordion title="Eposide Details">
-    In this episode of AI + a16z, dbt Labs founder and CEO Tristan Handy sits down with a16z’s Jennifer Li and Matt Bornstein to explore the next chapter of data engineering — from the rise (and plateau) of the modern data stack to the growing role of AI in analytics and data engineering. As they sum up the impact of AI on data workflows: The interesting question here is human-in-the-loop versus human-not-in-the-loop. AI isn’t about replacing analysts — it’s about enabling self-service across the company. But without a human to verify the result, that’s a very scary thing.
+    In this episode of AI + a16z, dbt Labs founder and CEO Tristan Handy sits down with a16z’s Jennifer Li and Matt Bornstein to explore the next chapter of data engineering - from the rise (and plateau) of the modern data stack to the growing role of AI in analytics and data engineering. As they sum up the impact of AI on data workflows: The interesting question here is human-in-the-loop versus human-not-in-the-loop. AI isn’t about replacing analysts - it’s about enabling self-service across the company. But without a human to verify the result, that’s a very scary thing.
 
     Among other specific topics, they also discuss how automation, as well as tooling like SQL compilers, are reshaping how engineers work with data; dbt’s new Fusion Engine and what it means for developer workflows; and what to make of the spate of recent data-industry acquisitions and ambitious product launches.
     <DownloadButton label="Download Transcript" downloadLink="https://livepeer.notion.site/Docs-Philosophy-Transcript-5000c3190100412ea211119110111111" />
@@ -38,7 +38,7 @@ The D.O.C.S. System™ developed as the strategic operating model for this engag
 - Composable Execution, and 
 - Signal & System Feedback.
 
-The practical implication is that "documentation work" in this engagement meant building a documentation operating system — a complete apparatus for authoring, validating, publishing, automating, and governing content — not just writing pages. 
+The practical implication is that "documentation work" in this engagement meant building a documentation operating system - a complete apparatus for authoring, validating, publishing, automating, and governing content - not just writing pages. 
 
 The 58-script test suite, 17 GitHub Actions workflows, lpd CLI, component library, and docs-guide governance system are all infrastructure. 
 
@@ -86,15 +86,15 @@ They are the scaffolding that makes every page reliable, maintainable, and impro
     #### The Four Quadrants of Diátaxis
     - **Tutorials (Learning-Oriented):** Hands-on lessons that guide a beginner through a series of steps to achieve a result. Their primary goal is to provide a successful learning experience, not just solve a problem.
     - **How-To Guides (Task-Oriented):** Practical directions that help an experienced user complete a specific, real-world task. They focus on the "how" and assume the user already has basic competence.
-    - **Reference (Information-Oriented):** Technical descriptions of the machinery—API keys, classes, commands, and schemas. They must be neutral, accurate, and easy to consult quickly.
+    - **Reference (Information-Oriented):** Technical descriptions of the machinery-API keys, classes, commands, and schemas. They must be neutral, accurate, and easy to consult quickly.
     - **Explanation (Understanding-Oriented):** Discussions that clarify and illuminate a particular topic. They provide context, background, and rationale ("the why") rather than instructions. 
 
-    The core principle is to keep these four types separate. Mixing them—such as putting long technical explanations inside a step-by-step tutorial—confuses the reader and makes the documentation harder to maintain.
+    The core principle is to keep these four types separate. Mixing them-such as putting long technical explanations inside a step-by-step tutorial-confuses the reader and makes the documentation harder to maintain.
 
 </Accordion>
 
 ## **AI Is the New Search**
-For over a decade, SEO — optimising for Google — was the primary lever for documentation discoverability. 
+For over a decade, SEO - optimising for Google - was the primary lever for documentation discoverability. 
 
 That paradigm is being rapidly displaced. 
 
@@ -102,18 +102,18 @@ LLMs now index, summarise, and recommend infrastructure products at scale. Devel
 
 This means documentation is now being read, evaluated, and cited by machines before it reaches humans.
 
-**The implication is structural**, not cosmetic. Semantic headings, stable canonical URLs, machine-readable frontmatter, OpenAPI spec integration, and llms.txt files are not "nice to have" — they are the new minimum viable distribution layer. 
+**The implication is structural**, not cosmetic. Semantic headings, stable canonical URLs, machine-readable frontmatter, OpenAPI spec integration, and llms.txt files are not "nice to have" - they are the new minimum viable distribution layer. 
 
 Answer Engine Optimization (AEO) is the evolution of SEO for this era. This engagement built Livepeer's AEO layer from first principles.
 
 ## **Agents Are the New Users**
 The next wave beyond AI-assisted search is **AI agent consumption**: automated systems that query documentation to generate code, answer support tickets, configure infrastructure, or build integrations without human intervention. 
 
-These agents require documentation that is not merely readable but executable — with explicit preconditions, invariants, verification steps, and failure modes.
+These agents require documentation that is not merely readable but executable - with explicit preconditions, invariants, verification steps, and failure modes.
 
 The "Get AI to Set Up the Gateway" page (v2/gateways/quickstart/AI-prompt) is a direct instantiation of this principle: a page written for AI agent consumption, not human browsing. 
 
-The llms.txt file, repository AGENTS.md, and .cursorrules files extend this philosophy into the development workflow itself — making the entire repository legible to AI coding assistants.
+The llms.txt file, repository AGENTS.md, and .cursorrules files extend this philosophy into the development workflow itself - making the entire repository legible to AI coding assistants.
 
 See the 21 items for AI-First Docs implemented in the [AI-First Report](./v2/internal/rfp/reports/ai-first-report.mdx)
 

@@ -151,7 +151,7 @@ Outputs:
 - `0` `v2/gateways/using-gateways/gateway-providers/livepeer-studio-gateway.mdx` (provisional) — accuracy_needs_review, empty, missing_frontmatter
 - `0` `v2/platforms/ecosystem-products.mdx` (provisional) — accuracy_needs_review, empty, missing_frontmatter
 - `28` `v2/developers/ai-inference-on-livepeer/livepeer-ai/daydream-generative-ai-video-platform.mdx` (provisional) — accuracy_needs_review, missing_frontmatter, thin_content, verification_required
-- `28` `v2/developers/guides-and-resources/developer-guides.mdx` (provisional) — accuracy_needs_review, missing_frontmatter, thin_content
+- `28` `v2/developers/guides-and-tools/developer-guides.mdx` (provisional) — accuracy_needs_review, missing_frontmatter, thin_content
 
 ## Highest Human Usefulness (Top 10)
 
@@ -232,8 +232,8 @@ Outputs:
 - `v2/gateways/using-gateways/gateway-providers/daydream-gateway.mdx`
 - `v2/gateways/using-gateways/gateway-providers/livepeer-studio-gateway.mdx`
 - `v2/platforms/ecosystem-products.mdx`
-- `v2/developers/guides-and-resources/developer-guides.mdx`
-- `v2/developers/guides-and-resources/resources.mdx`
+- `v2/developers/guides-and-tools/developer-guides.mdx`
+- `v2/developers/guides-and-tools/resources.mdx`
 - Missing description: **58** page(s). Fill descriptions for SEO/AEO + machine readability.
 - `v2/developers/builder-opportunities/dev-programs.mdx`
 - `v2/community/livepeer-connect/forums-and-discussions.mdx`

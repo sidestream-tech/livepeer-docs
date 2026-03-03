@@ -36,13 +36,13 @@ All governance weight is derived from bonded stake.
 
 A governance proposal typically follows these deterministic phases:
 
-1. **Creation** — proposal submitted with encoded actions
-2. **Voting Delay** — period before voting opens
-3. **Voting Period** — bonded participants cast votes
-4. **Quorum Check** — minimum participation requirement
-5. **Threshold Check** — majority condition
-6. **Queue (Timelock)** — execution delay
-7. **Execution** — state transition if conditions met
+1. **Creation** - proposal submitted with encoded actions
+2. **Voting Delay** - period before voting opens
+3. **Voting Period** - bonded participants cast votes
+4. **Quorum Check** - minimum participation requirement
+5. **Threshold Check** - majority condition
+6. **Queue (Timelock)** - execution delay
+7. **Execution** - state transition if conditions met
 
 These transitions are enforced by governance contracts.
 
@@ -113,10 +113,10 @@ Execution is atomic per proposal.
 
 Official contract address documentation lists governance-related contracts on Arbitrum mainnet:
 
-- **Governor** — proposal and voting logic
-- **LivepeerGovernor (proxy/target)** — upgradeable governor implementation
-- **BondingVotes** — stake-weighted voting power tracking
-- **Treasury** — governance-controlled funds
+- **Governor** - proposal and voting logic
+- **LivepeerGovernor (proxy/target)** - upgradeable governor implementation
+- **BondingVotes** - stake-weighted voting power tracking
+- **Treasury** - governance-controlled funds
 
 This establishes that governance is not merely social; it is enacted through deployed contracts with published addresses.
 
@@ -169,9 +169,9 @@ The security committee/protocol owners invoke functions to set values per vote o
 
 The system highlights several structurally important risks:
 
-1. **Low participation and voting power concentration** — reduces defence against hostile governance actions
-2. **Executor centralisation** — security committee dependency introduces trust requirements
-3. **Slashing disabled** — reduces the system's ability to impose automatic economic penalties for misbehaviour, increasing reliance on reputation and social remedies
+1. **Low participation and voting power concentration** - reduces defence against hostile governance actions
+2. **Executor centralisation** - security committee dependency introduces trust requirements
+3. **Slashing disabled** - reduces the system's ability to impose automatic economic penalties for misbehaviour, increasing reliance on reputation and social remedies
 
 ---
 

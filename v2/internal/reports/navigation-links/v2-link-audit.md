@@ -189,10 +189,10 @@ Operator note: external HTTP/HTTPS links are classified only and marked as `🟡
   - #### Guides
     - Livepeer 生态系统合作伙伴集成 (cn/developers/guides/partner-integrations.mdx)
   - #### Guides And Resources
-    - 贡献指南 (cn/developers/guides-and-resources/contribution-guide.mdx)
-    - Developer Guides (cn/developers/guides-and-resources/developer-guides.mdx)
-    - 开发者帮助 (cn/developers/guides-and-resources/developer-help.mdx)
-    - Resources (cn/developers/guides-and-resources/resources.mdx)
+    - 贡献指南 (cn/developers/guides-and-tools/contribution-guide.mdx)
+    - Developer Guides (cn/developers/guides-and-tools/developer-guides.mdx)
+    - 开发者帮助 (cn/developers/guides-and-tools/developer-help.mdx)
+    - Resources (cn/developers/guides-and-tools/resources.mdx)
   - #### Livepeer Real Time Video
     - ##### Video Streaming On Livepeer
       - README (cn/developers/livepeer-real-time-video/video-streaming-on-livepeer/README.mdx)
@@ -637,10 +637,10 @@ Operator note: external HTTP/HTTPS links are classified only and marked as `🟡
 - ### Guides
   - ⚠️ Livepeer Ecosystem Partner Integrations (developers/guides/partner-integrations.mdx)
 - ### Guides And Resources
-  - Contribution Guide (developers/guides-and-resources/contribution-guide.mdx)
-  - Developer Guides (developers/guides-and-resources/developer-guides.mdx)
-  - Developer Help (developers/guides-and-resources/developer-help.mdx)
-  - Resources (developers/guides-and-resources/resources.mdx)
+  - Contribution Guide (developers/guides-and-tools/contribution-guide.mdx)
+  - Developer Guides (developers/guides-and-tools/developer-guides.mdx)
+  - Developer Help (developers/guides-and-tools/developer-help.mdx)
+  - Resources (developers/guides-and-tools/resources.mdx)
 - ### Livepeer Real Time Video
   - ⚠️ Page 1 (developers/livepeer-real-time-video/page-1.mdx)
   - #### Video Streaming On Livepeer
@@ -752,10 +752,10 @@ Operator note: external HTTP/HTTPS links are classified only and marked as `🟡
   - #### Guides
     - Livepeer Integraciones de Socios del Ecosistema (es/developers/guides/partner-integrations.mdx)
   - #### Guides And Resources
-    - Guía de contribución (es/developers/guides-and-resources/contribution-guide.mdx)
-    - Developer Guides (es/developers/guides-and-resources/developer-guides.mdx)
-    - Ayuda para desarrolladores (es/developers/guides-and-resources/developer-help.mdx)
-    - Resources (es/developers/guides-and-resources/resources.mdx)
+    - Guía de contribución (es/developers/guides-and-tools/contribution-guide.mdx)
+    - Developer Guides (es/developers/guides-and-tools/developer-guides.mdx)
+    - Ayuda para desarrolladores (es/developers/guides-and-tools/developer-help.mdx)
+    - Resources (es/developers/guides-and-tools/resources.mdx)
   - #### Livepeer Real Time Video
     - ##### Video Streaming On Livepeer
       - README (es/developers/livepeer-real-time-video/video-streaming-on-livepeer/README.mdx)
@@ -1195,10 +1195,10 @@ Operator note: external HTTP/HTTPS links are classified only and marked as `🟡
   - #### Guides
     - Livepeer Intégrations de partenaires de l'écosystème (fr/developers/guides/partner-integrations.mdx)
   - #### Guides And Resources
-    - Guide de contribution (fr/developers/guides-and-resources/contribution-guide.mdx)
-    - Developer Guides (fr/developers/guides-and-resources/developer-guides.mdx)
-    - Aide aux développeurs (fr/developers/guides-and-resources/developer-help.mdx)
-    - Resources (fr/developers/guides-and-resources/resources.mdx)
+    - Guide de contribution (fr/developers/guides-and-tools/contribution-guide.mdx)
+    - Developer Guides (fr/developers/guides-and-tools/developer-guides.mdx)
+    - Aide aux développeurs (fr/developers/guides-and-tools/developer-help.mdx)
+    - Resources (fr/developers/guides-and-tools/resources.mdx)
   - #### Livepeer Real Time Video
     - ##### Video Streaming On Livepeer
       - README (fr/developers/livepeer-real-time-video/video-streaming-on-livepeer/README.mdx)
@@ -3455,24 +3455,24 @@ Operator note: external HTTP/HTTPS links are classified only and marked as `🟡
 |---|---|---|---|---|---|---|---|
 | internal-relative | ./livepeer-explorer | v2/cn/developers/developer-tools/livepeer-explorer.mdx | true | ok |  |  |  |
 
-### v2/cn/developers/guides-and-resources/contribution-guide.mdx
+### v2/cn/developers/guides-and-tools/contribution-guide.mdx
 | linkType | rawPath | resolvedPath | exists | status | movedCandidate1 | movedCandidate2 | movedCandidate3 |
 |---|---|---|---|---|---|---|---|
 | external-https | https://contributors-spotlight.rickstaa.dev/ |  | null | 🟡 untested-external |  |  |  |
 | external-https | https://contributors-spotlight.rickstaa.dev/ |  | null | 🟡 untested-external |  |  |  |
 | import-path | /snippets/components/primitives/links.jsx | snippets/components/primitives/links.jsx | true | ok |  |  |  |
 
-### v2/cn/developers/guides-and-resources/developer-guides.mdx
+### v2/cn/developers/guides-and-tools/developer-guides.mdx
 | linkType | rawPath | resolvedPath | exists | status | movedCandidate1 | movedCandidate2 | movedCandidate3 |
 |---|---|---|---|---|---|---|---|
 | (none) |  |  |  |  |  |  |  |
 
-### v2/cn/developers/guides-and-resources/developer-help.mdx
+### v2/cn/developers/guides-and-tools/developer-help.mdx
 | linkType | rawPath | resolvedPath | exists | status | movedCandidate1 | movedCandidate2 | movedCandidate3 |
 |---|---|---|---|---|---|---|---|
 | (none) |  |  |  |  |  |  |  |
 
-### v2/cn/developers/guides-and-resources/resources.mdx
+### v2/cn/developers/guides-and-tools/resources.mdx
 | linkType | rawPath | resolvedPath | exists | status | movedCandidate1 | movedCandidate2 | movedCandidate3 |
 |---|---|---|---|---|---|---|---|
 | (none) |  |  |  |  |  |  |  |
@@ -3513,7 +3513,7 @@ Operator note: external HTTP/HTTPS links are classified only and marked as `🟡
 | internal-rooted | /community/livepeer-contribute/contribute | v2/community/livepeer-contribute/contribute.mdx | true | ok |  |  |  |
 | internal-relative | ./builder-opportunities/livepeer-rfps | v2/cn/developers/builder-opportunities/livepeer-rfps.mdx | true | ok |  |  |  |
 | internal-relative | ./developer-tools/tooling-hub | v2/cn/developers/developer-tools/tooling-hub.mdx | true | ok |  |  |  |
-| internal-relative | ./guides-and-resources/developer-guides | v2/cn/developers/guides-and-resources/developer-guides.mdx | true | ok |  |  |  |
+| internal-relative | ./guides-and-resources/developer-guides | v2/cn/developers/guides-and-tools/developer-guides.mdx | true | ok |  |  |  |
 | import-path | /snippets/components/domain/SHARED/Portals.jsx | snippets/components/domain/SHARED/Portals.jsx | true | ok |  |  |  |
 | import-path | /snippets/components/display/frameMode.jsx | snippets/components/display/frameMode.jsx | true | ok |  |  |  |
 | import-path | /snippets/components/primitives/divider.jsx | snippets/components/primitives/divider.jsx | true | ok |  |  |  |
@@ -7266,7 +7266,7 @@ Operator note: external HTTP/HTTPS links are classified only and marked as `🟡
 | external-https | https://daydream.live/?utm_source=google&utm_medium=search&utm_campaign=23258122503&utm_term=&utm_content=&gad_source=1&gad_campaignid=23267486074&gbraid=0AAAABBoxESHVYX7R6KJ9HPMUuCIz6IOcj&gclid=Cj0KCQiA5I_NBhDVARIsAOrqIsasHrmS4nY13_rIDLHbm-LLc-PveIaE3HaD9t-7oQKycBzIE5lqogAaAqY5EALw_wcB |  | null | 🟡 untested-external |  |  |  |
 | external-https | https://github.com/its-DeFine/embody-skill/blob/main/SKILL.md |  | null | 🟡 untested-external |  |  |  |
 | external-https | https://github.com/livepeer/go-livepeer |  | null | 🟡 untested-external |  |  |  |
-| internal-rooted | /v2/developers/guides-and-resources/contribution-guide | v2/developers/guides-and-resources/contribution-guide.mdx | true | ok |  |  |  |
+| internal-rooted | /v2/developers/guides-and-tools/contribution-guide | v2/developers/guides-and-tools/contribution-guide.mdx | true | ok |  |  |  |
 
 ### v2/developers/developer-path.mdx
 | linkType | rawPath | resolvedPath | exists | status | movedCandidate1 | movedCandidate2 | movedCandidate3 |
@@ -7416,24 +7416,24 @@ Operator note: external HTTP/HTTPS links are classified only and marked as `🟡
 |---|---|---|---|---|---|---|---|
 | internal-relative | ./livepeer-explorer | v2/developers/developer-tools/livepeer-explorer.mdx | true | ok |  |  |  |
 
-### v2/developers/guides-and-resources/contribution-guide.mdx
+### v2/developers/guides-and-tools/contribution-guide.mdx
 | linkType | rawPath | resolvedPath | exists | status | movedCandidate1 | movedCandidate2 | movedCandidate3 |
 |---|---|---|---|---|---|---|---|
 | external-https | https://contributors-spotlight.rickstaa.dev/ |  | null | 🟡 untested-external |  |  |  |
 | external-https | https://contributors-spotlight.rickstaa.dev/ |  | null | 🟡 untested-external |  |  |  |
 | import-path | /snippets/components/primitives/links.jsx | snippets/components/primitives/links.jsx | true | ok |  |  |  |
 
-### v2/developers/guides-and-resources/developer-guides.mdx
+### v2/developers/guides-and-tools/developer-guides.mdx
 | linkType | rawPath | resolvedPath | exists | status | movedCandidate1 | movedCandidate2 | movedCandidate3 |
 |---|---|---|---|---|---|---|---|
 | (none) |  |  |  |  |  |  |  |
 
-### v2/developers/guides-and-resources/developer-help.mdx
+### v2/developers/guides-and-tools/developer-help.mdx
 | linkType | rawPath | resolvedPath | exists | status | movedCandidate1 | movedCandidate2 | movedCandidate3 |
 |---|---|---|---|---|---|---|---|
 | (none) |  |  |  |  |  |  |  |
 
-### v2/developers/guides-and-resources/resources.mdx
+### v2/developers/guides-and-tools/resources.mdx
 | linkType | rawPath | resolvedPath | exists | status | movedCandidate1 | movedCandidate2 | movedCandidate3 |
 |---|---|---|---|---|---|---|---|
 | (none) |  |  |  |  |  |  |  |
@@ -7557,7 +7557,7 @@ Operator note: external HTTP/HTTPS links are classified only and marked as `🟡
 | internal-rooted | /community/livepeer-contribute/contribute | v2/community/livepeer-contribute/contribute.mdx | true | ok |  |  |  |
 | internal-relative | ./builder-opportunities/livepeer-rfps | v2/developers/builder-opportunities/livepeer-rfps.mdx | true | ok |  |  |  |
 | internal-relative | ./developer-tools/tooling-hub | v2/developers/developer-tools/tooling-hub.mdx | true | ok |  |  |  |
-| internal-relative | ./guides-and-resources/developer-guides | v2/developers/guides-and-resources/developer-guides.mdx | true | ok |  |  |  |
+| internal-relative | ./guides-and-resources/developer-guides | v2/developers/guides-and-tools/developer-guides.mdx | true | ok |  |  |  |
 | import-path | /snippets/components/domain/SHARED/Portals.jsx | snippets/components/domain/SHARED/Portals.jsx | true | ok |  |  |  |
 | import-path | /snippets/components/display/frameMode.jsx | snippets/components/display/frameMode.jsx | true | ok |  |  |  |
 | import-path | /snippets/components/primitives/divider.jsx | snippets/components/primitives/divider.jsx | true | ok |  |  |  |
@@ -8223,7 +8223,7 @@ Operator note: external HTTP/HTTPS links are classified only and marked as `🟡
 | empty | # |  | null | skipped |  |  |  |
 | empty | # |  | null | skipped |  |  |  |
 | external-https | https://github.com/livepeer/go-livepeer |  | null | 🟡 untested-external |  |  |  |
-| internal-rooted | /v2/developers/guides-and-resources/contribution-guide | v2/developers/guides-and-resources/contribution-guide.mdx | true | ok |  |  |  |
+| internal-rooted | /v2/developers/guides-and-tools/contribution-guide | v2/developers/guides-and-tools/contribution-guide.mdx | true | ok |  |  |  |
 
 ### v2/es/developers/developer-tools/dashboards.mdx
 | linkType | rawPath | resolvedPath | exists | status | movedCandidate1 | movedCandidate2 | movedCandidate3 |
@@ -8247,24 +8247,24 @@ Operator note: external HTTP/HTTPS links are classified only and marked as `🟡
 |---|---|---|---|---|---|---|---|
 | internal-relative | ./livepeer-explorer | v2/es/developers/developer-tools/livepeer-explorer.mdx | true | ok |  |  |  |
 
-### v2/es/developers/guides-and-resources/contribution-guide.mdx
+### v2/es/developers/guides-and-tools/contribution-guide.mdx
 | linkType | rawPath | resolvedPath | exists | status | movedCandidate1 | movedCandidate2 | movedCandidate3 |
 |---|---|---|---|---|---|---|---|
 | external-https | https://contributors-spotlight.rickstaa.dev/ |  | null | 🟡 untested-external |  |  |  |
 | external-https | https://contributors-spotlight.rickstaa.dev/ |  | null | 🟡 untested-external |  |  |  |
 | import-path | /snippets/components/primitives/links.jsx | snippets/components/primitives/links.jsx | true | ok |  |  |  |
 
-### v2/es/developers/guides-and-resources/developer-guides.mdx
+### v2/es/developers/guides-and-tools/developer-guides.mdx
 | linkType | rawPath | resolvedPath | exists | status | movedCandidate1 | movedCandidate2 | movedCandidate3 |
 |---|---|---|---|---|---|---|---|
 | (none) |  |  |  |  |  |  |  |
 
-### v2/es/developers/guides-and-resources/developer-help.mdx
+### v2/es/developers/guides-and-tools/developer-help.mdx
 | linkType | rawPath | resolvedPath | exists | status | movedCandidate1 | movedCandidate2 | movedCandidate3 |
 |---|---|---|---|---|---|---|---|
 | (none) |  |  |  |  |  |  |  |
 
-### v2/es/developers/guides-and-resources/resources.mdx
+### v2/es/developers/guides-and-tools/resources.mdx
 | linkType | rawPath | resolvedPath | exists | status | movedCandidate1 | movedCandidate2 | movedCandidate3 |
 |---|---|---|---|---|---|---|---|
 | (none) |  |  |  |  |  |  |  |
@@ -8305,7 +8305,7 @@ Operator note: external HTTP/HTTPS links are classified only and marked as `🟡
 | internal-rooted | /community/livepeer-contribute/contribute | v2/community/livepeer-contribute/contribute.mdx | true | ok |  |  |  |
 | internal-relative | ./builder-opportunities/livepeer-rfps | v2/es/developers/builder-opportunities/livepeer-rfps.mdx | true | ok |  |  |  |
 | internal-relative | ./developer-tools/tooling-hub | v2/es/developers/developer-tools/tooling-hub.mdx | true | ok |  |  |  |
-| internal-relative | ./guides-and-resources/developer-guides | v2/es/developers/guides-and-resources/developer-guides.mdx | true | ok |  |  |  |
+| internal-relative | ./guides-and-resources/developer-guides | v2/es/developers/guides-and-tools/developer-guides.mdx | true | ok |  |  |  |
 | import-path | /snippets/components/domain/SHARED/Portals.jsx | snippets/components/domain/SHARED/Portals.jsx | true | ok |  |  |  |
 | import-path | /snippets/components/display/frameMode.jsx | snippets/components/display/frameMode.jsx | true | ok |  |  |  |
 | import-path | /snippets/components/primitives/divider.jsx | snippets/components/primitives/divider.jsx | true | ok |  |  |  |
@@ -12236,7 +12236,7 @@ Operator note: external HTTP/HTTPS links are classified only and marked as `🟡
 | empty | # |  | null | skipped |  |  |  |
 | empty | # |  | null | skipped |  |  |  |
 | external-https | https://github.com/livepeer/go-livepeer |  | null | 🟡 untested-external |  |  |  |
-| internal-rooted | /v2/developers/guides-and-resources/contribution-guide | v2/developers/guides-and-resources/contribution-guide.mdx | true | ok |  |  |  |
+| internal-rooted | /v2/developers/guides-and-tools/contribution-guide | v2/developers/guides-and-tools/contribution-guide.mdx | true | ok |  |  |  |
 
 ### v2/fr/developers/developer-tools/dashboards.mdx
 | linkType | rawPath | resolvedPath | exists | status | movedCandidate1 | movedCandidate2 | movedCandidate3 |
@@ -12260,24 +12260,24 @@ Operator note: external HTTP/HTTPS links are classified only and marked as `🟡
 |---|---|---|---|---|---|---|---|
 | internal-relative | ./livepeer-explorer | v2/fr/developers/developer-tools/livepeer-explorer.mdx | true | ok |  |  |  |
 
-### v2/fr/developers/guides-and-resources/contribution-guide.mdx
+### v2/fr/developers/guides-and-tools/contribution-guide.mdx
 | linkType | rawPath | resolvedPath | exists | status | movedCandidate1 | movedCandidate2 | movedCandidate3 |
 |---|---|---|---|---|---|---|---|
 | external-https | https://contributors-spotlight.rickstaa.dev/ |  | null | 🟡 untested-external |  |  |  |
 | external-https | https://contributors-spotlight.rickstaa.dev/ |  | null | 🟡 untested-external |  |  |  |
 | import-path | /snippets/components/primitives/links.jsx | snippets/components/primitives/links.jsx | true | ok |  |  |  |
 
-### v2/fr/developers/guides-and-resources/developer-guides.mdx
+### v2/fr/developers/guides-and-tools/developer-guides.mdx
 | linkType | rawPath | resolvedPath | exists | status | movedCandidate1 | movedCandidate2 | movedCandidate3 |
 |---|---|---|---|---|---|---|---|
 | (none) |  |  |  |  |  |  |  |
 
-### v2/fr/developers/guides-and-resources/developer-help.mdx
+### v2/fr/developers/guides-and-tools/developer-help.mdx
 | linkType | rawPath | resolvedPath | exists | status | movedCandidate1 | movedCandidate2 | movedCandidate3 |
 |---|---|---|---|---|---|---|---|
 | (none) |  |  |  |  |  |  |  |
 
-### v2/fr/developers/guides-and-resources/resources.mdx
+### v2/fr/developers/guides-and-tools/resources.mdx
 | linkType | rawPath | resolvedPath | exists | status | movedCandidate1 | movedCandidate2 | movedCandidate3 |
 |---|---|---|---|---|---|---|---|
 | (none) |  |  |  |  |  |  |  |
@@ -12318,7 +12318,7 @@ Operator note: external HTTP/HTTPS links are classified only and marked as `🟡
 | internal-rooted | /community/livepeer-contribute/contribute | v2/community/livepeer-contribute/contribute.mdx | true | ok |  |  |  |
 | internal-relative | ./builder-opportunities/livepeer-rfps | v2/fr/developers/builder-opportunities/livepeer-rfps.mdx | true | ok |  |  |  |
 | internal-relative | ./developer-tools/tooling-hub | v2/fr/developers/developer-tools/tooling-hub.mdx | true | ok |  |  |  |
-| internal-relative | ./guides-and-resources/developer-guides | v2/fr/developers/guides-and-resources/developer-guides.mdx | true | ok |  |  |  |
+| internal-relative | ./guides-and-resources/developer-guides | v2/fr/developers/guides-and-tools/developer-guides.mdx | true | ok |  |  |  |
 | import-path | /snippets/components/domain/SHARED/Portals.jsx | snippets/components/domain/SHARED/Portals.jsx | true | ok |  |  |  |
 | import-path | /snippets/components/display/frameMode.jsx | snippets/components/display/frameMode.jsx | true | ok |  |  |  |
 | import-path | /snippets/components/primitives/divider.jsx | snippets/components/primitives/divider.jsx | true | ok |  |  |  |

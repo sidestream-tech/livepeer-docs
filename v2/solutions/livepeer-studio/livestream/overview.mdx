@@ -7,7 +7,7 @@ A **stream** in Livepeer Studio is a livestream object you create via the API. I
 
 ## Sessions
 
-A stream is made up of one or more **sessions**—periods when the stream is active. Only one session is active at a time. Sessions have their own IDs and metadata. Use the [sessions API](https://livepeer.studio/docs/api-reference/session/get-all) to list sessions for a stream.
+A stream is made up of one or more **sessions**-periods when the stream is active. Only one session is active at a time. Sessions have their own IDs and metadata. Use the [sessions API](https://livepeer.studio/docs/api-reference/session/get-all) to list sessions for a stream.
 
 ## Recording
 
@@ -17,9 +17,9 @@ If recording is enabled, the session can be stored as an **asset** when the stre
 
 You can send live video into a stream with:
 
-- **RTMP** — Default; use with OBS or other RTMP encoders. See [Stream via OBS](./stream-via-obs).
-- **WebRTC** — Low-latency ingest from the browser. See [Livestream from browser](./livestream-from-browser).
-- **SRT** — Also supported for ingest.
+- **RTMP** - Default; use with OBS or other RTMP encoders. See [Stream via OBS](./stream-via-obs).
+- **WebRTC** - Low-latency ingest from the browser. See [Livestream from browser](./livestream-from-browser).
+- **SRT** - Also supported for ingest.
 
 When a stream is live, [stream health](./stream-health) provides metrics (e.g. transcoding status, ingest rate) so you can monitor quality and troubleshoot.
 
@@ -39,10 +39,10 @@ Viewers use the **playback ID** to watch the stream. The [Livepeer Player](/solu
 
 Common stream-related events:
 
-- `stream.started` — Stream is active and the HLS URL is available.
-- `stream.idle` — Stream is no longer active.
-- `recording.*` — Recording started, ready, or waiting.
-- `multistream.*` — Multistream target connected, error, or disconnected.
+- `stream.started` - Stream is active and the HLS URL is available.
+- `stream.idle` - Stream is no longer active.
+- `recording.*` - Recording started, ready, or waiting.
+- `multistream.*` - Multistream target connected, error, or disconnected.
 
 See [Webhooks](../analytics/webhooks) and [Listen to events](../analytics/listen-to-events).
 

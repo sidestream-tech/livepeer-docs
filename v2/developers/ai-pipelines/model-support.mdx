@@ -10,21 +10,17 @@ import { DynamicTable } from '/snippets/components/layout/table.jsx'
 import { GotoCard } from '/snippets/components/primitives/links.jsx'
 
 
-This page answers one question:
 
-> **What models can run on Livepeer, and why might some not?**
+> **What models can run on Livepeer, and which are better suited?**
 
-It lists all known model families commonly used via ComfyUI, with compatibility ratings for Livepeer's real-time, GPU-worker constraints. Nothing here implies that a listed model is officially supported or pre-loaded on the network - it reflects whether a model's execution shape fits Livepeer well.
+This page lists all known model families commonly used via ComfyUI, with compatibility ratings for Livepeer's real-time, GPU-worker constraints. Nothing here implies that a listed model is officially supported or pre-loaded on the network - it reflects whether a model's execution shape fits Livepeer well.
 
----
 
 ## Legend
 
 - <Badge color="green">✓ Likely runnable</Badge> - fits real-time / GPU-worker constraints
 - <Badge color="yellow">⚠ Conditional</Badge> - depends on latency, VRAM, orchestration, or batching
 - <Badge color="red">✗ Not suitable</Badge> - design mismatch: stateful, CPU-bound, or non-deterministic
-
----
 
 ## 1. Diffusion Models (Image / Video)
 
@@ -59,7 +55,6 @@ It lists all known model families commonly used via ComfyUI, with compatibility 
 
 **Why blocked (batch video):** temporal state, batch-only execution, non-real-time.
 
----
 
 ## 2. Control & Conditioning Models
 
@@ -88,7 +83,7 @@ It lists all known model families commonly used via ComfyUI, with compatibility 
   ]}
 />
 
----
+
 
 ## 3. Encoders, VAEs, and Latents
 
@@ -101,7 +96,7 @@ It lists all known model families commonly used via ComfyUI, with compatibility 
   ]}
 />
 
----
+
 
 ## 4. Vision Models (Non-Diffusion)
 
@@ -128,7 +123,7 @@ It lists all known model families commonly used via ComfyUI, with compatibility 
   ]}
 />
 
----
+
 
 ## 5. Face, Pose & Human Models
 
@@ -143,7 +138,7 @@ It lists all known model families commonly used via ComfyUI, with compatibility 
   ]}
 />
 
----
+
 
 ## 6. Audio & Music Models
 
@@ -162,7 +157,7 @@ It lists all known model families commonly used via ComfyUI, with compatibility 
   For real-time audio workloads (live ASR, live translation, streaming transcription), see [Workload Fit → ASR pipeline examples](../ai-inference-on-livepeer/workload-fit#asr-pipeline-examples). These use Whisper or similar and are excellent fits.
 </Note>
 
----
+
 
 ## 7. Multimodal & VLMs
 
@@ -176,7 +171,7 @@ It lists all known model families commonly used via ComfyUI, with compatibility 
   ]}
 />
 
----
+
 
 ## 8. LLMs (Text-Centric)
 
@@ -190,7 +185,7 @@ It lists all known model families commonly used via ComfyUI, with compatibility 
 
 **Why blocked:** token streaming, memory residency, orchestration mismatch.
 
----
+
 
 ## 9. 3D / NeRF / World Models
 
@@ -203,7 +198,7 @@ It lists all known model families commonly used via ComfyUI, with compatibility 
   ]}
 />
 
----
+
 
 ## 10. Utility / Pre/Post Models
 
@@ -216,7 +211,7 @@ It lists all known model families commonly used via ComfyUI, with compatibility 
   ]}
 />
 
----
+
 
 ## Core takeaway
 
@@ -228,7 +223,7 @@ ComfyUI can orchestrate almost any PyTorch model. But:
 
 This matrix is intentionally conservative. If your model doesn't appear here, apply the [Workload Fit](../ai-inference-on-livepeer/workload-fit) decision tree to evaluate it.
 
----
+
 
 ## See also
 

@@ -19,8 +19,8 @@ description: "Receive real-time events from Livepeer Studio (stream, asset, reco
 ## Set up a webhook
 
 1. **Create an HTTP endpoint** in your app that accepts POST and returns 2XX quickly (process async if needed).
-2. **Register in Studio** — [Developers → Webhooks](https://livepeer.studio/dashboard/developers/webhooks), click Create, enter your URL and select the events you want.
-3. **Verify signatures** — Each request includes a `Livepeer-Signature` header (timestamp and HMAC). Verify it using your webhook secret to avoid accepting forged events. See [Livepeer Studio docs](https://livepeer.studio/docs) for the signature scheme.
+2. **Register in Studio** - [Developers → Webhooks](https://livepeer.studio/dashboard/developers/webhooks), click Create, enter your URL and select the events you want.
+3. **Verify signatures** - Each request includes a `Livepeer-Signature` header (timestamp and HMAC). Verify it using your webhook secret to avoid accepting forged events. See [Livepeer Studio docs](https://livepeer.studio/docs) for the signature scheme.
 
 Payload fields typically include `webhookId`, `timestamp`, `event`, and `event_object` (the stream, asset, or task). Use `timestamp` in signature verification to guard against replay.
 
