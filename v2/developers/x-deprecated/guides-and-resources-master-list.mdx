@@ -1,0 +1,152 @@
+---
+title: 'Guides and Resources — Master List'
+sidebarTitle: 'Master List'
+description: 'The full curated list of 83 Livepeer guides, tutorials, tools, dashboards, blogs, and reference resources found across the ecosystem.'
+keywords: ["livepeer", "guides", "resources", "tutorials", "tools", "dashboards", "master list"]
+og:image: "/snippets/assets/domain/SHARED/LivepeerDocsLogo.svg"
+---
+
+A complete annotated index of every guide and resource curated for the Livepeer developer docs — 83 items across guides (how-to / tutorial / walkthrough) and resources (reference / tool / blog / video / dashboard). Sources span 2021–2025.
+
+---
+
+## Part 1 — Guides
+
+How-to guides, tutorials, and walkthroughs for building with Livepeer.
+
+### Getting Started
+
+1. **[Official Quickstart](https://docs.livepeer.org/developers/quick-start)** — Create an API key and send a first stream. Official Livepeer Docs.
+2. **[Developer's Guide to Getting Started with Livepeer](https://camiinthisthang.hashnode.dev/the-developers-guide-to-getting-started-with-livepeer)** — Full orientation covering what Livepeer is, how transcoding works, and first API calls. Hashnode, April 2022.
+3. **[Liberating Video Infrastructure: A Guide to Decentralisation with Livepeer](https://dev.to/cryptoloom/liberating-video-infrastructure-a-guide-to-seamless-decentralization-with-livepeer-1fgc)** — Architecture walkthrough connecting a developer application to the network. Dev.to, March 2023.
+
+### Video Streaming: Livestreams and VOD
+
+4. **[Create a Livestream (Official Docs)](https://docs.livepeer.org/guides/developing/create-a-livestream)** — Official guide to creating a stream object and playing back via HLS using `useCreateStream` and `useStream`.
+5. **[Build a Twitch Clone with the Livepeer API](https://hackernoon.com/build-a-twitch-clone-with-the-livepeer-api)** — Postman-based full stream lifecycle tutorial: create, retrieve, update, record, delete. HackerNoon, March 2022.
+6. **[How to Make API Calls with Postman and Livepeer Video Services](https://dev.to/shihyu/how-to-make-api-calls-with-postman-and-livepeer-video-services-15f9)** — Beginner-friendly REST API via Postman, no code required. Dev.to, March 2022.
+7. **[How to Stream With Livepeer Video Service's RTMP API](https://dev.to/shihyu)** — Companion tutorial to the Postman guide, using cURL for RTMP streaming. Dev.to, 2022.
+8. **[Set Up a Video Player with Video.js and Livepeer](https://github.com/livepeer/livepeer-player-tutorial)** — Official tutorial repo: embed a Livepeer HLS stream into a webpage using Video.js.
+9. **[Livepeer Demo App (Next.js)](https://github.com/livepeer/livepeer-demo-app)** — Official demo app demonstrating stream creation and playback using Next.js API routes and the Livepeer.com API.
+10. **[Export to IPFS with Livepeer Video Services](https://dev.to/shihyu/export-to-ipfs-with-livepeer-video-services-327d)** — Upload a video asset via the VOD API and export it to IPFS in two API calls. Dev.to, May 2022.
+11. **[Upload and Stream Videos off Arweave with Livepeer](https://github.com/livepeer/awesome-livepeer#tutorials)** — Community tutorial: permanent Arweave storage combined with Livepeer transcoding for decentralised video delivery.
+12. **[Upload, Transcode, and Stream Videos off IPFS with Livepeer](https://github.com/livepeer/awesome-livepeer#tutorials)** — Fetch an IPFS-hosted video, pass it through Livepeer's transcode pipeline, and serve adaptive bitrate HLS output.
+
+### Video NFTs
+
+13. **[Mint a Video NFT using Livepeer and Polygon](https://dev.to/shihyu/how-to-mint-a-video-nft-using-livepeer-video-services-polygon-1a6g)** — Uses Livepeer's Video NFT SDK to transcode a video and mint it on Polygon's Mumbai testnet. Dev.to, April 2022.
+14. **[Livestream API Step-by-Step Demo](https://github.com/camiinthisthang/livepeer-demo-app-instructions)** — Step-by-step walkthrough referenced in the Hashnode getting started guide. GitHub, 2022.
+15. **[Video NFT Smart Contract Workshop](https://github.com/camiinthisthang/livepeer-nft)** — Mint a video NFT and create your own smart contract. Referenced in the Hashnode getting started guide. GitHub, 2022.
+
+### Full-Stack Application Guides
+
+16. **[Building a Full-Stack Web3 YouTube Clone](https://github.com/livepeer/awesome-livepeer#tutorials)** — Next.js, IPFS, The Graph, Solidity, Polygon, and Livepeer for video transcoding and playback. By Suhail Kakar (Livepeer DevRel), 2022.
+17. **[Building a Full-Stack Web3 TikTok Clone with React Native and Lens Protocol](https://www.suhailkakar.com/building-a-full-stack-web3-tiktok-clone-with-react-native-livepeer-and-lens-protocol)** — End-to-end mobile app: React Native, `@livepeer/react-native`, Lens Protocol, WalletConnect. March 2023.
+18. **[CyberTube: Decentralised Video Sharing with CyberConnect and Livepeer](https://cyberconnect.hashnode.dev/cybertube-a-decentralized-video-sharing-platform-built-on-cyberconnect-using-livepeer)** — Videos published as EssenceNFTs on CyberConnect's social graph, with Livepeer handling transcoding. Hashnode, March 2023.
+19. **[Next Video Build: Web3 Social with Lens Protocol and Next.js](https://medium.com/encode-club/next-video-build-introduction-to-full-stack-web3-social-with-lens-protocol-and-next-js-77c5d6c9e6f3)** — Workshop recording and notes from the Encode Club / Livepeer hackathon. Medium, November 2022.
+
+### AI Inference and Real-Time AI Video
+
+20. **[ComfyUI and Real-Time Video AI Processing](https://blog.livepeer.org/comfyui-and-real-time-video-ai-processing/)** — DAG architecture, pipeline design, and real-time use cases on the Livepeer network. Livepeer Blog, January 2025.
+21. **[Building Real-Time AI Video Effects with ComfyStream](https://blog.livepeer.org/building-real-time-ai-video-effects-with-comfystream/)** — ComfyStream as a backend inference engine for live video streams on Livepeer. Livepeer Blog, February 2025.
+22. **[Livepeer AI JavaScript/TypeScript SDK (@livepeer/ai)](https://github.com/livepeer/livepeer-ai-js)** — Official SDK with text-to-image, image-to-image, and image-to-video examples. GitHub.
+23. **[Livepeer AI Python SDK](https://github.com/livepeer/livepeer-ai-python)** — Official Python library for Livepeer AI inference pipelines with typed models and retry logic. GitHub.
+24. **[AI Runner: Inference Runtime Setup Guide](https://github.com/livepeer/ai-runner)** — Official. Build locally, generate Go bindings, run example pipelines. GitHub.
+25. **[Builder Story: StreamDiffusionTD + Daydream API](https://blog.livepeer.org/builder-story-dotsimulate-x-daydream/)** — TouchDesigner + StreamDiffusion + Daydream API for live generative video at performances. Livepeer Blog, September 2025.
+26. **[Daydream API Documentation](https://docs.daydream.live)** — Official Daydream docs: setup, API reference, and guides for real-time AI video on the Livepeer network.
+27. **[Why the Livepeer AI Subnet is a Big Deal](https://medium.com/coinmonks/why-the-livepeer-ai-subnet-is-a-big-deal-454228dc09d3)** — Architecture explainer: gateways, orchestrators, AI workers, payment flows. Medium / Coinmonks, July 2024.
+
+### SDK and API
+
+28. **[Livepeer JavaScript SDK](https://github.com/livepeer/livepeer-js)** — Official TypeScript/JavaScript SDK: stream creation, asset upload, playback, viewership metrics.
+29. **[Livepeer Python SDK Quickstart (Official Docs)](https://docs.livepeer.org/sdks/python)** — Official quickstart with code examples and GitHub link. docs.livepeer.org.
+30. **[livepeer.js React Hooks](https://github.com/livepeer/livepeer.js)** — `@livepeer/react` — `useCreateStream`, `useAsset`, `Player`, `Broadcast` components.
+31. **[livepeer.js Contributing Guide](https://github.com/livepeer/livepeer.js/blob/main/.github/CONTRIBUTING.md)** — Setup, Studio API key config, test suite, and PR workflow for the React/JS SDK. GitHub.
+
+### Node Operations: Orchestrators and Gateways
+
+32. **[Earn with Nvidia GPUs on Livepeer (Orchestrator Setup)](https://hackernoon.com/i-earn-dollar1000-a-month-using-my-old-nvidia-gpus-a-how-to-guide-vj7833be)** — Video mining node setup using spare Nvidia GPUs. By a Livepeer protocol engineer. HackerNoon, 2021.
+33. **[Docker Portainer: Node Operator Efficiency Guide](https://github.com/livepeer/awesome-livepeer#tools)** — Container setup and orchestrator management via Docker and Portainer. Community, via awesome-livepeer.
+34. **[Production Log Monitoring and Alerting for Orchestrators](https://forum.livepeer.org)** — Detailed forum guide on log monitoring and alerting for production orchestrator nodes. Livepeer Forum (search: "Production Log Monitoring").
+35. **[Livepeer Staking in 10 Minutes](https://www.youtube.com/results?search_query=livepeer+staking+titan+node)** — Community video by Titan Node: delegate LPT to an orchestrator and earn staking rewards. YouTube.
+36. **[Video Setup Guide (Node Setup)](https://www.youtube.com/results?search_query=livepeer+node+setup+titan+node)** — Full node setup walkthrough by Titan Node. YouTube.
+
+### Contributing to Livepeer Repos
+
+37. **[go-livepeer Contributing Guide](https://github.com/livepeer/go-livepeer/blob/master/CONTRIBUTING.md)** — Commit structure, changelog requirements, and PR conventions. Classified by mode: Broadcaster, Orchestrator, Transcoder.
+38. **[Livepeer Studio Contributing Guide](https://github.com/livepeer/studio/blob/master/CONTRIBUTING.md)** — Monorepo setup, yarn usage, code of conduct, issue and PR templates. Code reviews happen weekly.
+
+---
+
+## Part 2 — Resources
+
+Reference material, tools, dashboards, blogs, videos, and platforms.
+
+### Official Tools and Platforms
+
+39. **[Livepeer Studio](https://livepeer.studio)** — Official developer dashboard: API keys, stream management, asset pipeline, usage monitoring.
+40. **[Livepeer Explorer](https://explorer.livepeer.org)** — Network explorer: orchestrators, delegation, governance votes, and protocol metrics in real time.
+41. **[Livepeer Dev Hub](https://www.livepeer.org/dev-hub)** — Central developer hub: quickstarts, SDKs, grants, office hours calendar, and accelerator programme.
+42. **[Daydream](https://daydream.live)** — Livepeer's open-source real-time AI video platform and API for builders.
+43. **[Livepeer Catalyst / MistServer](https://github.com/livepeer/catalyst)** — Open-source media server powering Livepeer Studio. Infinitely scalable.
+44. **[Livepeer LPMS](https://github.com/livepeer/lpms)** — Low-level open-source media server: RTMP in, RTMP/HLS out. Standalone or on-network.
+45. **[Livepeer Protocol Smart Contracts SDK](https://github.com/livepeer/sdk)** — JS SDK for on-chain interaction: delegations, protocol state, earnings queries.
+46. **[Livepeer Golang AI Client](https://github.com/topics/livepeer?o=desc&s=updated)** — Community Golang client library for the Livepeer AI API. Searchable via the `livepeer` GitHub topic.
+
+### SDKs and Developer Libraries
+
+47. **[Livepeer AI JavaScript SDK (@livepeer/ai)](https://github.com/livepeer/livepeer-ai-js)** — Text-to-image, image-to-image, image-to-video, and more. `npm install @livepeer/ai`.
+48. **[Livepeer AI Python SDK](https://github.com/livepeer/livepeer-ai-python)** — Python library for all AI pipeline types. `pip install livepeer-ai`.
+49. **[livepeer.js / @livepeer/react](https://github.com/livepeer/livepeer.js)** — React hooks and components for video streaming and uploads in React applications.
+50. **[Livepeer Python SDK (Studio API)](https://github.com/livepeer/livepeer-python)** — Official Python library for the Livepeer Studio API. `pip install livepeer`.
+51. **[Livepeer JavaScript SDK (Studio API)](https://github.com/livepeer/livepeer-js)** — Official JS/TS SDK for the Livepeer Studio API. `npm install livepeer`.
+52. **[go-livepeer (Official Go Implementation)](https://github.com/livepeer/go-livepeer)** — The Go implementation of the Livepeer protocol — run orchestrator and gateway nodes.
+
+### Network Dashboards and Analytics
+
+53. **[Livepeer Arbitrum Dune Dashboard](https://dune.com/livepeer)** — Protocol state on Arbitrum: fees, orchestrator activity, LPT flows.
+54. **[Livepeer AI Dune Dashboard](https://dune.com/livepeer)** — AI subnet metrics: inference volumes, pipeline usage, AI fee data.
+55. **[Livepeer Macro Financial Statements (Messari Dune)](https://messari.io/asset/livepeer)** — Analytical Dune dashboard: macro financial statements and protocol health.
+56. **[Web3 Index](https://web3index.org)** — Usage-based fee metrics for web3 infrastructure protocols including Livepeer. Ranks by real demand-side revenue.
+57. **[Livepeer.tools](https://livepeer.tools)** — Community orchestrator explorer: payout reports, pricing visibility, performance metrics.
+58. **[StakingRewards (Livepeer)](https://www.stakingrewards.com/earn/livepeer/)** — Third-party staking APR, total staked LPT, and delegator return estimates.
+59. **[StreamLit GPU Inventory Dashboard](https://github.com/topics/livepeer?o=desc&s=updated)** — Streamlit-based visualisation of GPU inventory and AI capabilities across the network.
+
+### Node Operator Tools
+
+60. **[Livepeer Reward Watcher](https://github.com/livepeer/awesome-livepeer#tools)** — Monitors orchestrator reward calls and sends alerts when a call is at risk.
+61. **[Livepeer Exporter](https://github.com/livepeer/awesome-livepeer#tools)** — Prometheus-compatible metrics exporter for orchestrators; pairs with Grafana dashboards.
+62. **[Stream Tester](https://github.com/livepeer/awesome-livepeer#tools)** — Runs standardised stream tests to benchmark orchestrator performance.
+63. **[AI Inference Tester](https://github.com/livepeer/awesome-livepeer#tools)** — GPU inference benchmarking for Livepeer orchestrators.
+64. **[Livepeer Income Reports (Python scripts)](https://github.com/livepeer/awesome-livepeer#tools)** — Calculate earnings and generate tax reports for delegators and orchestrators.
+
+### Community Platforms and Aggregators
+
+65. **[Awesome Livepeer (official — livepeer.cool)](https://github.com/livepeer/awesome-livepeer)** — The definitive community-curated list of tutorials, tools, projects, and resources. Type `livepeer.cool` in any browser.
+66. **[Awesome Livepeer (rickstaa fork)](https://github.com/rickstaa/awesome-livepeer)** — Extended fork with additional AI tools, AI Dune Dashboard, and inference tester.
+67. **[Awesome Livepeer (mikezupper fork)](https://github.com/mikezupper/awesome-livepeer)** — Infrastructure templates, architecture discussions, and additional tech guides.
+68. **[Livepeer Academy](https://github.com/livepeer/awesome-livepeer#learn)** — Video tutorials and learning quests to understand Livepeer for developers and network participants.
+69. **[Livepeer Subgraph (The Graph)](https://thegraph.com/explorer/subgraphs?search=livepeer)** — Official subgraph: query transcoders, delegators, earning pools, and staking rounds via GraphQL.
+70. **[Bubble Plugin](https://github.com/livepeer/awesome-livepeer#no-code)** — Community-supported no-code plugin for adding Livepeer video to Bubble applications.
+71. **[Community Arbitrum RPC](https://github.com/livepeer/awesome-livepeer#infrastructure)** — Community-maintained RPC endpoint for Arbitrum, useful for Livepeer on-chain interactions.
+72. **[Tenderize (Liquid Staking for LPT)](https://www.tenderize.me)** — Liquid staking protocol for LPT: stake and receive liquid tokens while remaining active in DeFi.
+
+### Blogs, Reading, and Key Articles
+
+73. **[Livepeer Blog](https://blog.livepeer.org)** — Official blog: product updates, ecosystem stories, builder spotlights, technical deep dives, and vision pieces.
+74. **[Livepeer Cascade: A Vision for Real-Time AI Video (February 2025)](https://blog.livepeer.org/introducing-livepeer-cascade-a-vision-for-livepeers-future-in-the-age-of-real-time-ai-video/)** — Landmark post by Doug Petkanics outlining Livepeer's evolution from transcoding to real-time AI video.
+75. **[A Real-Time Update to the Livepeer Network Vision (November 2025)](https://blog.livepeer.org/a-real-time-update-to-the-livepeer-network-vision/)** — Cascade progress update: 72% of network fees now driven by AI inference.
+76. **[Introducing Daydream Beta (September 2025)](https://blog.livepeer.org/introducing-daydream/)** — Official launch post for Daydream Beta, the real-time AI video platform.
+77. **[Daydream.live: A Glimpse into the Future of Realtime AI Video (May 2025)](https://blog.livepeer.org/daydream-live-a-glimpse-into-the-future-of-realtime-ai-video-on-livepeer/)** — Overview of the Daydream playground and real-time AI pipeline strategy.
+78. **[Daydream Scope + SDXL Launch (BusinessWire, November 2025)](https://www.businesswire.com/news/home/20251106860538/en/Daydream-Launches-Scope-and-Expands-StreamDiffusion-with-SDXL-Support-Advancing-the-Open-Source-Real-Time-AI-Video-Ecosystem)** — Open-source dev environment for real-time AI workflows. Supports LongLive, StreamDiffusionV2, Krea Realtime 14B.
+79. **[Starting Strong: Livepeer Powers Into 2023 (February 2023)](https://medium.com/@livepeer-inc/starting-strong-livepeer-powers-into-2023-40fde860e2cd)** — Q4 2022 highlights: all-time high transcoding minutes, new SDK/API, short-form video optimisations. Medium.
+80. **[Livepeer SWOT Analysis (HackerNoon, July 2023)](https://hackernoon.com/the-livepeer-lpt-swot-analysis)** — Independent SWOT covering cost efficiency, tokenomics, documentation quality, and competitive positioning.
+81. **[OKX Guide to Livepeer Protocol and LPT (December 2025)](https://www.okx.com/en-eu/learn/livepeer-guide)** — Comprehensive third-party explainer for developers, creators, and token holders.
+82. **[Know Your Orchestrator #1 — Pon (Live Pioneers, November 2024)](https://medium.com/coinmonks/know-your-orchestrator-1-pon-56e0f7cb4842)** — Community orchestrator profile series: technical backgrounds, motivations, and network outlook. Medium.
+83. **[Know Your Orchestrator #2 — Stronk (Live Pioneers, October 2024)](https://medium.com/coinmonks/know-your-orchestrator-2-stronk-c4d18467dd6b)** — MistServer background, orchestrator setup strategy, and DDVTech / Livepeer Inc history. Medium.
+
+---
+
+<Note>
+This list was compiled in March 2026. URLs are verified at time of curation. If you find a broken link or know of a guide that should be included, [open an issue](https://github.com/livepeer/docs/issues) in the docs repository.
+</Note>
