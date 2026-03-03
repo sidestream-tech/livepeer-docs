@@ -43,8 +43,8 @@ export function LiveStreamPlayer({ src }: { src: Src[] | null }) {
 
 1. **Recuperar información de reproducción** desde la [API de Información de Reproducción](https://livepeer.studio/docs/api-reference/playback/get) con el `playbackId`.
 2. La respuesta incluye fuentes como:
-   - **HLS** — `application/vnd.apple.mpegurl` URL (por ejemplo `https://livepeercdn.studio/hls/{playbackId}/index.m3u8`.)
-   - **WebRTC** — Para baja latencia; use un reproductor compatible con WebRTC/WHEP. La API puede devolver una fuente WebRTC; los servidores STUN/TURN se proporcionan en la respuesta SDP.
+   - **HLS** - `application/vnd.apple.mpegurl` URL (por ejemplo `https://livepeercdn.studio/hls/{playbackId}/index.m3u8`.)
+   - **WebRTC** - Para baja latencia; use un reproductor compatible con WebRTC/WHEP. La API puede devolver una fuente WebRTC; los servidores STUN/TURN se proporcionan en la respuesta SDP.
 3. Pase la URL elegida (o SDP) a un reproductor que admita HLS o WebRTC (por ejemplo, Video.js, HLS.js o un cliente WHEP).
 
 <Info>
@@ -66,6 +66,6 @@ Puede integrar el reproductor alojado con un iframe:
 
 - **Baja latencia** - Las transmisiones en vivo usan WebRTC por defecto. Usa `&lowLatency=false` para forzar HLS, o `&lowLatency=force` para forzar WebRTC.
 - **Recortar** - Agrega `&clipLength=60` (máximo 120 segundos) para permitir a los espectadores hacer capturas.
-- **Otro** — `&muted=false`, `&autoplay=false`, `&loop=true`, `constant=true` (para reproducción constante, por ejemplo, música).
+- **Otro** - `&muted=false`, `&autoplay=false`, `&loop=true`, `constant=true` (para reproducción constante, por ejemplo, música).
 
 Ver [Reproductor e incrustar](../player) para más opciones.

@@ -21,10 +21,10 @@ Vous pouvez créer **clips** à partir des flux Studio Livepeer actifs via l'API
 
 Utilisez l'[API Create Clip](https://livepeer.studio/docs/api-reference/stream/create-clip) avec :
 
-- `playbackId` — L'**ID de lecture de la diffusion active**.
-- `startTime` — Début de la bande (en ms UNIX, à partir du point de lecture).
-- `endTime` — Fin de la bande (en ms UNIX).
-- `name` — (Facultatif) Nom pour l'actif de la bande.
+- `playbackId` - L'**ID de lecture de la diffusion active**.
+- `startTime` - Début de la bande (en ms UNIX, à partir du point de lecture).
+- `endTime` - Fin de la bande (en ms UNIX).
+- `name` - (Facultatif) Nom pour l'actif de la bande.
 
 Assurez-vous que`startTime` est à partir du début du flux et que`endTime` n'est pas dans le futur.
 
@@ -46,8 +46,8 @@ Le Player’s [Déclencheur de Clip](https://www.npmjs.com/package/@livepeer/rea
 
 ## Surveiller l'état de la bande
 
-- **Interrogation** — Appeler `GET /asset/{assetId}` jusqu'à `asset.status` est `ready`.
-- **Webhooks** — S'abonner à `asset.ready` (et éventuellement `asset.failed`). Utilisez la `assetId` de la réponse create-clip pour correspondre à l'événement.
+- **Interrogation** - Appeler `GET /asset/{assetId}` jusqu'à `asset.status` est `ready`.
+- **Webhooks** - S'abonner à `asset.ready` (et éventuellement `asset.failed`). Utilisez la `assetId` de la réponse create-clip pour correspondre à l'événement.
 - L'actif du clip a `source.type === "clip"` et un `sessionId` donc vous pouvez savoir qu'il s'agit d'un clip.
 
 Les extraits ont **lecture source** en premier (lisible rapidement) ; les versions transcodées sont ajoutées une fois le traitement terminé. Utilisez `playbackId` avec le [API Info de lecture](https://livepeer.studio/docs/api-reference/playback/get) ou le [Joueur](../player) pour le jouer.

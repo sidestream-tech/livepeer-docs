@@ -135,6 +135,9 @@ function buildRuntimeOptions(cliArgs = {}, config = {}) {
     allowMockWrite: Boolean(cliArgs.allowMockWrite),
     failOnMockArtifacts: Boolean(cliArgs.failOnMockArtifacts),
     failOnMissingProvenance: Boolean(cliArgs.failOnMissingProvenance),
+    cleanupOnly: Boolean(cliArgs.cleanupOnly),
+    rewriteLinks: typeof cliArgs.rewriteLinks === 'boolean' ? cliArgs.rewriteLinks : null,
+    rewriteScope: cliArgs.rewriteScope || '',
     help: Boolean(cliArgs.help)
   };
   return runtime;
@@ -158,6 +161,9 @@ function parseCommonCliArgs(argv) {
     allowMockWrite: false,
     failOnMockArtifacts: false,
     failOnMissingProvenance: false,
+    cleanupOnly: false,
+    rewriteLinks: null,
+    rewriteScope: '',
     help: false
   };
 
@@ -219,6 +225,19 @@ function parseCommonCliArgs(argv) {
         break;
       case '--allow-mock-write':
         args.allowMockWrite = true;
+        break;
+      case '--cleanup-only':
+        args.cleanupOnly = true;
+        break;
+      case '--rewrite-links':
+        args.rewriteLinks = true;
+        break;
+      case '--no-rewrite-links':
+        args.rewriteLinks = false;
+        break;
+      case '--rewrite-scope':
+        args.rewriteScope = String(next || '').trim();
+        i += 1;
         break;
       case '--fail-on-mock-artifacts':
         args.failOnMockArtifacts = true;

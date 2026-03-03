@@ -229,7 +229,7 @@ chmod +x .git/hooks/pre-commit
 
 ## 相关文档
 
-- [完整 Git 钩子文档](./GIT-HOOKS.md)
+- [完整 Git 钩子文档](./GIT-HOOKS)
 - [风格指南](../../resources/documentation-guide/style-guide)
 - [代理前提条件](../../PLAN/AGENT-PREREQUISITES.md)
 - [增强指令](../../.github/augment-instructions.md)

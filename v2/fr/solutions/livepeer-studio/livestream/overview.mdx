@@ -9,7 +9,7 @@ Une **diffusion** dans Livepeer Studio est un objet de diffusion en direct que v
 
 ## Sessions
 
-Un flux est composé d'une ou plusieurs **sessions**— périodes pendant lesquelles le flux est actif. Une seule session est active à la fois. Les sessions ont leurs propres identifiants et métadonnées. Utilisez la "[API des sessions](https://livepeer.studio/docs/api-reference/session/get-all) pour lister les sessions d'un flux.
+Un flux est composé d'une ou plusieurs **sessions**- périodes pendant lesquelles le flux est actif. Une seule session est active à la fois. Les sessions ont leurs propres identifiants et métadonnées. Utilisez la "[API des sessions](https://livepeer.studio/docs/api-reference/session/get-all) pour lister les sessions d'un flux.
 
 ## Enregistrement
 
@@ -19,9 +19,9 @@ Si l'enregistrement est activé, la session peut être stockée en tant que "**a
 
 Vous pouvez envoyer une vidéo en direct dans un flux avec :
 
-- **RTMP** — Par défaut ; à utiliser avec OBS ou d'autres encodeurs RTMP. Voir [Diffuser via OBS](./stream-via-obs).
-- **WebRTC** — Ingestion à faible latence depuis le navigateur. Voir [Diffuser en direct depuis le navigateur](./livestream-from-browser).
-- **SRT** — Pris en charge également pour l'ingestion.
+- **RTMP** - Par défaut ; à utiliser avec OBS ou d'autres encodeurs RTMP. Voir [Diffuser via OBS](./stream-via-obs).
+- **WebRTC** - Ingestion à faible latence depuis le navigateur. Voir [Diffuser en direct depuis le navigateur](./livestream-from-browser).
+- **SRT** - Pris en charge également pour l'ingestion.
 
 Lorsqu'un flux est en direct, [état du flux](./stream-health) fournit des métriques (par exemple, statut de transcodage, taux d'ingestion) pour que vous puissiez surveiller la qualité et déboguer.
 
@@ -41,10 +41,10 @@ Les spectateurs utilisent le **ID de lecture** pour regarder le flux. Le [Livepe
 
 Événements courants liés aux flux :
 
-- `stream.started` — Le flux est actif et l'URL HLS est disponible.
-- `stream.idle` — Le flux n'est plus actif.
-- `recording.*` — Enregistrement démarré, prêt ou en attente.
-- `multistream.*` — Cible de multistream connectée, erreur ou déconnectée.
+- `stream.started` - Le flux est actif et l'URL HLS est disponible.
+- `stream.idle` - Le flux n'est plus actif.
+- `recording.*` - Enregistrement démarré, prêt ou en attente.
+- `multistream.*` - Cible de multistream connectée, erreur ou déconnectée.
 
 Voir [Webhooks](../analytics/webhooks) et [Écoutez les événements](../analytics/listen-to-events).
 

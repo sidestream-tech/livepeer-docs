@@ -21,8 +21,8 @@ description: >-
 ## Configura un webhook
 
 1. **Crea un punto de conexión HTTP** en tu aplicación que acepte POST y devuelva 2XX rápidamente (procese de forma asíncrona si es necesario).
-2. **Regístrese en Studio** — [Desarrolladores → Webhooks](https://livepeer.studio/dashboard/developers/webhooks), haz clic en Crear, ingresa tu URL y selecciona los eventos que desees.
-3. **Verificar firmas** — Cada solicitud incluye un`Livepeer-Signature` encabezado (marca de tiempo y HMAC). Verifícalo usando tu secreto de webhook para evitar aceptar eventos falsificados. Consulta [Livepeer Studio docs](https://livepeer.studio/docs) para el esquema de firma.
+2. **Regístrese en Studio** - [Desarrolladores → Webhooks](https://livepeer.studio/dashboard/developers/webhooks), haz clic en Crear, ingresa tu URL y selecciona los eventos que desees.
+3. **Verificar firmas** - Cada solicitud incluye un`Livepeer-Signature` encabezado (marca de tiempo y HMAC). Verifícalo usando tu secreto de webhook para evitar aceptar eventos falsificados. Consulta [Livepeer Studio docs](https://livepeer.studio/docs) para el esquema de firma.
 
 Los campos de carga suelen incluir `webhookId`, `timestamp`, `event`, y `event_object` (el flujo, activo o tarea). Use `timestamp` en la verificación de firma para protegerse contra repeticiones.
 

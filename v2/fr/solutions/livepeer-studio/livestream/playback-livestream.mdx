@@ -43,8 +43,8 @@ export function LiveStreamPlayer({ src }: { src: Src[] | null }) {
 
 1. **Récupérer les informations de lecture** à partir de la [API des informations de lecture](https://livepeer.studio/docs/api-reference/playback/get) avec le `playbackId`.
 2. La réponse inclut des sources telles que :
-   - **HLS** — `application/vnd.apple.mpegurl` URL (par exemple `https://livepeercdn.studio/hls/{playbackId}/index.m3u8`.)
-   - **WebRTC** — Pour une faible latence ; utilisez un lecteur compatible WebRTC/WHEP. L'API peut retourner une source WebRTC ; les serveurs STUN/TURN sont fournis dans la réponse SDP.
+   - **HLS** - `application/vnd.apple.mpegurl` URL (par exemple `https://livepeercdn.studio/hls/{playbackId}/index.m3u8`.)
+   - **WebRTC** - Pour une faible latence ; utilisez un lecteur compatible WebRTC/WHEP. L'API peut retourner une source WebRTC ; les serveurs STUN/TURN sont fournis dans la réponse SDP.
 3. Transmettez l'URL choisie (ou SDP) à un lecteur qui prend en charge HLS ou WebRTC (par exemple, Video.js, HLS.js ou un client WHEP).
 
 <Info>
@@ -64,8 +64,8 @@ Vous pouvez intégrer le lecteur hébergé avec un iframe :
 ></iframe>
 ```
 
-- **Faible latence** — Les diffusions en direct utilisent WebRTC par défaut. Utilisez `&lowLatency=false` pour forcer HLS, ou `&lowLatency=force` pour forcer WebRTC.
-- **Couper** — Ajoutez `&clipLength=60` (maximum 120 secondes) pour permettre aux spectateurs de capturer.
-- **Autre** — `&muted=false`, `&autoplay=false`, `&loop=true`, `constant=true` (pour une diffusion constante, par exemple de la musique).
+- **Faible latence** - Les diffusions en direct utilisent WebRTC par défaut. Utilisez `&lowLatency=false` pour forcer HLS, ou `&lowLatency=force` pour forcer WebRTC.
+- **Couper** - Ajoutez `&clipLength=60` (maximum 120 secondes) pour permettre aux spectateurs de capturer.
+- **Autre** - `&muted=false`, `&autoplay=false`, `&loop=true`, `constant=true` (pour une diffusion constante, par exemple de la musique).
 
 Voir [Player et intégration](../player) pour plus d'options.

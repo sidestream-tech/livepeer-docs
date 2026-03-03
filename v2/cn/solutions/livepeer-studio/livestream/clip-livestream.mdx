@@ -19,10 +19,10 @@ description: 使用创建剪辑 API 从活跃的直播流中创建短剪辑。
 
 使用 [Create Clip API](https://livepeer.studio/docs/api-reference/stream/create-clip)，包括：
 
-- `playbackId` — **活跃流的** 播放 ID。
-- `startTime` — 剪辑的开始时间（UNIX 毫秒，来自播放头）。
-- `endTime` — 剪辑的结束时间（UNIX 毫秒）。
-- `name` — （可选）剪辑资产的名称。
+- `playbackId` - **活跃流的** 播放 ID。
+- `startTime` - 剪辑的开始时间（UNIX 毫秒，来自播放头）。
+- `endTime` - 剪辑的结束时间（UNIX 毫秒）。
+- `name` - （可选）剪辑资产的名称。
 
 确保 `startTime` 在流开始时或之后，并且 `endTime` 不在未来。
 
@@ -44,8 +44,8 @@ const result = await livepeer.stream.createClip({
 
 ## 监控剪辑状态
 
-- **轮询** — 调用 `GET /asset/{assetId}` 直到 `asset.status` 为 `ready`.
-- **Webhook** — 订阅 `asset.ready`（以及可选地 `asset.failed`）。使用 `assetId` 从 create-clip 响应中匹配事件。
+- **轮询** - 调用 `GET /asset/{assetId}` 直到 `asset.status` 为 `ready`.
+- **Webhook** - 订阅 `asset.ready`（以及可选地 `asset.failed`）。使用 `assetId` 从 create-clip 响应中匹配事件。
 - 剪辑资产具有 `source.type === "clip"` 和一个 `sessionId` 这样你就能判断它是剪辑。
 
 剪辑获取 **源播放** 首先（快速可播放）；在处理完成后会添加转码版本。使用剪辑的 `playbackId` 与 [Playback Info API](https://livepeer.studio/docs/api-reference/playback/get) 或者 [Player](../player) 来播放它。

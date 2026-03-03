@@ -10,7 +10,7 @@
  *   node tools/scripts/i18n/translate-docs.js --provider mock --dry-run --scope-mode full_v2_nav --max-pages 5
  *
  * @inputs
- *   --languages <csv>, --scope-mode <mode>, --base-ref <ref>, --prefixes <csv>, --paths-file <path>, --max-pages <n>, --provider <name>, --dry-run, --force, --allow-mock-write, --route-map <path>, --report-json <path>, --config <path>
+ *   --languages <csv>, --scope-mode <mode>, --base-ref <ref>, --prefixes <csv>, --paths-file <path>, --max-pages <n>, --provider <name>, --dry-run, --force, --allow-mock-write, --route-map <path>, --report-json <path>, --config <path>, --cleanup-only, --rewrite-links, --rewrite-scope <mode>
  *
  * @outputs
  *   - Localized MD/MDX files under v2/<lang>/...
@@ -32,10 +32,11 @@
 
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 const { buildRuntimeOptions, loadI18nConfig, parseCommonCliArgs } = require('./lib/config');
 const { buildV2EnglishRouteInventory, collectExistingLocalizedRouteMapEntries, selectScopeItems } = require('./lib/docs-routes');
 const { parseMdxFileWithFrontmatter, translateFrontmatterFields } = require('./lib/frontmatter');
-const { translateMdxBody } = require('./lib/mdx-translate');
+const { rewriteInternalLinksInBody, rewriteInternalLinksInJsx, translateMdxBody } = require('./lib/mdx-translate');
 const { repoFileRelToLocalizedFileRel, normalizeRouteKey } = require('./lib/path-utils');
 const {
   buildProvenanceComment,
@@ -66,6 +67,9 @@ function printHelp() {
       '  --allow-mock-write           Allow mock provider in non-dry runs (dangerous; testing only)',
       '  --route-map <path>           Write route-map artifact JSON',
       '  --report-json <path>         Write run report JSON',
+      '  --cleanup-only               Skip translation and only run cleanup/link rewrite',
+      '  --rewrite-links              Rewrite internal links for localized files (default true in cleanup-only)',
+      '  --rewrite-scope <mode>       all | moved (default all for cleanup-only)',
       '  --config <path>              Alternate i18n config JSON',
       '  --help, -h                   Show this help'
     ].join('\n')
@@ -145,9 +149,158 @@ function resolveOrphanQuarantinePath(localizedFile, language) {
   return `v2/${lang}/group/x-orphaned/${suffix}`;
 }
 
-function cleanupLocalizedOrphans({ repoRoot, existingLocalizedEntries, validSourceRoutes, runtime }) {
+function findRenameTarget(repoRoot, sourcePath) {
+  if (!sourcePath) return '';
+  try {
+    const output = execSync(
+      `git -C ${JSON.stringify(repoRoot)} log --follow --name-status --diff-filter=R -- ${JSON.stringify(sourcePath)}`,
+      { encoding: 'utf8' }
+    );
+    for (const line of output.split('\n')) {
+      if (!line.startsWith('R')) continue;
+      const parts = line.split('\t');
+      if (parts.length >= 3) {
+        return normalizeRepoRel(parts[2]);
+      }
+    }
+  } catch (_err) {
+    return '';
+  }
+  return '';
+}
+
+const STATIC_RENAME_MAP = new Map(
+  [
+    [
+      'v2/gateways/run-a-gateway/quickstart/get-AI-to-setup-the-gateway.mdx',
+      'v2/gateways/quickstart/AI-prompt.mdx'
+    ],
+    [
+      'v2/gateways/run-a-gateway/quickstart/quickstart-a-gateway.mdx',
+      'v2/gateways/quickstart/gateway-setup.mdx'
+    ],
+    [
+      'v2/gateways/references/artibtrum-exchanges.mdx',
+      'v2/gateways/references/arbitrum-exchanges.mdx'
+    ],
+    [
+      'v2/developers/livepeer-real-time-video/video-streaming-on-livepeer/README.mdx',
+      'v2/developers/quickstart/video/video-streaming.mdx'
+    ]
+  ].map(([from, to]) => [normalizeRepoRel(from), normalizeRepoRel(to)])
+);
+
+function findRenameTargetFromMap(sourcePath) {
+  if (!sourcePath) return '';
+  const normalized = normalizeRepoRel(sourcePath);
+  return STATIC_RENAME_MAP.get(normalized) || '';
+}
+
+const renameSearchIndexCache = new Map();
+
+function buildFilenameIndex(repoRoot, rootAbs) {
+  const index = new Map();
+  function walk(dirAbs) {
+    let entries = [];
+    try {
+      entries = fs.readdirSync(dirAbs, { withFileTypes: true });
+    } catch (_err) {
+      return;
+    }
+    for (const entry of entries) {
+      const childAbs = path.join(dirAbs, entry.name);
+      if (entry.isDirectory()) {
+        walk(childAbs);
+        continue;
+      }
+      if (!/\.(md|mdx)$/i.test(entry.name)) continue;
+      const rel = normalizeRepoRel(path.relative(repoRoot, childAbs));
+      if (!index.has(entry.name)) index.set(entry.name, []);
+      index.get(entry.name).push(rel);
+    }
+  }
+  if (fs.existsSync(rootAbs)) {
+    walk(rootAbs);
+  }
+  return index;
+}
+
+function getFilenameIndex(repoRoot, rootAbs) {
+  const cacheKey = `${repoRoot}::${rootAbs}`;
+  const cached = renameSearchIndexCache.get(cacheKey);
+  if (cached) return cached;
+  const index = buildFilenameIndex(repoRoot, rootAbs);
+  renameSearchIndexCache.set(cacheKey, index);
+  return index;
+}
+
+function pickUniqueCandidate(candidates) {
+  if (!Array.isArray(candidates) || candidates.length !== 1) return '';
+  return candidates[0];
+}
+
+function findRenameTargetBySearch(repoRoot, sourcePath) {
+  if (!sourcePath) return '';
+  const normalized = normalizeRepoRel(sourcePath);
+  const baseName = path.basename(normalized);
+  const altExt =
+    baseName.endsWith('.mdx')
+      ? baseName.replace(/\.mdx$/i, '.md')
+      : baseName.endsWith('.md')
+        ? baseName.replace(/\.md$/i, '.mdx')
+        : '';
+  const withoutGatewayPrefix = baseName.startsWith('gateway-') ? baseName.replace(/^gateway-/, '') : '';
+
+  const roots = [];
+  if (normalized.startsWith('docs-guide/')) {
+    roots.push('docs-guide');
+  } else if (normalized.startsWith('v2/')) {
+    const parts = normalized.split('/');
+    roots.push(parts.slice(0, 2).join('/'));
+  } else {
+    roots.push('v2');
+    roots.push('docs-guide');
+  }
+
+  for (const rootRel of roots) {
+    const rootAbs = path.join(repoRoot, rootRel);
+    const index = getFilenameIndex(repoRoot, rootAbs);
+    const candidates = [];
+    for (const name of [baseName, altExt].filter(Boolean)) {
+      const hits = index.get(name) || [];
+      candidates.push(...hits);
+    }
+    if (withoutGatewayPrefix) {
+      const hits = index.get(withoutGatewayPrefix) || [];
+      candidates.push(...hits);
+      if (altExt && withoutGatewayPrefix.endsWith('.mdx')) {
+        const altGateway = withoutGatewayPrefix.replace(/\.mdx$/i, '.md');
+        candidates.push(...(index.get(altGateway) || []));
+      } else if (altExt && withoutGatewayPrefix.endsWith('.md')) {
+        const altGateway = withoutGatewayPrefix.replace(/\.md$/i, '.mdx');
+        candidates.push(...(index.get(altGateway) || []));
+      }
+    }
+    const unique = pickUniqueCandidate([...new Set(candidates)]);
+    if (unique) return unique;
+  }
+  return '';
+}
+
+function readLocalizedProvenance(repoRoot, localizedFile) {
+  const absPath = path.join(repoRoot, localizedFile);
+  try {
+    const raw = fs.readFileSync(absPath, 'utf8');
+    return parseProvenanceComment(raw);
+  } catch (_err) {
+    return null;
+  }
+}
+
+function cleanupLocalizedOrphans({ repoRoot, existingLocalizedEntries, runtime, config }) {
   const deletedFiles = new Set();
   const movedFiles = new Set();
+  const movedTargets = new Map();
   const warnings = [];
 
   if (runtime.dryRun) {
@@ -159,8 +312,15 @@ function cleanupLocalizedOrphans({ repoRoot, existingLocalizedEntries, validSour
     if (!localizedFile) continue;
     if (isQuarantinedLocalizedFile(localizedFile)) continue;
 
-    const sourceRoute = normalizeRouteKey(entry.sourceRoute || '');
-    if (!sourceRoute || validSourceRoutes.has(sourceRoute)) continue;
+    const provenance = readLocalizedProvenance(repoRoot, localizedFile);
+    const sourcePath = normalizeRepoRel(String(provenance?.sourcePath || '').trim());
+    if (!sourcePath) {
+      warnings.push(`orphan cleanup skipped (missing provenance sourcePath): ${localizedFile}`);
+      continue;
+    }
+
+    const sourceAbs = path.join(repoRoot, sourcePath);
+    if (fs.existsSync(sourceAbs)) continue;
 
     const absPath = path.join(repoRoot, localizedFile);
     if (!fs.existsSync(absPath)) continue;
@@ -175,6 +335,65 @@ function cleanupLocalizedOrphans({ repoRoot, existingLocalizedEntries, validSour
           continue;
         }
         warnings.push(`platform orphan missing solutions equivalent: ${localizedFile} -> ${equivalent}`);
+      }
+    }
+
+    let renameTarget = findRenameTargetFromMap(sourcePath);
+    if (!renameTarget) renameTarget = findRenameTarget(repoRoot, sourcePath);
+    if (renameTarget) {
+      const targetAbs = path.join(repoRoot, renameTarget);
+      if (fs.existsSync(targetAbs)) {
+        const targetLocalized = repoFileRelToLocalizedFileRel(
+          renameTarget,
+          entry.language,
+          config.generatedRoot,
+          config.generatedPathStyle
+        );
+        const targetLocalizedAbs = path.join(repoRoot, targetLocalized);
+        if (normalizeFileKey(targetLocalized) === localizedFile) {
+          continue;
+        }
+        if (fs.existsSync(targetLocalizedAbs)) {
+          fs.unlinkSync(absPath);
+          deletedFiles.add(localizedFile);
+          warnings.push(`orphan cleanup deleted (rename target exists): ${localizedFile} -> ${targetLocalized}`);
+        } else {
+          fs.mkdirSync(path.dirname(targetLocalizedAbs), { recursive: true });
+          fs.renameSync(absPath, targetLocalizedAbs);
+          movedFiles.add(localizedFile);
+          movedTargets.set(localizedFile, targetLocalized);
+          continue;
+        }
+      }
+    }
+
+    if (!renameTarget) {
+      const searchTarget = findRenameTargetBySearch(repoRoot, sourcePath);
+      if (searchTarget) {
+        const targetAbs = path.join(repoRoot, searchTarget);
+        if (fs.existsSync(targetAbs)) {
+          const targetLocalized = repoFileRelToLocalizedFileRel(
+            searchTarget,
+            entry.language,
+            config.generatedRoot,
+            config.generatedPathStyle
+          );
+          const targetLocalizedAbs = path.join(repoRoot, targetLocalized);
+          if (normalizeFileKey(targetLocalized) === localizedFile) {
+            continue;
+          }
+          if (fs.existsSync(targetLocalizedAbs)) {
+            fs.unlinkSync(absPath);
+            deletedFiles.add(localizedFile);
+            warnings.push(`orphan cleanup deleted (rename target exists): ${localizedFile} -> ${targetLocalized}`);
+          } else {
+            fs.mkdirSync(path.dirname(targetLocalizedAbs), { recursive: true });
+            fs.renameSync(absPath, targetLocalizedAbs);
+            movedFiles.add(localizedFile);
+            movedTargets.set(localizedFile, targetLocalized);
+            continue;
+          }
+        }
       }
     }
 
@@ -193,7 +412,116 @@ function cleanupLocalizedOrphans({ repoRoot, existingLocalizedEntries, validSour
     movedFiles.add(localizedFile);
   }
 
-  return { deletedFiles, movedFiles, warnings };
+  return { deletedFiles, movedFiles, movedTargets, warnings };
+}
+
+function buildLocalizedRouteMapBySourceRoute({ repoRoot, config, runtime }) {
+  const entries = collectExistingLocalizedRouteMapEntries(repoRoot, config.generatedRoot, {
+    generatedPathStyle: config.generatedPathStyle,
+    sourceRoot: config.sourceRoot,
+    knownLanguages: runtime.languages
+  });
+  const routeMapBySourceRoute = new Map();
+  for (const entry of entries || []) {
+    const localizedFile = normalizeFileKey(entry.localizedFile || '');
+    if (!localizedFile) continue;
+    if (isQuarantinedLocalizedFile(localizedFile)) continue;
+
+    const absPath = path.join(repoRoot, localizedFile);
+    if (!fs.existsSync(absPath)) continue;
+
+    let provenance = null;
+    try {
+      provenance = parseProvenanceComment(fs.readFileSync(absPath, 'utf8'));
+    } catch (_err) {
+      provenance = null;
+    }
+    const sourceRouteRaw = String(provenance?.sourceRoute || entry.sourceRoute || '').trim();
+    const sourceRoute = normalizeRouteKey(sourceRouteRaw);
+    if (!sourceRoute) continue;
+    const localizedRoute = normalizeRouteKey(entry.localizedRoute || localizedFile);
+    if (!localizedRoute) continue;
+    const language = String(entry.language || '').trim();
+    if (!language) continue;
+
+    if (!routeMapBySourceRoute.has(sourceRoute)) {
+      routeMapBySourceRoute.set(sourceRoute, new Map());
+    }
+    routeMapBySourceRoute.get(sourceRoute).set(language, localizedRoute);
+  }
+  return routeMapBySourceRoute;
+}
+
+function rewriteLocalizedLinks({ repoRoot, config, runtime, scope = 'all', movedTargets }) {
+  const results = {
+    rewrittenFiles: 0,
+    rewrittenLinks: 0,
+    fallbackLinks: 0,
+    warnings: []
+  };
+
+  const routeMapBySourceRoute = buildLocalizedRouteMapBySourceRoute({ repoRoot, config, runtime });
+  const entries = collectExistingLocalizedRouteMapEntries(repoRoot, config.generatedRoot, {
+    generatedPathStyle: config.generatedPathStyle,
+    sourceRoot: config.sourceRoot,
+    knownLanguages: runtime.languages
+  });
+
+  const targetSet =
+    scope === 'moved' && movedTargets
+      ? new Set([...movedTargets.values()].map((value) => normalizeFileKey(value)))
+      : null;
+
+  for (const entry of entries || []) {
+    const localizedFile = normalizeFileKey(entry.localizedFile || '');
+    if (!localizedFile) continue;
+    if (isQuarantinedLocalizedFile(localizedFile)) continue;
+    if (targetSet && !targetSet.has(localizedFile)) continue;
+
+    const absPath = path.join(repoRoot, localizedFile);
+    if (!fs.existsSync(absPath)) continue;
+
+    const raw = fs.readFileSync(absPath, 'utf8');
+    const provenance = parseProvenanceComment(raw);
+    const sourceRouteRaw = String(provenance?.sourceRoute || entry.sourceRoute || '').trim();
+    const sourceRoute = normalizeRouteKey(sourceRouteRaw);
+    if (!sourceRoute) {
+      results.warnings.push(`missing provenance sourceRoute: ${localizedFile}`);
+      continue;
+    }
+    const sourceLocalizedRoute = normalizeRouteKey(entry.localizedRoute || localizedFile);
+    const language = String(entry.language || '').trim();
+
+    const parsed = parseMdxFileWithFrontmatter(raw);
+    let nextBody = parsed.body;
+    const routeContext = {
+      sourceRoute,
+      language,
+      sourceLocalizedRoute,
+      routeMapBySourceRoute
+    };
+
+    const markdownResult = rewriteInternalLinksInBody(nextBody, routeContext);
+    nextBody = markdownResult.body;
+    const jsxResult = rewriteInternalLinksInJsx(nextBody, routeContext);
+    nextBody = jsxResult.body;
+
+    const totalRewrites = markdownResult.rewrittenCount + jsxResult.rewrittenCount;
+    const totalFallbacks = markdownResult.fallbackCount + jsxResult.fallbackCount;
+    results.fallbackLinks += totalFallbacks;
+
+    if (totalRewrites === 0) continue;
+
+    results.rewrittenLinks += totalRewrites;
+    let nextContent = parsed.stringify(nextBody, parsed.data);
+    if (provenance) {
+      nextContent = injectOrReplaceProvenanceComment(nextContent, buildProvenanceComment(provenance));
+    }
+    const changed = writeTextIfChanged(absPath, nextContent);
+    if (changed) results.rewrittenFiles += 1;
+  }
+
+  return results;
 }
 
 function createPlannedEntries(selectedItems, languages, generatedRoot, generatedPathStyle, runtime) {
@@ -376,8 +704,13 @@ async function run(argv = process.argv.slice(2)) {
     configPath: cliArgs.configPath || undefined
   });
   const runtime = buildRuntimeOptions(cliArgs, config);
-  const translator = createTranslator({ config, providerNameOverride: runtime.providerNameOverride });
-  assertMockWriteAllowed({ translator, runtime, config, action: 'translate-docs' });
+  const cleanupOnly = Boolean(runtime.cleanupOnly);
+  const rewriteLinksEnabled = cleanupOnly ? runtime.rewriteLinks !== false : runtime.rewriteLinks === true;
+  const rewriteScope = (runtime.rewriteScope || (cleanupOnly ? 'all' : '')).toLowerCase();
+  const translator = cleanupOnly ? null : createTranslator({ config, providerNameOverride: runtime.providerNameOverride });
+  if (!cleanupOnly) {
+    assertMockWriteAllowed({ translator, runtime, config, action: 'translate-docs' });
+  }
 
   if (runtime.scopeMode === 'paths_file' && !runtime.pathsFile) {
     throw new Error('--paths-file is required when --scope-mode paths_file is used');
@@ -386,31 +719,29 @@ async function run(argv = process.argv.slice(2)) {
     throw new Error('--prefixes is required when --scope-mode prefixes is used');
   }
 
-  const inventory = buildV2EnglishRouteInventory(repoRoot);
-  const validSourceRoutes = new Set(inventory.items.map((item) => normalizeRouteKey(item.route)));
-  const scope = selectScopeItems({
-    repoRoot,
-    inventory,
-    scopeMode: runtime.scopeMode,
-    baseRef: runtime.baseRef,
-    prefixes: runtime.prefixes,
-    pathsFile: runtime.pathsFile,
-    maxPages: runtime.maxPages
-  });
+  const inventory = cleanupOnly ? { items: [], unresolved: [] } : buildV2EnglishRouteInventory(repoRoot);
+  const validSourceRoutes = new Set((inventory.items || []).map((item) => normalizeRouteKey(item.route)));
+  const scope = cleanupOnly
+    ? { selected: [], totalCandidateCount: 0, truncated: false }
+    : selectScopeItems({
+        repoRoot,
+        inventory,
+        scopeMode: runtime.scopeMode,
+        baseRef: runtime.baseRef,
+        prefixes: runtime.prefixes,
+        pathsFile: runtime.pathsFile,
+        maxPages: runtime.maxPages
+      });
 
   const existingLocalized = collectExistingLocalizedRouteMapEntries(repoRoot, config.generatedRoot, {
     generatedPathStyle: config.generatedPathStyle,
     sourceRoot: config.sourceRoot,
     knownLanguages: runtime.languages
   });
-  const plannedEntries = createPlannedEntries(
-    scope.selected,
-    runtime.languages,
-    config.generatedRoot,
-    config.generatedPathStyle,
-    runtime
-  );
-  const routeMapEntries = mergeRouteMapEntries(existingLocalized, plannedEntries);
+  const plannedEntries = cleanupOnly
+    ? []
+    : createPlannedEntries(scope.selected, runtime.languages, config.generatedRoot, config.generatedPathStyle, runtime);
+  const routeMapEntries = cleanupOnly ? existingLocalized : mergeRouteMapEntries(existingLocalized, plannedEntries);
   const routeMapIndex = buildRouteMapIndex(routeMapEntries);
 
   const report = {
@@ -418,8 +749,8 @@ async function run(argv = process.argv.slice(2)) {
     repoRoot,
     configPath,
     provider: {
-      name: translator.name,
-      mode: translator.name
+      name: translator ? translator.name : 'cleanup-only',
+      mode: translator ? translator.name : 'cleanup-only'
     },
     runtime,
     scope: {
@@ -449,67 +780,69 @@ async function run(argv = process.argv.slice(2)) {
     );
   }
 
-  for (const item of scope.selected) {
-    for (const language of runtime.languages) {
-      try {
-        const result = await processOneTranslation({
-          repoRoot,
-          config,
-          translator,
-          item,
-          language,
-          routeMapIndex,
-          runtime
-        });
-        updateRouteMapEntry(routeMapEntries, result.routeMapEntry);
+  if (!cleanupOnly) {
+    for (const item of scope.selected) {
+      for (const language of runtime.languages) {
+        try {
+          const result = await processOneTranslation({
+            repoRoot,
+            config,
+            translator,
+            item,
+            language,
+            routeMapIndex,
+            runtime
+          });
+          updateRouteMapEntry(routeMapEntries, result.routeMapEntry);
 
-        const status = result.routeMapEntry.status;
-        if (status === 'translated') report.counts.translated += 1;
-        if (status === 'translated_dry_run') report.counts.dryRunTranslated += 1;
-        if (status === 'skipped_up_to_date') report.counts.skippedUpToDate += 1;
-        if (result.report.changed) report.counts.changedWrites += 1;
-        report.counts.successfulPageLanguagePairs += 1;
+          const status = result.routeMapEntry.status;
+          if (status === 'translated') report.counts.translated += 1;
+          if (status === 'translated_dry_run') report.counts.dryRunTranslated += 1;
+          if (status === 'skipped_up_to_date') report.counts.skippedUpToDate += 1;
+          if (result.report.changed) report.counts.changedWrites += 1;
+          report.counts.successfulPageLanguagePairs += 1;
 
-        report.pages.push({
-          sourceRoute: item.route,
-          sourceFile: item.fileRel,
-          language,
-          requestedLanguage: requestedLanguageForEffective(runtime, language),
-          effectiveLanguage: language,
-          localizedRoute: result.routeMapEntry.localizedRoute,
-          localizedFile: result.routeMapEntry.localizedFile,
-          status,
-          translatedSegments: result.report.translatedSegments,
-          translatedFrontmatterFields: result.report.translatedFrontmatterFields,
-          linkRewrites: result.report.linkRewrites,
-          linkFallbacks: result.report.linkFallbacks,
-          modelUsed: result.report.modelUsed
-        });
-      } catch (error) {
-        report.counts.failed += 1;
-        const failure = {
-          sourceRoute: item.route,
-          sourceFile: item.fileRel,
-          language,
-          error: error.message
-        };
-        report.failures.push(failure);
-        updateRouteMapEntry(routeMapEntries, {
-          sourceRoute: item.route,
-          sourceFile: item.fileRel,
-          language,
-          requestedLanguage: requestedLanguageForEffective(runtime, language),
-          effectiveLanguage: language,
-          localizedRoute: normalizeRouteKey(
-            repoFileRelToLocalizedFileRel(item.fileRel, language, config.generatedRoot, config.generatedPathStyle)
-          ),
-          localizedFile: repoFileRelToLocalizedFileRel(item.fileRel, language, config.generatedRoot, config.generatedPathStyle),
-          localizedRouteStyle: config.generatedPathStyle || '',
-          status: 'failed',
-          provider: translator.name,
-          provenanceKind: '',
-          artifactClass: 'failed'
-        });
+          report.pages.push({
+            sourceRoute: item.route,
+            sourceFile: item.fileRel,
+            language,
+            requestedLanguage: requestedLanguageForEffective(runtime, language),
+            effectiveLanguage: language,
+            localizedRoute: result.routeMapEntry.localizedRoute,
+            localizedFile: result.routeMapEntry.localizedFile,
+            status,
+            translatedSegments: result.report.translatedSegments,
+            translatedFrontmatterFields: result.report.translatedFrontmatterFields,
+            linkRewrites: result.report.linkRewrites,
+            linkFallbacks: result.report.linkFallbacks,
+            modelUsed: result.report.modelUsed
+          });
+        } catch (error) {
+          report.counts.failed += 1;
+          const failure = {
+            sourceRoute: item.route,
+            sourceFile: item.fileRel,
+            language,
+            error: error.message
+          };
+          report.failures.push(failure);
+          updateRouteMapEntry(routeMapEntries, {
+            sourceRoute: item.route,
+            sourceFile: item.fileRel,
+            language,
+            requestedLanguage: requestedLanguageForEffective(runtime, language),
+            effectiveLanguage: language,
+            localizedRoute: normalizeRouteKey(
+              repoFileRelToLocalizedFileRel(item.fileRel, language, config.generatedRoot, config.generatedPathStyle)
+            ),
+            localizedFile: repoFileRelToLocalizedFileRel(item.fileRel, language, config.generatedRoot, config.generatedPathStyle),
+            localizedRouteStyle: config.generatedPathStyle || '',
+            status: 'failed',
+            provider: translator.name,
+            provenanceKind: '',
+            artifactClass: 'failed'
+          });
+        }
       }
     }
   }
@@ -517,8 +850,8 @@ async function run(argv = process.argv.slice(2)) {
   const cleanup = cleanupLocalizedOrphans({
     repoRoot,
     existingLocalizedEntries: existingLocalized,
-    validSourceRoutes,
-    runtime
+    runtime,
+    config
   });
 
   if (cleanup.deletedFiles.size > 0 || cleanup.movedFiles.size > 0) {
@@ -537,10 +870,30 @@ async function run(argv = process.argv.slice(2)) {
     movedCount: cleanup.movedFiles.size,
     deletedFiles: [...cleanup.deletedFiles],
     movedFiles: [...cleanup.movedFiles],
+    movedTargets: Object.fromEntries(cleanup.movedTargets || []),
     warnings: cleanup.warnings
   };
   if (cleanup.warnings.length > 0) {
     report.warnings.push(...cleanup.warnings.map((warning) => `cleanup: ${warning}`));
+  }
+
+  if (rewriteLinksEnabled) {
+    const rewriteResult = rewriteLocalizedLinks({
+      repoRoot,
+      config,
+      runtime,
+      scope: rewriteScope === 'moved' ? 'moved' : 'all',
+      movedTargets: cleanup.movedTargets
+    });
+    report.linkRewrite = {
+      rewrittenFiles: rewriteResult.rewrittenFiles,
+      rewrittenLinks: rewriteResult.rewrittenLinks,
+      fallbackLinks: rewriteResult.fallbackLinks,
+      warnings: rewriteResult.warnings
+    };
+    if (rewriteResult.warnings.length > 0) {
+      report.warnings.push(...rewriteResult.warnings.map((warning) => `link-rewrite: ${warning}`));
+    }
   }
 
   if (runtime.routeMapPath) {
@@ -586,7 +939,7 @@ async function run(argv = process.argv.slice(2)) {
     `i18n translate-docs summary`,
     `- scope pages: ${report.scope.selectedPages}${report.scope.truncated ? ' (truncated)' : ''}`,
     `- languages: ${runtime.languages.join(', ')}`,
-    `- provider: ${translator.name}`,
+    `- provider: ${report.provider.name}`,
     `- translated: ${report.counts.translated}`,
     `- dry-run translated: ${report.counts.dryRunTranslated}`,
     `- skipped up-to-date: ${report.counts.skippedUpToDate}`,
@@ -594,6 +947,10 @@ async function run(argv = process.argv.slice(2)) {
     `- cleanup deleted: ${report.cleanup.deletedCount}`,
     `- cleanup moved: ${report.cleanup.movedCount}`
   ];
+  if (report.linkRewrite) {
+    summary.push(`- link rewrite files: ${report.linkRewrite.rewrittenFiles}`);
+    summary.push(`- link rewrites: ${report.linkRewrite.rewrittenLinks}`);
+  }
   if (report.warnings.length > 0) {
     summary.push(`- warnings: ${report.warnings.length}`);
   }

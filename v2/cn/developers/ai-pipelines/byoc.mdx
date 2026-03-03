@@ -18,7 +18,7 @@ import { DynamicTable } from '/snippets/components/layout/table.jsx'
 本指南详细介绍了如何将您自己的AI模型或GPU基础设施集成到Livepeer AI推理网络中。BYOC允许您使用自定义模型（例如ControlNet、Whisper、SegFormer）运行推理任务，将节点部署到云、边缘或本地环境中，并以经济激励方式提供Livepeer推理工作负载。
 
 <Note>
-For full BYOC architecture, Gateway/Orchestrator roles, container lifecycle, and Protocol vs AI BYOC concepts, see the [BYOC full guide](/v2/developers/ai-pipelines/byoc).
+For full BYOC architecture, Gateway/Orchestrator roles, container lifecycle, and Protocol vs AI BYOC concepts, see the [BYOC full guide](/v2/cn/developers/ai-pipelines/byoc).
 </Note>
 
 ## 要求
@@ -28,7 +28,7 @@ For full BYOC architecture, Gateway/Orchestrator roles, container lifecycle, and
 - Git、Python 3.9+；可选ComfyUI分支用于模块化任务
 - Livepeer网关凭据或用于工作器注册的API密钥
 
-## 步骤 1 — 克隆和设置
+## 步骤 1 - 克隆和设置
 
 ```bash
 git clone https://github.com/livepeer/comfystream
@@ -45,7 +45,7 @@ python scripts/download.py --model whisper-large
 python scripts/download.py --model sdxl
 ```
 
-## 步骤 2 — 配置节点
+## 步骤 2 - 配置节点
 
 编辑您的 `config.yaml`：
 
@@ -60,7 +60,7 @@ heartbeat: true
 
 可选：以 Docker 运行；添加插件适配器（例如 segment-anything, blip2）。
 
-## 步骤 3 — 启动网关节点
+## 步骤 3 - 启动网关节点
 
 ```bash
 python run.py --adapter grpc --gpu --model whisper-large
@@ -68,7 +68,7 @@ python run.py --adapter grpc --gpu --model whisper-large
 
 您应该会看到与 Livepeer 网关的心跳日志、任务声明和模型执行，以及结果上传或网络钩子。
 
-## 步骤 4 — 注册（可选）
+## 步骤 4 - 注册（可选）
 
 在链上注册您的节点 (Arbitrum)，以便网关可以发现并为您分配工作：
 
@@ -124,7 +124,7 @@ pipeline:
 
 - [AI 管道概述](./overview)
 - [ComfyStream](./comfystream)
-- [BYOC 完整指南](/v2/developers/ai-pipelines/byoc) — 架构、网关/协调器、容器生命周期
+- [BYOC 完整指南](/v2/cn/developers/ai-pipelines/byoc) - 架构、网关/协调器、容器生命周期
 - [网络接口](/v2/cn/about/livepeer-network/interfaces)
 
 ## 资源

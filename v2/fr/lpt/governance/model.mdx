@@ -47,13 +47,13 @@ Tout le poids de gouvernance provient de la mise bloquée.
 
 Une proposition de gouvernance suit généralement ces phases déterministes :
 
-1. **Création** — proposition soumise avec des actions encodées
-2. **Délai de vote** — période avant l'ouverture du vote
-3. **Période de vote** — les participants liés émettent leurs votes
-4. **Vérification de quorum** — exigence minimale de participation
-5. **Vérification de seuil** — condition de majorité
-6. **File d'attente (Timelock)** — délai d'exécution
-7. **Exécution** — transition d'état si les conditions sont remplies
+1. **Création** - proposition soumise avec des actions encodées
+2. **Délai de vote** - période avant l'ouverture du vote
+3. **Période de vote** - les participants liés émettent leurs votes
+4. **Vérification de quorum** - exigence minimale de participation
+5. **Vérification de seuil** - condition de majorité
+6. **File d'attente (Timelock)** - délai d'exécution
+7. **Exécution** - transition d'état si les conditions sont remplies
 
 Ces transitions sont imposées par les contrats de gouvernance.
 
@@ -124,10 +124,10 @@ L'exécution est atomique par proposition.
 
 La documentation des adresses de contrat officielle liste les contrats liés à la gouvernance sur le réseau principal Arbitrum :
 
-- **Gouverneur** — logique des propositions et du vote
-- **LivepeerGovernor (proxy/cible)** — implémentation de gouvernance upgradable
-- **Votes de mise en garantie** — suivi du pouvoir de vote pondéré par la mise en garantie
-- **Trésorerie** — fonds contrôlés par la gouvernance
+- **Gouverneur** - logique des propositions et du vote
+- **LivepeerGovernor (proxy/cible)** - implémentation de gouvernance upgradable
+- **Votes de mise en garantie** - suivi du pouvoir de vote pondéré par la mise en garantie
+- **Trésorerie** - fonds contrôlés par la gouvernance
 
 Cela établit que la gouvernance n'est pas simplement sociale ; elle est mise en œuvre par des contrats déployés avec des adresses publiées.
 
@@ -180,9 +180,9 @@ Le comité de sécurité/les propriétaires du protocole invoquent des fonctions
 
 Le système met en évidence plusieurs risques structurellement importants :
 
-1. **Faible participation et concentration de la puissance de vote** — réduit la défense contre les actions de gouvernance hostiles
-2. **Centralisation de l'exécuteur** — la dépendance au comité de sécurité introduit des exigences de confiance
-3. **Sanctions désactivées** — réduit la capacité du système à imposer des pénalités économiques automatiques pour le comportement incorrect, augmentant la dépendance à la réputation et aux solutions sociales
+1. **Faible participation et concentration de la puissance de vote** - réduit la défense contre les actions de gouvernance hostiles
+2. **Centralisation de l'exécuteur** - la dépendance au comité de sécurité introduit des exigences de confiance
+3. **Sanctions désactivées** - réduit la capacité du système à imposer des pénalités économiques automatiques pour le comportement incorrect, augmentant la dépendance à la réputation et aux solutions sociales
 
 ---
 

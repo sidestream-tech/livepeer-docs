@@ -9,7 +9,7 @@ Una **transmisión** en Livepeer Studio es un objeto de transmisión en vivo que
 
 ## Sesiones
 
-Un stream está compuesto por una o más **sesiones**—períodos en los que la transmisión está activa. Solo hay una sesión activa a la vez. Las sesiones tienen sus propios identificadores y metadatos. Use la "[API de sesiones](https://livepeer.studio/docs/api-reference/session/get-all) para listar las sesiones de una transmisión.
+Un stream está compuesto por una o más **sesiones**-períodos en los que la transmisión está activa. Solo hay una sesión activa a la vez. Las sesiones tienen sus propios identificadores y metadatos. Use la "[API de sesiones](https://livepeer.studio/docs/api-reference/session/get-all) para listar las sesiones de una transmisión.
 
 ## Grabación
 
@@ -19,9 +19,9 @@ Si la grabación está habilitada, la sesión se puede almacenar como un "**acti
 
 Puedes enviar video en vivo a una transmisión con:
 
-- **RTMP** — Predeterminado; úselo con OBS u otros codificadores RTMP. Vea[Transmitir mediante OBS](./stream-via-obs).
-- **WebRTC** — Ingesta de baja latencia desde el navegador. Vea[Transmitir en vivo desde el navegador](./livestream-from-browser).
-- **SRT** — También compatible para recepción.
+- **RTMP** - Predeterminado; úselo con OBS u otros codificadores RTMP. Vea[Transmitir mediante OBS](./stream-via-obs).
+- **WebRTC** - Ingesta de baja latencia desde el navegador. Vea[Transmitir en vivo desde el navegador](./livestream-from-browser).
+- **SRT** - También compatible para recepción.
 
 Cuando un flujo está en vivo, [salud del flujo](./stream-health) proporciona métricas (por ejemplo, estado de codificación, tasa de ingestión) para que pueda monitorear la calidad y solucionar problemas.
 
@@ -41,10 +41,10 @@ Los espectadores usan el **ID de reproducción** para ver la transmisión. El [L
 
 Eventos relacionados con transmisiones comunes:
 
-- `stream.started` — La transmisión está activa y la URL de HLS está disponible.
-- `stream.idle` — La transmisión ya no está activa.
-- `recording.*` — La grabación ha comenzado, está lista o está esperando.
-- `multistream.*` — El destino de multitransmisión está conectado, con error o desconectado.
+- `stream.started` - La transmisión está activa y la URL de HLS está disponible.
+- `stream.idle` - La transmisión ya no está activa.
+- `recording.*` - La grabación ha comenzado, está lista o está esperando.
+- `multistream.*` - El destino de multitransmisión está conectado, con error o desconectado.
 
 Ver [Webhooks](../analytics/webhooks) y [Escuchar eventos](../analytics/listen-to-events).
 

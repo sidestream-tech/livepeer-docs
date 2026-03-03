@@ -48,11 +48,11 @@ Le nœud Orchestrateur exécute **go-livepeer** (le `livepeer` binaire), disponi
 
 ### Composants clés
 
-- **Sélection du transcodeur** — Travailleurs internes ou externes ; configurés via `orchSecret` et `orchAddr` pour les transcodeurs distants
-- **Validation des tickets** — L2 `TicketBroker` sur Arbitrum pour la remise des paiements ETH
-- **Réclamation de récompense** — Soumission Merkle à `BondingManager` chaque round
-- **Staking LPT** — BondingManager pour l'auto-bond et le stake des délégateurs
-- **Publicité régionale** — Pour le routage des passerelles (latence, capacité)
+- **Sélection du transcodeur** - Travailleurs internes ou externes ; configurés via `orchSecret` et `orchAddr` pour les transcodeurs distants
+- **Validation des tickets** - L2 `TicketBroker` sur Arbitrum pour la remise des paiements ETH
+- **Réclamation de récompense** - Soumission Merkle à `BondingManager` chaque round
+- **Staking LPT** - BondingManager pour l'auto-bond et le stake des délégateurs
+- **Publicité régionale** - Pour le routage des passerelles (latence, capacité)
 
 ### Modes de déploiement
 
@@ -62,8 +62,8 @@ Le nœud Orchestrateur exécute **go-livepeer** (le `livepeer` binaire), disponi
 
 ### Outils
 
-- **livepeer_cli** — Staker, définir les frais/coupe de récompense, surveiller les sessions
-- **livepeer_exporter** — Exportateur de métriques Prometheus pour l'observabilité
+- **livepeer_cli** - Staker, définir les frais/coupe de récompense, surveiller les sessions
+- **livepeer_exporter** - Exportateur de métriques Prometheus pour l'observabilité
 
 ## Couche de travailleur
 
@@ -92,7 +92,7 @@ Les passerelles gèrent :
 
 - [Studio Gateway](https://github.com/livepeer/studio-gateway)
 - [Daydream Gateway](https://github.com/livepeer/daydream)
-- [Cascade](https://github.com/livepeer/cascade) — Équilibreur de charge et coordination du flux de travail IA
+- [Cascade](https://github.com/livepeer/cascade) - Équilibreur de charge et coordination du flux de travail IA
 
 **Fonctionnalités :** Limitation du débit, scoring régional, sondes de santé, Orchestrateurs de secours, suivi du crédit (p. ex. Postgres/Redis).
 
@@ -109,8 +109,8 @@ Les passerelles gèrent :
 
 **Points de terminaison :**
 
-- `https://livepeer.studio/api` — Studio REST
-- `https://explorer.livepeer.org/graphql` — Explorer GraphQL
+- `https://livepeer.studio/api` - Studio REST
+- `https://explorer.livepeer.org/graphql` - Explorer GraphQL
 
 ## CLI et SDKs
 
@@ -122,8 +122,8 @@ Les passerelles gèrent :
 
 **SDKs :**
 
-- **[Livepeer JS SDK](https://github.com/livepeer/js-sdk)** — Lecture, ingestion, outils de session IA ; fonctionne sous Node.js et dans le navigateur
-- **Pipelines IA Python** — Utilisé dans des projets internes et communautaires (p. ex. dotSimulate, MetaDJ)
+- **[Livepeer JS SDK](https://github.com/livepeer/js-sdk)** - Lecture, ingestion, outils de session IA ; fonctionne sous Node.js et dans le navigateur
+- **Pipelines IA Python** - Utilisé dans des projets internes et communautaires (p. ex. dotSimulate, MetaDJ)
 
 ## Surveillance et observabilité
 
@@ -147,15 +147,15 @@ Le logiciel de nœud expose des métriques explicites (p. ex. taux de succès 
 
 ## Voir aussi
 
-- [Interfaces](./interfaces) — REST, gRPC, GraphQL, JS SDK, CLI et accès aux contrats intelligents
-- [Marketplace](./marketplace) — Comment les passerelles routent les travaux et comment la tarification fonctionne
-- [Cycle de vie du travail](./job-lifecycle) — Flux de bout en bout et machine d'états
-- [Architecture technique du protocole](../livepeer-protocol/technical-architecture) — Contrats on-chain et types de nœuds du point de vue du protocole
-- [Contrats blockchain](../resources/blockchain-contracts) — Adresses de contrat (Arbitrum)
+- [Interfaces](./interfaces) - REST, gRPC, GraphQL, JS SDK, CLI et accès aux contrats intelligents
+- [Marketplace](./marketplace) - Comment les passerelles routent les travaux et comment la tarification fonctionne
+- [Cycle de vie du travail](./job-lifecycle) - Flux de bout en bout et machine d'états
+- [Architecture technique du protocole](../livepeer-protocol/technical-architecture) - Contrats on-chain et types de nœuds du point de vue du protocole
+- [Contrats blockchain](../resources/blockchain-contracts) - Adresses de contrat (Arbitrum)
 
 ## Références
 
 - [Livepeer GitHub](https://github.com/livepeer)
-- [Docs de l'Orchestrateur](/v2/orchestrators/orchestrators-portal)
+- [Docs de l'Orchestrateur](/v2/fr/orchestrators/orchestrators-portal)
 - [Passerelle Daydream](https://github.com/livepeer/daydream)
 - [Livepeer Explorer](https://explorer.livepeer.org)

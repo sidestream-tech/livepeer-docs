@@ -41,8 +41,8 @@ export function LiveStreamPlayer({ src }: { src: Src[] | null }) {
 
 1. **获取播放信息** 从 [播放信息 API](https://livepeer.studio/docs/api-reference/playback/get) with the `playbackId`.
 2. The response includes sources such as:
-   - **HLS** — `application/vnd.apple.mpegurl` URL (e.g. `https://livepeercdn.studio/hls/{playbackId}/index.m3u8`）
-   - **WebRTC** — 用于低延迟；使用支持 WebRTC/WHEP 的播放器。API 可能会返回一个 WebRTC 源；STUN/TURN 会在 SDP 响应中提供。
+   - **HLS** - `application/vnd.apple.mpegurl` URL (e.g. `https://livepeercdn.studio/hls/{playbackId}/index.m3u8`）
+   - **WebRTC** - 用于低延迟；使用支持 WebRTC/WHEP 的播放器。API 可能会返回一个 WebRTC 源；STUN/TURN 会在 SDP 响应中提供。
 3. 将选定的 URL（或 SDP）传递给支持 HLS 或 WebRTC 的播放器（例如 Video.js、HLS.js 或 WHEP 客户端）。
 
 <Info>
@@ -62,8 +62,8 @@ export function LiveStreamPlayer({ src }: { src: Src[] | null }) {
 ></iframe>
 ```
 
-- **低延迟** — 直播默认使用 WebRTC。使用`&lowLatency=false`来强制使用 HLS，或使用`&lowLatency=force`来强制使用 WebRTC。
-- **剪辑** — 添加`&clipLength=60`（最多120秒）以允许观众剪辑。
-- **其他** — `&muted=false`，`&autoplay=false`，`&loop=true`，`constant=true`（用于持续播放，例如音乐）。
+- **低延迟** - 直播默认使用 WebRTC。使用`&lowLatency=false`来强制使用 HLS，或使用`&lowLatency=force`来强制使用 WebRTC。
+- **剪辑** - 添加`&clipLength=60`（最多120秒）以允许观众剪辑。
+- **其他** - `&muted=false`，`&autoplay=false`，`&loop=true`，`constant=true`（用于持续播放，例如音乐）。
 
 查看 [播放器和嵌入](../player) 以获取更多选项。

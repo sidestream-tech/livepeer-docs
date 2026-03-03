@@ -48,11 +48,11 @@ El nodo Orchestrator ejecuta **go-livepeer** (el `livepeer` binario), disponible
 
 ### Componentes clave
 
-- **Selección de transcodificador** — Trabajadores internos o externos; configurados a través de `orchSecret` y `orchAddr` para transcodificadores remotos
-- **Validación de tickets** — L2 `TicketBroker` en Arbitrum para la redención de pagos ETH
-- **Reclamo de recompensas** — Envío Merkle a `BondingManager` cada ronda
-- **Staking de LPT** — BondingManager para auto‑bond y stake de delegador
-- **Publicidad de región** — Para el enrutamiento del Gateway (latencia, capacidad)
+- **Selección de transcodificador** - Trabajadores internos o externos; configurados a través de `orchSecret` y `orchAddr` para transcodificadores remotos
+- **Validación de tickets** - L2 `TicketBroker` en Arbitrum para la redención de pagos ETH
+- **Reclamo de recompensas** - Envío Merkle a `BondingManager` cada ronda
+- **Staking de LPT** - BondingManager para auto‑bond y stake de delegador
+- **Publicidad de región** - Para el enrutamiento del Gateway (latencia, capacidad)
 
 ### Modos de despliegue
 
@@ -62,8 +62,8 @@ El nodo Orchestrator ejecuta **go-livepeer** (el `livepeer` binario), disponible
 
 ### Herramientas
 
-- **livepeer_cli** — Stake, establecer tarifa/corte de recompensa, monitorear sesiones
-- **livepeer_exporter** — Exportador de métricas Prometheus para observabilidad
+- **livepeer_cli** - Stake, establecer tarifa/corte de recompensa, monitorear sesiones
+- **livepeer_exporter** - Exportador de métricas Prometheus para observabilidad
 
 ## Capa de trabajador
 
@@ -92,7 +92,7 @@ Los Gateways gestionan:
 
 - [Studio Gateway](https://github.com/livepeer/studio-gateway)
 - [Daydream Gateway](https://github.com/livepeer/daydream)
-- [Cascade](https://github.com/livepeer/cascade) — Balanceador de carga y coordinación de flujo de trabajo de IA
+- [Cascade](https://github.com/livepeer/cascade) - Balanceador de carga y coordinación de flujo de trabajo de IA
 
 **Características:** Limitación de velocidad, puntuación por región, pruebas de salud, Orchestrators de respaldo, seguimiento de crédito (p. ej., Postgres/Redis).
 
@@ -109,8 +109,8 @@ Los Gateways gestionan:
 
 **Puntos finales:**
 
-- `https://livepeer.studio/api` — Studio REST
-- `https://explorer.livepeer.org/graphql` — Explorer GraphQL
+- `https://livepeer.studio/api` - Studio REST
+- `https://explorer.livepeer.org/graphql` - Explorer GraphQL
 
 ## CLI y SDKs
 
@@ -122,8 +122,8 @@ Los Gateways gestionan:
 
 **SDKs:**
 
-- **[Livepeer JS SDK](https://github.com/livepeer/js-sdk)** — Reproducción, ingestión, herramientas de sesiones de IA; funciona en Node.js y navegador
-- **Pipelines de IA en Python** — Utilizado en proyectos internos y de la comunidad (p. ej., dotSimulate, MetaDJ)
+- **[Livepeer JS SDK](https://github.com/livepeer/js-sdk)** - Reproducción, ingestión, herramientas de sesiones de IA; funciona en Node.js y navegador
+- **Pipelines de IA en Python** - Utilizado en proyectos internos y de la comunidad (p. ej., dotSimulate, MetaDJ)
 
 ## Monitoreo y observabilidad
 
@@ -147,15 +147,15 @@ El software del nodo expone métricas explícitas (p. ej., tasa de éxito de seg
 
 ## Ver también
 
-- [Interfaces](./interfaces) — REST, gRPC, GraphQL, JS SDK, CLI, y acceso a contratos inteligentes
-- [Marketplace](./marketplace) — Cómo los Gateways enrutan trabajos y cómo funciona la fijación de precios
-- [Ciclo de vida del trabajo](./job-lifecycle) — Flujo de extremo a extremo y máquina de estados
-- [Arquitectura técnica del protocolo](../livepeer-protocol/technical-architecture) — Contratos on-chain y tipos de nodo desde la perspectiva del protocolo
-- [Contratos de blockchain](../resources/blockchain-contracts) — Direcciones de contrato (Arbitrum)
+- [Interfaces](./interfaces) - REST, gRPC, GraphQL, JS SDK, CLI, y acceso a contratos inteligentes
+- [Marketplace](./marketplace) - Cómo los Gateways enrutan trabajos y cómo funciona la fijación de precios
+- [Ciclo de vida del trabajo](./job-lifecycle) - Flujo de extremo a extremo y máquina de estados
+- [Arquitectura técnica del protocolo](../livepeer-protocol/technical-architecture) - Contratos on-chain y tipos de nodo desde la perspectiva del protocolo
+- [Contratos de blockchain](../resources/blockchain-contracts) - Direcciones de contrato (Arbitrum)
 
 ## Referencias
 
 - [Livepeer GitHub](https://github.com/livepeer)
-- [Documentación del Orchestrator](/v2/orchestrators/orchestrators-portal)
+- [Documentación del Orchestrator](/v2/es/orchestrators/orchestrators-portal)
 - [Gateway Daydream](https://github.com/livepeer/daydream)
 - [Livepeer Explorer](https://explorer.livepeer.org)

@@ -9,8 +9,8 @@ La latence est le délai entre quelque chose qui se produit devant la caméra et
 
 ## Protocoles
 
-- **WebRTC** — Idéal pour une latence faible (~0,5 à 3 s). Utilisez un lecteur compatible WebRTC (par exemple le [Livepeer Player](../player)).
-- **HLS** — Meilleure compatibilité ; latence typique ~10 à 20 s. Avec les paramètres recommandés pour une faible latence, HLS sur Livepeer Studio peut être d'environ ~10 s.
+- **WebRTC** - Idéal pour une latence faible (~0,5 à 3 s). Utilisez un lecteur compatible WebRTC (par exemple le [Livepeer Player](../player)).
+- **HLS** - Meilleure compatibilité ; latence typique ~10 à 20 s. Avec les paramètres recommandés pour une faible latence, HLS sur Livepeer Studio peut être d'environ ~10 s.
 
 Choisissez en fonction du fait que vous ayez besoin d'interactions en temps réel (WebRTC) ou de la compatibilité maximale (HLS).
 
@@ -24,9 +24,9 @@ Choisissez en fonction du fait que vous ayez besoin d'interactions en temps rée
 
 ## Paramètres OBS pour une latence plus faible
 
-- **Intervalle des points clés** — Plus petit = plus faible latence. Utilisez **1** pour la plus faible latence (et la compatibilité WebRTC).
-- **Contrôle de débit** — CRF ou CBR ; un débit plus élevé signifie souvent une meilleure qualité mais une plus grande bande passante. Ne dépassez pas votre capacité de téléchargement.
-- **B-frames** — Définir sur **0** pour WebRTC et latence minimale. Les B-frames améliorent la compression mais ajoutent de la latence et perturbent l'ordre WebRTC.
+- **Intervalle des points clés** - Plus petit = plus faible latence. Utilisez **1** pour la plus faible latence (et la compatibilité WebRTC).
+- **Contrôle de débit** - CRF ou CBR ; un débit plus élevé signifie souvent une meilleure qualité mais une plus grande bande passante. Ne dépassez pas votre capacité de téléchargement.
+- **B-frames** - Définir sur **0** pour WebRTC et latence minimale. Les B-frames améliorent la compression mais ajoutent de la latence et perturbent l'ordre WebRTC.
 
 Voir [Diffuser via OBS](stream-via-obs) pour des profils recommandés complets (faible latence, équilibré, haute qualité).
 
@@ -34,8 +34,8 @@ Voir [Diffuser via OBS](stream-via-obs) pour des profils recommandés complets (
 
  Les diffusions WebRTC en navigateur sont à faible latence par défaut. Les spectateurs peuvent regarder via :
 
-- **WebRTC** — ~0,5–3 s (utilisez le Livepeer Player ou un autre lecteur WebRTC/WHEP).
-- **HLS** — ~8–10 s si vous préférez ou si WebRTC n'est pas disponible.
+- **WebRTC** - ~0,5–3 s (utilisez le Livepeer Player ou un autre lecteur WebRTC/WHEP).
+- **HLS** - ~8–10 s si vous préférez ou si WebRTC n'est pas disponible.
 
 Voir [Diffusion en direct depuis le navigateur](livestream-from-browser).
 

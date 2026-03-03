@@ -9,19 +9,19 @@ Livepeer Studio fournit **la visionnage et l'engagement** des données pour que 
 
 L'[API de visionnage](https://livepeer.studio/docs/api-reference/viewership/get-viewership-metrics) (et les points d'extrémité associés) fournit :
 
-- **Audience en direct** — Nombre actuel de spectateurs et taux d'erreur (exige le SDK Player 4.2.0+).
-- **Métriques d'utilisation** — Vues (intention de lecture), minutes regardées. Les données sont actualisées environ toutes les 5 minutes ; les nouveaux téléchargements peuvent prendre jusqu'à une heure pour apparaître.
-- **Métriques de performance** — Taux d'erreur, temps jusqu'au premier cadre (TTFF), ratio de rebuffering, sorties avant le démarrage.
-- **Dimensions** — Filtrer par vidéo (ID de lecture, CID), navigateur, appareil, système d'exploitation, géographie, fuseau horaire, période de temps.
+- **Audience en direct** - Nombre actuel de spectateurs et taux d'erreur (exige le SDK Player 4.2.0+).
+- **Métriques d'utilisation** - Vues (intention de lecture), minutes regardées. Les données sont actualisées environ toutes les 5 minutes ; les nouveaux téléchargements peuvent prendre jusqu'à une heure pour apparaître.
+- **Métriques de performance** - Taux d'erreur, temps jusqu'au premier cadre (TTFF), ratio de rebuffering, sorties avant le démarrage.
+- **Dimensions** - Filtrer par vidéo (ID de lecture, CID), navigateur, appareil, système d'exploitation, géographie, fuseau horaire, période de temps.
 
 ## Enregistrement des vues
 
-- **Livepeer Lecteur** — Les métriques sont collectées automatiquement lorsque vous utilisez le [Livepeer Player](../player).
-- **Joueur personnalisé** — Utilisez l'intégration `addMediaMetrics`(ou équivalente) décrite dans les [Livepeer docs Studio](https://livepeer.studio/docs) donc les vues et les événements de qualité sont signalés.
+- **Livepeer Lecteur** - Les métriques sont collectées automatiquement lorsque vous utilisez le [Livepeer Player](../player).
+- **Joueur personnalisé** - Utilisez l'intégration `addMediaMetrics`(ou équivalente) décrite dans les [Livepeer docs Studio](https://livepeer.studio/docs) donc les vues et les événements de qualité sont signalés.
 
 ## Autres intégrations
 
-- **Grafana** — Utilisez les API de visionnage/utilisation pour créer des tableaux de bord. Consultez les[Livepeer docs Studio](https://livepeer.studio/docs) pour des exemples.
-- **Timeplus** — Utilisation similaire de l'API pour l'analyse en temps réel ou historique.
+- **Grafana** - Utilisez les API de visionnage/utilisation pour créer des tableaux de bord. Consultez les[Livepeer docs Studio](https://livepeer.studio/docs) pour des exemples.
+- **Timeplus** - Utilisation similaire de l'API pour l'analyse en temps réel ou historique.
 
 Pour les chemins d'accès et les paramètres exacts des points de terminaison, consultez le [référence de l'API Viewership](https://livepeer.studio/docs/api-reference/viewership/get-viewership-metrics) et les pages associées.

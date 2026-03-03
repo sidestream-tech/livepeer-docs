@@ -23,21 +23,21 @@ Después de [instalar go-livepeer](/v2/orchestrators/setting-up-an-orchestrator/
 
 ### Red y billetera
 
-- **-ethUrl** — Arbitrum URL de RPC. Consulte [Conéctese a Arbitrum](/v2/orchestrators/setting-up-an-orchestrator/connect-to-arbitrum).
-- **-ethAcctAddr** — (Opcional) dirección de cuenta ETH si ya tiene un archivo keystore.
-- **-network** — Usar `arbitrum-one-mainnet` para producción.
+- **-ethUrl** - Arbitrum URL de RPC. Consulte [Conéctese a Arbitrum](/v2/orchestrators/setting-up-an-orchestrator/connect-to-arbitrum).
+- **-ethAcctAddr** - (Opcional) dirección de cuenta ETH si ya tiene un archivo keystore.
+- **-network** - Usar `arbitrum-one-mainnet` para producción.
 
 ### Identidad del orquestador y precios
 
-- **-serviceAddr** — Nombre de host público o IP y puerto (por ejemplo: `orchestrator.example.com:8935`). Preferir un nombre de host que controle; cambiarlo más tarde requiere una actualización en cadena.
-- **-pricePerUnit** — Precio en wei por píxel (transcodificación). Obligatorio al iniciar; puede actualizarse más tarde mediante la CLI o en cadena.
-- **-pixelsPerUnit** — Píxeles por unidad de precio (por defecto 1). Afecta cómo se calcula el precio por segmento.
+- **-serviceAddr** - Nombre de host público o IP y puerto (por ejemplo: `orchestrator.example.com:8935`). Preferir un nombre de host que controle; cambiarlo más tarde requiere una actualización en cadena.
+- **-pricePerUnit** - Precio en wei por píxel (transcodificación). Obligatorio al iniciar; puede actualizarse más tarde mediante la CLI o en cadena.
+- **-pixelsPerUnit** - Píxeles por unidad de precio (por defecto 1). Afecta cómo se calcula el precio por segmento.
 
 ### GPU y modo
 
-- **-orchestrator** — Ejecutar en modo orquestador.
-- **-transcodificador** — Habilitar transcodificación con GPU.
-- **-nvidia** — Identificadores de GPU NVIDIA separados por comas (por ejemplo, `0,1`). Omitir para uso solo con CPU.
+- **-orchestrator** - Ejecutar en modo orquestador.
+- **-transcodificador** - Habilitar transcodificación con GPU.
+- **-nvidia** - Identificadores de GPU NVIDIA separados por comas (por ejemplo, `0,1`). Omitir para uso solo con CPU.
 
 Ejemplo de ejecución mínima:
 

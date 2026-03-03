@@ -215,6 +215,16 @@ function rewriteMarkdownLinks(body, rewriter) {
   });
 }
 
+function rewriteJsxHrefAttributes(body, rewriter) {
+  return String(body || '').replace(/\bhref=(["'])([^"']+)\1/g, (full, quote, url) => {
+    const trimmed = String(url || '').trim();
+    if (!trimmed) return full;
+    const rewritten = rewriter(trimmed);
+    if (!rewritten || rewritten === trimmed) return full;
+    return `href=${quote}${rewritten}${quote}`;
+  });
+}
+
 function rewriteInternalLinksInBody(body, options) {
   const {
     sourceRoute,
@@ -231,6 +241,44 @@ function rewriteInternalLinksInBody(body, options) {
   let fallbackCount = 0;
 
   const next = rewriteMarkdownLinks(body, (urlPart) => {
+    const targetSourceRoute = resolveLinkUrlToRoute(sourceRoute, urlPart);
+    if (!targetSourceRoute) return urlPart;
+
+    const localizedByLang = routeMapBySourceRoute.get(normalizeRouteKey(targetSourceRoute));
+    const localizedTargetRoute = localizedByLang?.get?.(language) || '';
+    if (!localizedTargetRoute) {
+      fallbackCount += 1;
+      return urlPart;
+    }
+
+    rewrittenCount += 1;
+    return rewriteUrlForLanguage({
+      sourceRoute,
+      sourceLocalizedRoute,
+      url: urlPart,
+      localizedTargetRoute
+    });
+  });
+
+  return { body: next, rewrittenCount, fallbackCount };
+}
+
+function rewriteInternalLinksInJsx(body, options) {
+  const {
+    sourceRoute,
+    language,
+    sourceLocalizedRoute,
+    routeMapBySourceRoute
+  } = options;
+
+  if (!routeMapBySourceRoute || !(routeMapBySourceRoute instanceof Map)) {
+    return { body, rewrittenCount: 0, fallbackCount: 0 };
+  }
+
+  let rewrittenCount = 0;
+  let fallbackCount = 0;
+
+  const next = rewriteJsxHrefAttributes(body, (urlPart) => {
     const targetSourceRoute = resolveLinkUrlToRoute(sourceRoute, urlPart);
     if (!targetSourceRoute) return urlPart;
 
@@ -343,5 +391,7 @@ module.exports = {
   protectText,
   restoreProtectedText,
   rewriteInternalLinksInBody,
+  rewriteInternalLinksInJsx,
+  rewriteJsxHrefAttributes,
   translateMdxBody
 };

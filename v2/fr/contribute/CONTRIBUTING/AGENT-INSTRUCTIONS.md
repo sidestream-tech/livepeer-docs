@@ -229,7 +229,7 @@ Lorsque vous travaillez sur un fork :
 
 ## Documentation associée
 
-- [Documentation complète sur les hooks Git](./GIT-HOOKS.md)
+- [Documentation complète sur les hooks Git](./GIT-HOOKS)
 - [Guide de style](../../resources/documentation-guide/style-guide)
 - [Prérequis de l'agent](../../PLAN/AGENT-PREREQUISITES.md)
 - [Instructions d'extension](../../.github/augment-instructions.md)

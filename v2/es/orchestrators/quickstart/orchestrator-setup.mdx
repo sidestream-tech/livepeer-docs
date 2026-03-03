@@ -69,12 +69,12 @@ GPU 1: GeForce GTX 1070 Ti (UUID: GPU-d46a085e-...)
     />
 
     <Accordion title="Key flags" icon="list">
-      - **-ethUrl** — Arbitrum RPC URL. See [Connect to Arbitrum](../setting-up-an-orchestrator/connect-to-arbitrum).
-      - **-ethAcctAddr** — (Optional) ETH account address if you already have a keystore.
-      - **-orchestrator** / **-transcoder** — Run as orchestrator with GPU transcoding.
-      - **-nvidia** — Comma-separated GPU IDs (e.g. `0,1,2`). Omit for CPU-only.
-      - **-pricePerUnit** — Price in wei per pixel. Required at startup; can be changed later.
-      - **-serviceAddr** — Public address for incoming requests (hostname:port preferred over IP).
+      - **-ethUrl** - Arbitrum RPC URL. See [Connect to Arbitrum](../setting-up-an-orchestrator/connect-to-arbitrum).
+      - **-ethAcctAddr** - (Optional) ETH account address if you already have a keystore.
+      - **-orchestrator** / **-transcoder** - Run as orchestrator with GPU transcoding.
+      - **-nvidia** - Comma-separated GPU IDs (e.g. `0,1,2`). Omit for CPU-only.
+      - **-pricePerUnit** - Price in wei per pixel. Required at startup; can be changed later.
+      - **-serviceAddr** - Public address for incoming requests (hostname:port preferred over IP).
     </Accordion>
 
     <Tip> Keystore default: `~/.lpData/arbitrum-one-mainnet/keystore`. If no account exists, you will be prompted to create one and set a passphrase. Guard the private key and passphrase; they control your wallet and funds.</Tip>
@@ -93,8 +93,8 @@ Received Ping request`}
 
   <StyledStep title="Fund your account">
     To activate on Livepeer you need:
-    - **ETH** (Arbitrum) — for transaction fees. Start with a small amount; the CLI will warn if balance is low.
-    - **LPT** — to stake and join the active set. Check the [Explorer](https://explorer.livepeer.org/) for the 100th orchestrator’s stake; you need at least that much to enter the top 100.
+    - **ETH** (Arbitrum) - for transaction fees. Start with a small amount; the CLI will warn if balance is low.
+    - **LPT** - to stake and join the active set. Check the [Explorer](https://explorer.livepeer.org/) for the 100th orchestrator’s stake; you need at least that much to enter the top 100.
 
     <Warning> If your orchestrator leaves the active set (top 100 by stake), it will not be reactivated automatically unless you re-register or your stake changes so you re-enter the top 100.</Warning>
   </StyledStep>

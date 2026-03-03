@@ -24,21 +24,21 @@ Après [l'installation de go-livepeer](/v2/orchestrators/setting-up-an-orchestra
 
 ### Réseau et portefeuille
 
-- **-ethUrl** — Arbitrum URL RPC. Voir [Connectez-vous à Arbitrum](/v2/orchestrators/setting-up-an-orchestrator/connect-to-arbitrum).
-- **-ethAcctAddr** — (Facultatif) adresse du compte ETH si vous avez déjà un keystore.
-- **-network** — Utilisez `arbitrum-one-mainnet` pour la production.
+- **-ethUrl** - Arbitrum URL RPC. Voir [Connectez-vous à Arbitrum](/v2/orchestrators/setting-up-an-orchestrator/connect-to-arbitrum).
+- **-ethAcctAddr** - (Facultatif) adresse du compte ETH si vous avez déjà un keystore.
+- **-network** - Utilisez `arbitrum-one-mainnet` pour la production.
 
 ### Identité de l'Orchestrator et tarification
 
-- **-serviceAddr** — Hôte public ou IP et port (par exemple `orchestrator.example.com:8935`). Privilégiez un hôte que vous contrôlez ; modifier cet hôte plus tard nécessite une mise à jour sur la chaîne.
-- **-pricePerUnit** — Prix en wei par pixel (transcodage). Requis au démarrage ; peut être mis à jour plus tard via la CLI ou sur la chaîne.
-- **-pixelsPerUnit** — Pixels par unité de tarification (par défaut 1). Affecte la manière dont le prix est calculé par segment.
+- **-serviceAddr** - Hôte public ou IP et port (par exemple `orchestrator.example.com:8935`). Privilégiez un hôte que vous contrôlez ; modifier cet hôte plus tard nécessite une mise à jour sur la chaîne.
+- **-pricePerUnit** - Prix en wei par pixel (transcodage). Requis au démarrage ; peut être mis à jour plus tard via la CLI ou sur la chaîne.
+- **-pixelsPerUnit** - Pixels par unité de tarification (par défaut 1). Affecte la manière dont le prix est calculé par segment.
 
 ### GPU et mode
 
-- **-orchestrator** — Exécuter en mode orchestrateur.
-- **-transcodeur** — Activer la transcodification GPU.
-- **-nvidia** — Identifiants NVIDIA GPU séparés par des virgules (par exemple "`0,1`). Omettre pour une utilisation uniquement CPU.
+- **-orchestrator** - Exécuter en mode orchestrateur.
+- **-transcodeur** - Activer la transcodification GPU.
+- **-nvidia** - Identifiants NVIDIA GPU séparés par des virgules (par exemple "`0,1`). Omettre pour une utilisation uniquement CPU.
 
 Exemple d'exécution minimale :
 

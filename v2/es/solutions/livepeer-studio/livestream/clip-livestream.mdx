@@ -21,10 +21,10 @@ Puedes crear **clips** de transmisiones activas de Livepeer Studio a través de 
 
 Usa la [API Crear Clip](https://livepeer.studio/docs/api-reference/stream/create-clip) con:
 
-- `playbackId` — El **ID de reproducción de la transmisión activa.** 
-- `startTime` — Inicio del fragmento (ms UNIX, desde la posición de reproducción).
-- `endTime` — Fin del fragmento (ms UNIX).
-- `name` — (Opcional) Nombre para el recurso del fragmento.
+- `playbackId` - El **ID de reproducción de la transmisión activa.** 
+- `startTime` - Inicio del fragmento (ms UNIX, desde la posición de reproducción).
+- `endTime` - Fin del fragmento (ms UNIX).
+- `name` - (Opcional) Nombre para el recurso del fragmento.
 
 Asegúrate de que`startTime` esté en o después del inicio de la transmisión y`endTime` no esté en el futuro.
 
@@ -46,8 +46,8 @@ El Player’s [Clip trigger](https://www.npmjs.com/package/@livepeer/react#playe
 
 ## Supervisa el estado del clip
 
-- **Búsqueda periódica** — Llamar a `GET /asset/{assetId}` hasta `asset.status` es `ready`.
-- **Webhooks** — Suscribirse a `asset.ready` (y opcionalmente `asset.failed`). Usa la `assetId` del resultado de create-clip para coincidir con el evento.
+- **Búsqueda periódica** - Llamar a `GET /asset/{assetId}` hasta `asset.status` es `ready`.
+- **Webhooks** - Suscribirse a `asset.ready` (y opcionalmente `asset.failed`). Usa la `assetId` del resultado de create-clip para coincidir con el evento.
 - El activo del clip tiene `source.type === "clip"` y un `sessionId` por lo que puedes saber que es un clip.
 
 Los clips obtienen **reproducción de origen** primero (reproducible rápidamente); las versiones transcodificadas se agregan cuando finaliza el procesamiento. Use la `playbackId` con la [API de Información de Reproducción](https://livepeer.studio/docs/api-reference/playback/get) o la [Reproductor](../player) para reproducirlo.

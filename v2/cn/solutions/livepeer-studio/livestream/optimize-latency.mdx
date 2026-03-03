@@ -7,8 +7,8 @@ description: 通过 WebRTC 和 HLS 实现低延迟或超低延迟，并调整 OB
 
 ## 协议
 
-- **WebRTC** — 最适合低延迟（约0.5–3秒）。使用支持WebRTC的播放器（例如[Livepeer 播放器](../player)）。
-- **HLS** — 更广泛的兼容性；通常延迟约10–20秒。使用推荐的低延迟设置，HLS在Livepeer Studio上可以达到约10秒。
+- **WebRTC** - 最适合低延迟（约0.5–3秒）。使用支持WebRTC的播放器（例如[Livepeer 播放器](../player)）。
+- **HLS** - 更广泛的兼容性；通常延迟约10–20秒。使用推荐的低延迟设置，HLS在Livepeer Studio上可以达到约10秒。
 
 根据是否需要实时交互（WebRTC）或最大兼容性（HLS）进行选择。
 
@@ -22,9 +22,9 @@ description: 通过 WebRTC 和 HLS 实现低延迟或超低延迟，并调整 OB
 
 ## OBS 低延迟设置
 
-- **关键帧间隔** — 更低的值意味着更低的延迟。使用 **1** 以获得最低延迟（和 WebRTC 兼容性）。
-- **码率控制** — CRF 或 CBR；更高的比特率通常意味着更好的质量，但需要更多带宽。不要超过您的上传容量。
-- **B-frames** — 设置为**0** 用于 WebRTC 和最低延迟。B-frames 可提高压缩率，但会增加延迟并破坏 WebRTC 的顺序。
+- **关键帧间隔** - 更低的值意味着更低的延迟。使用 **1** 以获得最低延迟（和 WebRTC 兼容性）。
+- **码率控制** - CRF 或 CBR；更高的比特率通常意味着更好的质量，但需要更多带宽。不要超过您的上传容量。
+- **B-frames** - 设置为**0** 用于 WebRTC 和最低延迟。B-frames 可提高压缩率，但会增加延迟并破坏 WebRTC 的顺序。
 
 参见[通过 OBS 流媒体传输](stream-via-obs)用于完整的推荐配置文件（低延迟、平衡、高质量）。
 
@@ -32,8 +32,8 @@ description: 通过 WebRTC 和 HLS 实现低延迟或超低延迟，并调整 OB
 
 浏览器内的 WebRTC 直播默认是低延迟的。观众可以通过以下方式观看：
 
-- **WebRTC** — ~0.5–3 秒（使用 Livepeer 播放器或另一个 WebRTC/WHEP 播放器）。
-- **HLS** — ~8–10 秒，如果您更喜欢或 WebRTC 不可用。
+- **WebRTC** - ~0.5–3 秒（使用 Livepeer 播放器或另一个 WebRTC/WHEP 播放器）。
+- **HLS** - ~8–10 秒，如果您更喜欢或 WebRTC 不可用。
 
 查看 [从浏览器直播](livestream-from-browser)。
 

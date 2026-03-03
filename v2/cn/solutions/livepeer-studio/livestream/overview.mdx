@@ -7,7 +7,7 @@ description: Livepeer Studio 中的直播概念：流、会话、输入、播放
 
 ## 会话
 
-一个流由一个或多个**会话**—流媒体活跃的时段。同一时间只有一个会话处于活动状态。会话有自己的ID和元数据。使用 "[sessions API](https://livepeer.studio/docs/api-reference/session/get-all) 来列出流媒体的会话。
+一个流由一个或多个**会话**-流媒体活跃的时段。同一时间只有一个会话处于活动状态。会话有自己的ID和元数据。使用 "[sessions API](https://livepeer.studio/docs/api-reference/session/get-all) 来列出流媒体的会话。
 
 ## 录制
 
@@ -17,9 +17,9 @@ description: Livepeer Studio 中的直播概念：流、会话、输入、播放
 
 您可以使用以下方式将实时视频发送到流中:
 
-- **RTMP** — 默认；与 OBS 或其他 RTMP 编码器一起使用。参见[通过 OBS 流媒体传输](./stream-via-obs)。
-- **WebRTC** — 从浏览器低延迟接收。参见[从浏览器进行直播](./livestream-from-browser)。
-- **SRT** — 也支持用于输入。
+- **RTMP** - 默认；与 OBS 或其他 RTMP 编码器一起使用。参见[通过 OBS 流媒体传输](./stream-via-obs)。
+- **WebRTC** - 从浏览器低延迟接收。参见[从浏览器进行直播](./livestream-from-browser)。
+- **SRT** - 也支持用于输入。
 
 当流处于直播状态时，[流健康状况](./stream-health) 提供指标（例如转码状态、摄入速率）以便您监控质量和排查问题。
 
@@ -39,10 +39,10 @@ description: Livepeer Studio 中的直播概念：流、会话、输入、播放
 
 Common stream-related events:
 
-- `stream.started` — 流正在运行，HLS URL 可用。
-- `stream.idle` — 流已不再运行。
-- `recording.*` — 录制已开始，就绪或等待中。
-- `multistream.*` — 多流目标已连接、出现错误或已断开。
+- `stream.started` - 流正在运行，HLS URL 可用。
+- `stream.idle` - 流已不再运行。
+- `recording.*` - 录制已开始，就绪或等待中。
+- `multistream.*` - 多流目标已连接、出现错误或已断开。
 
 参见 [Webhooks](../analytics/webhooks) 和 [监听事件](../analytics/listen-to-events)。
 

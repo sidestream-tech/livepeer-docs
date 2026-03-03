@@ -21,21 +21,21 @@ import { CustomCodeBlock } from '/snippets/components/content/code.jsx'
 
 ### 网络和钱包
 
-- **-ethUrl** — Arbitrum RPC URL。查看 [连接到 Arbitrum](/v2/orchestrators/setting-up-an-orchestrator/connect-to-arbitrum)。
-- **-ethAcctAddr** — (可选) 如果您已经有密钥库，则为 ETH 账户地址。
-- **-network** — 使用 `arbitrum-one-mainnet` 用于生产环境.
+- **-ethUrl** - Arbitrum RPC URL。查看 [连接到 Arbitrum](/v2/orchestrators/setting-up-an-orchestrator/connect-to-arbitrum)。
+- **-ethAcctAddr** - (可选) 如果您已经有密钥库，则为 ETH 账户地址。
+- **-network** - 使用 `arbitrum-one-mainnet` 用于生产环境.
 
 ### Orchestrator 身份和定价
 
-- **-serviceAddr** — 公共主机名或 IP 和端口（例如 `orchestrator.example.com:8935`）。优先使用您控制的主机名；以后更改需要链上更新。
-- **-pricePerUnit** — 每像素（转码）的 wei 价格。启动时必需；可通过 CLI 或链上 later 更新。
-- **-pixelsPerUnit** — 每定价单位的像素数（默认为 1）。会影响每段的价格计算方式。
+- **-serviceAddr** - 公共主机名或 IP 和端口（例如 `orchestrator.example.com:8935`）。优先使用您控制的主机名；以后更改需要链上更新。
+- **-pricePerUnit** - 每像素（转码）的 wei 价格。启动时必需；可通过 CLI 或链上 later 更新。
+- **-pixelsPerUnit** - 每定价单位的像素数（默认为 1）。会影响每段的价格计算方式。
 
 ### GPU 和 模式
 
-- **-orchestrator** — 以协调器模式运行。
-- **-transcoder** — 启用 GPU 转码。
-- **-nvidia** — 用逗号分隔的 NVIDIA GPU ID（例如 "`0,1`）。仅用于 CPU。
+- **-orchestrator** - 以协调器模式运行。
+- **-transcoder** - 启用 GPU 转码。
+- **-nvidia** - 用逗号分隔的 NVIDIA GPU ID（例如 "`0,1`）。仅用于 CPU。
 
 示例最小运行：
 
