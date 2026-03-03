@@ -100,6 +100,25 @@ export NOTION_LOCAL_SYNC_STALE_TAB_NAME="Stale"
 export NOTION_LOCAL_SYNC_DISABLE=1
 ```
 
+### Disable hook everywhere (repo-local)
+
+If you want the hook disabled regardless of env vars, rename the script in the
+active hooks path. Check which hooks path Git is using:
+
+```bash
+git config --get core.hooksPath
+```
+
+Then rename the hook:
+
+```bash
+# if core.hooksPath is .githooks
+mv .githooks/post-commit .githooks/post-commit.disabled
+
+# if core.hooksPath is empty (default .git/hooks)
+mv .git/hooks/post-commit .git/hooks/post-commit.disabled
+```
+
 ### Remove local hook
 
 ```bash
