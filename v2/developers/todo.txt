@@ -55,6 +55,9 @@
 
 # TODO:
 
+MAIN: REFERENCES SECTION IS ODD - ARE THERE ANY CLEAR REFERENCES FOR AI PIPELINES AND VIDEO? 
+PATHWAY RENAMING NEEDED.
+
 ## Upgrade:
 - Refresh content and examples for all non-warning pages listed above.
 - Improve SEO metadata and section-level discoverability.
@@ -75,3 +78,5 @@
 - Check every overview page links clearly to its child detail pages.
 - Run guide workflows to ensure commands/snippets still work as written.
 - Test API reference examples for correct method, auth, request schema, and response fields.
+ 
+ 
