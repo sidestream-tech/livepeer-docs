@@ -6,11 +6,11 @@
  * @scope tools/scripts/i18n, docs.json, v2
  *
  * @usage
- *   node tools/scripts/i18n/translate-docs.js --languages es,fr,de --scope-mode prefixes --prefixes v2/about/livepeer-network --max-pages 10
- *   node tools/scripts/i18n/translate-docs.js --provider mock --dry-run --scope-mode full_v2_nav --max-pages 5
+ *   node tools/scripts/i18n/translate-docs.js --languages es,fr,de --scope-mode prefixes --prefixes v2/about/livepeer-network --max-pages 10 --max-concurrency 5
+ *   node tools/scripts/i18n/translate-docs.js --provider mock --dry-run --scope-mode full_v2_nav --max-pages 5 --max-concurrency 5
  *
  * @inputs
- *   --languages <csv>, --scope-mode <mode>, --base-ref <ref>, --prefixes <csv>, --paths-file <path>, --max-pages <n>, --provider <name>, --dry-run, --force, --allow-mock-write, --route-map <path>, --report-json <path>, --config <path>, --cleanup-only, --rewrite-links, --rewrite-scope <mode>
+ *   --languages <csv>, --scope-mode <mode>, --base-ref <ref>, --prefixes <csv>, --paths-file <path>, --max-pages <n>, --max-concurrency <n>, --provider <name>, --dry-run, --force, --allow-mock-write, --route-map <path>, --report-json <path>, --config <path>, --cleanup-only, --rewrite-links, --rewrite-scope <mode>
  *
  * @outputs
  *   - Localized MD/MDX files under v2/<lang>/...
@@ -22,8 +22,8 @@
  *   1 = runtime or validation failure
  *
  * @examples
- *   node tools/scripts/i18n/translate-docs.js --languages es --scope-mode paths_file --paths-file /tmp/paths.txt --route-map /tmp/route-map.json --report-json /tmp/report.json
- *   node tools/scripts/i18n/translate-docs.js --languages es,fr,zh-CN --scope-mode full_v2_nav --max-pages 1000
+ *   node tools/scripts/i18n/translate-docs.js --languages es --scope-mode paths_file --paths-file /tmp/paths.txt --route-map /tmp/route-map.json --report-json /tmp/report.json --max-concurrency 5
+ *   node tools/scripts/i18n/translate-docs.js --languages es,fr,zh-CN --scope-mode full_v2_nav --max-pages 1000 --max-concurrency 5
  *
  * @notes
  *   Mock provider writes are blocked by default; use --dry-run for mock smoke tests.
@@ -61,6 +61,7 @@ function printHelp() {
       '  --prefixes <csv>             Repo prefixes for prefixes mode',
       '  --paths-file <path>          File containing explicit routes/files (paths_file mode)',
       '  --max-pages <n>              Max selected pages to process',
+      '  --max-concurrency <n>        Max concurrent source files to translate (capped at 5)',
       '  --provider <name>            openrouter | mock',
       '  --dry-run                    Do not write localized files',
       '  --force                      Retranslate even when source hash matches',
@@ -119,6 +120,22 @@ function buildRouteMapIndex(entries) {
 
 function normalizeFileKey(value) {
   return normalizeRepoRel(String(value || '').replace(/\\/g, '/'));
+}
+
+function normalizeMaxConcurrency(value, fallback = 5) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed <= 0) return fallback;
+  return Math.min(parsed, fallback);
+}
+
+function chunkArray(items, size) {
+  if (!Array.isArray(items) || items.length === 0) return [];
+  const normalized = normalizeMaxConcurrency(size);
+  const batches = [];
+  for (let i = 0; i < items.length; i += normalized) {
+    batches.push(items.slice(i, i + normalized));
+  }
+  return batches;
 }
 
 function isQuarantinedLocalizedFile(localizedFile) {
@@ -1017,69 +1034,74 @@ async function run(argv = process.argv.slice(2)) {
   }
 
   if (!cleanupOnly) {
-    for (const item of scope.selected) {
-      for (const language of runtime.languages) {
-        try {
-          const result = await processOneTranslation({
-            repoRoot,
-            config,
-            translator,
-            item,
-            language,
-            routeMapIndex,
-            runtime
-          });
-          updateRouteMapEntry(routeMapEntries, result.routeMapEntry);
+    const batches = chunkArray(scope.selected, runtime.maxConcurrency);
+    for (const batch of batches) {
+      await Promise.all(
+        batch.map(async (item) => {
+          for (const language of runtime.languages) {
+            try {
+              const result = await processOneTranslation({
+                repoRoot,
+                config,
+                translator,
+                item,
+                language,
+                routeMapIndex,
+                runtime
+              });
+              updateRouteMapEntry(routeMapEntries, result.routeMapEntry);
 
-          const status = result.routeMapEntry.status;
-          if (status === 'translated') report.counts.translated += 1;
-          if (status === 'translated_dry_run') report.counts.dryRunTranslated += 1;
-          if (status === 'skipped_up_to_date') report.counts.skippedUpToDate += 1;
-          if (result.report.changed) report.counts.changedWrites += 1;
-          report.counts.successfulPageLanguagePairs += 1;
+              const status = result.routeMapEntry.status;
+              if (status === 'translated') report.counts.translated += 1;
+              if (status === 'translated_dry_run') report.counts.dryRunTranslated += 1;
+              if (status === 'skipped_up_to_date') report.counts.skippedUpToDate += 1;
+              if (result.report.changed) report.counts.changedWrites += 1;
+              report.counts.successfulPageLanguagePairs += 1;
 
-          report.pages.push({
-            sourceRoute: item.route,
-            sourceFile: item.fileRel,
-            language,
-            requestedLanguage: requestedLanguageForEffective(runtime, language),
-            effectiveLanguage: language,
-            localizedRoute: result.routeMapEntry.localizedRoute,
-            localizedFile: result.routeMapEntry.localizedFile,
-            status,
-            translatedSegments: result.report.translatedSegments,
-            translatedFrontmatterFields: result.report.translatedFrontmatterFields,
-            linkRewrites: result.report.linkRewrites,
-            linkFallbacks: result.report.linkFallbacks,
-            modelUsed: result.report.modelUsed
-          });
-        } catch (error) {
-          report.counts.failed += 1;
-          const failure = {
-            sourceRoute: item.route,
-            sourceFile: item.fileRel,
-            language,
-            error: error.message
-          };
-          report.failures.push(failure);
-          updateRouteMapEntry(routeMapEntries, {
-            sourceRoute: item.route,
-            sourceFile: item.fileRel,
-            language,
-            requestedLanguage: requestedLanguageForEffective(runtime, language),
-            effectiveLanguage: language,
-            localizedRoute: normalizeRouteKey(
-              repoFileRelToLocalizedFileRel(item.fileRel, language, config.generatedRoot, config.generatedPathStyle)
-            ),
-            localizedFile: repoFileRelToLocalizedFileRel(item.fileRel, language, config.generatedRoot, config.generatedPathStyle),
-            localizedRouteStyle: config.generatedPathStyle || '',
-            status: 'failed',
-            provider: translator.name,
-            provenanceKind: '',
-            artifactClass: 'failed'
-          });
-        }
-      }
+              report.pages.push({
+                sourceRoute: item.route,
+                sourceFile: item.fileRel,
+                language,
+                requestedLanguage: requestedLanguageForEffective(runtime, language),
+                effectiveLanguage: language,
+                localizedRoute: result.routeMapEntry.localizedRoute,
+                localizedFile: result.routeMapEntry.localizedFile,
+                status,
+                translatedSegments: result.report.translatedSegments,
+                translatedFrontmatterFields: result.report.translatedFrontmatterFields,
+                linkRewrites: result.report.linkRewrites,
+                linkFallbacks: result.report.linkFallbacks,
+                modelUsed: result.report.modelUsed
+              });
+            } catch (error) {
+              report.counts.failed += 1;
+              const failure = {
+                sourceRoute: item.route,
+                sourceFile: item.fileRel,
+                language,
+                error: error.message
+              };
+              report.failures.push(failure);
+              updateRouteMapEntry(routeMapEntries, {
+                sourceRoute: item.route,
+                sourceFile: item.fileRel,
+                language,
+                requestedLanguage: requestedLanguageForEffective(runtime, language),
+                effectiveLanguage: language,
+                localizedRoute: normalizeRouteKey(
+                  repoFileRelToLocalizedFileRel(item.fileRel, language, config.generatedRoot, config.generatedPathStyle)
+                ),
+                localizedFile: repoFileRelToLocalizedFileRel(item.fileRel, language, config.generatedRoot, config.generatedPathStyle),
+                localizedRouteStyle: config.generatedPathStyle || '',
+                status: 'failed',
+                provider: translator.name,
+                provenanceKind: '',
+                artifactClass: 'failed'
+              });
+            }
+          }
+        })
+      );
     }
   }
 
