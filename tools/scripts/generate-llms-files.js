@@ -41,7 +41,7 @@ const OUTPUT_FULL = 'llms-full.txt';
 
 const DOMAIN_RENAME_MAP = {
   '00_home': 'home',
-  '010_products': 'platforms',
+  '010_products': 'solutions',
   '01_about': 'about',
   '02_community': 'community',
   '03_developers': 'developers',

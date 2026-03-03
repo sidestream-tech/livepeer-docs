@@ -143,9 +143,9 @@ const PHASE1_NAV_DECISIONS = [
 
 const DEPRECATION_DESTINATIONS = {
   'v1/delegators/quick-start': 'v2/lpt/delegation/overview',
-  'v1/developers/guides/playback-a-livestream': 'v2/platforms/livepeer-studio/livestream/playback-livestream',
-  'v1/developers/guides/playback-an-asset': 'v2/platforms/livepeer-studio/video-on-demand/playback-asset',
-  'v1/developers/quick-start': 'v2/platforms/livepeer-studio/quickstart',
+  'v1/developers/guides/playback-a-livestream': 'v2/solutions/livepeer-studio/livestream/playback-livestream',
+  'v1/developers/guides/playback-an-asset': 'v2/solutions/livepeer-studio/video-on-demand/playback-asset',
+  'v1/developers/quick-start': 'v2/solutions/livepeer-studio/quickstart',
   'v1/developers/tutorials/decentralized-app-with-fvm': 'v2/developers/guides-and-resources/developer-guides',
   'v1/developers/tutorials/token-gate-videos-with-lit': 'v2/developers/guides-and-resources/developer-guides',
   'v1/developers/tutorials/upload-playback-videos-4everland': 'v2/developers/guides-and-resources/developer-guides',

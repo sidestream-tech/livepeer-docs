@@ -117,13 +117,13 @@ async function runTests() {
   });
 
   await runCase('Resolves locale Studio API files to api/studio.yaml', async () => {
-    const spec = audit.resolveSpecForFile('v2/es/platforms/livepeer-studio/api-reference/streams/create.mdx');
+    const spec = audit.resolveSpecForFile('v2/es/solutions/livepeer-studio/api-reference/streams/create.mdx');
     assert.strictEqual(spec, 'api/studio.yaml');
   });
 
   await runCase('Flags unknown endpoint not found in resolved spec', async () => {
     const fixture = mkFixture(
-      'v2/es/platforms/livepeer-studio/api-reference/__openapi-audit-unit__',
+      'v2/es/solutions/livepeer-studio/api-reference/__openapi-audit-unit__',
       `unknown-${Date.now()}.mdx`,
       [
         '---',
@@ -159,7 +159,7 @@ async function runTests() {
 
   await runCase('Flags frontmatter/component endpoint mismatch within same file', async () => {
     const fixture = mkFixture(
-      'v2/platforms/livepeer-studio/api-reference/__openapi-audit-unit__',
+      'v2/solutions/livepeer-studio/api-reference/__openapi-audit-unit__',
       `mismatch-${Date.now()}.mdx`,
       [
         '---',
@@ -195,7 +195,7 @@ async function runTests() {
 
   await runCase('Applies conservative autofix normalization with --fix --write', async () => {
     const fixture = mkFixture(
-      'v2/platforms/livepeer-studio/api-reference/__openapi-audit-unit__',
+      'v2/solutions/livepeer-studio/api-reference/__openapi-audit-unit__',
       `fix-${Date.now()}.mdx`,
       [
         '---',
@@ -235,7 +235,7 @@ async function runTests() {
 
   await runCase('Produces required JSON summary contract keys', async () => {
     const fixture = mkFixture(
-      'v2/platforms/livepeer-studio/api-reference/__openapi-audit-unit__',
+      'v2/solutions/livepeer-studio/api-reference/__openapi-audit-unit__',
       `contract-${Date.now()}.mdx`,
       [
         '---',

@@ -63,7 +63,7 @@ const DOMAIN_IMAGES = {
   lpt: "/snippets/assets/domain/06_DELEGATORS/social-preview-delegators.jpg",
   resources: "/snippets/assets/domain/07_RESOURCES/social-preview-resources.jpg",
   internal: "/snippets/assets/domain/SHARED/LivepeerDocsLogo.svg",
-  platforms: "/snippets/assets/domain/SHARED/LivepeerDocsLogo.svg",
+  solutions: "/snippets/assets/domain/SHARED/LivepeerDocsLogo.svg",
   deprecated: "/snippets/assets/domain/SHARED/LivepeerDocsLogo.svg",
   experimental: "/snippets/assets/domain/SHARED/LivepeerDocsLogo.svg",
   notes: "/snippets/assets/domain/SHARED/LivepeerDocsLogo.svg",

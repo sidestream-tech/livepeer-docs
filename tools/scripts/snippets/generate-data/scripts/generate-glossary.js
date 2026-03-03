@@ -56,7 +56,7 @@ const V1_PAGES_DIR = path.join(REPO_ROOT, 'v1');
 const V2_PAGES_DIRS = [
   'v2/pages',
   'v2/home',
-  'v2/platforms',
+  'v2/solutions',
   'v2/about',
   'v2/community',
   'v2/developers',

@@ -157,7 +157,7 @@ node tests/integration/v2-wcag-audit.js --full --no-fix
 node tests/integration/v2-wcag-audit.js --staged --fix --stage --max-pages 10 --fail-impact serious --report /tmp/livepeer-wcag-audit-precommit.md --report-json /tmp/livepeer-wcag-audit-precommit.json
 node tests/integration/openapi-reference-audit.js --full --strict --report /tmp/openapi-audit.md --report-json /tmp/openapi-audit.json
 node tests/integration/openapi-reference-audit.js --full --fix --write --report /tmp/openapi-audit-fix.md --report-json /tmp/openapi-audit-fix.json
-node tests/integration/openapi-reference-audit.js --files v2/platforms/livepeer-studio/api-reference/streams/create.mdx --strict
+node tests/integration/openapi-reference-audit.js --files v2/solutions/livepeer-studio/api-reference/streams/create.mdx --strict
 bash lpd test --staged --wcag
 bash lpd test --staged --link-audit-external
 bash lpd test --full --wcag

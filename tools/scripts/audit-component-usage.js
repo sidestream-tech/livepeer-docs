@@ -32,7 +32,7 @@ const REPORT_PATH = path.join(__dirname, '..', '..', 'tasks', 'reports', 'repo-o
 const V2_DOC_ROOTS = [
   'v2/pages',
   'v2/home',
-  'v2/platforms',
+  'v2/solutions',
   'v2/about',
   'v2/community',
   'v2/developers',

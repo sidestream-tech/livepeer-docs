@@ -182,7 +182,7 @@ node tests/integration/v2-link-audit.js --files v2/community/livepeer-community/
 node tests/integration/v2-link-audit.js --full --external-policy validate --external-link-types navigational --no-write-links --report /tmp/v2-link-audit-external.md --report-json /tmp/v2-link-audit-external.json
 node tests/integration/openapi-reference-audit.js --full --strict --report /tmp/openapi-audit.md --report-json /tmp/openapi-audit.json
 node tests/integration/openapi-reference-audit.js --full --fix --write --report /tmp/openapi-audit-fix.md --report-json /tmp/openapi-audit-fix.json
-node tests/integration/openapi-reference-audit.js --files v2/platforms/livepeer-studio/api-reference/streams/create.mdx --strict
+node tests/integration/openapi-reference-audit.js --files v2/solutions/livepeer-studio/api-reference/streams/create.mdx --strict
 ```
 
 ## OpenAPI Triage (`endpoint-not-found-in-spec`)

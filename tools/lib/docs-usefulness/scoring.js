@@ -108,7 +108,7 @@ function inferPersonaFromPath(filePath) {
   if (p.includes('/lpt/')) return 'delegators_token_holders';
   if (p.includes('/community/')) return 'community';
   if (p.includes('/internal/')) return 'internal_maintainers';
-  if (p.includes('/platforms/')) return 'platform_builders';
+  if (p.includes('/solutions/')) return 'platform_builders';
   if (p.includes('/about/')) return 'general_technical_audience';
   if (p.includes('/home/')) return 'general_audience';
   return 'unknown';

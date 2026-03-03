@@ -7,7 +7,7 @@
  *
  * @usage
  *   node tests/integration/openapi-reference-audit.js --full --strict --report /tmp/openapi-audit.md --report-json /tmp/openapi-audit.json
- *   node tests/integration/openapi-reference-audit.js --files v2/platforms/livepeer-studio/api-reference/streams/create.mdx --strict
+ *   node tests/integration/openapi-reference-audit.js --files v2/solutions/livepeer-studio/api-reference/streams/create.mdx --strict
  *   node tests/integration/openapi-reference-audit.js --full --fix --write
  *
  * @inputs
@@ -322,7 +322,7 @@ function parseOpenApiTagReference(tag) {
 function resolveSpecForFile(relPath) {
   const file = toPosix(relPath);
 
-  if (/^v2(?:\/(?:es|fr|cn))?\/platforms\/livepeer-studio\/api-reference\//.test(file)) {
+  if (/^v2(?:\/(?:es|fr|cn))?\/solutions\/livepeer-studio\/api-reference\//.test(file)) {
     return SPEC_BY_KEY.studio;
   }
 

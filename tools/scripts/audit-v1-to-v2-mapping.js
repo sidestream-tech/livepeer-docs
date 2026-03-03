@@ -135,7 +135,7 @@ const STOPWORDS = new Set([
 
 const LEGACY_DOMAIN_MAP = {
   '00_home': 'home',
-  '010_products': 'platforms',
+  '010_products': 'solutions',
   '01_about': 'about',
   '02_community': 'community',
   '03_developers': 'developers',
@@ -756,7 +756,7 @@ function sectionPrior(topSection, targetRoute, context) {
   switch (topSection) {
     case 'developers':
       if (starts('v2/developers/')) return 0.26;
-      if (starts('v2/platforms/livepeer-studio/')) return 0.18;
+      if (starts('v2/solutions/livepeer-studio/')) return 0.18;
       if (starts('v2/resources/')) return 0.06;
       break;
     case 'gateways':

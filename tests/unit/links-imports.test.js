@@ -39,7 +39,7 @@ let warnings = [];
 const V2_DOMAIN_DIRS = new Set([
   'home',
   'about',
-  'platforms',
+  'solutions',
   'community',
   'developers',
   'gateways',

@@ -160,7 +160,7 @@ const dryRun = process.argv.includes('--dry-run');
 const pagesDirs = [
   path.join(__dirname, '../../../v2/pages'),
   path.join(__dirname, '../../../v2/home'),
-  path.join(__dirname, '../../../v2/platforms'),
+  path.join(__dirname, '../../../v2/solutions'),
   path.join(__dirname, '../../../v2/about'),
   path.join(__dirname, '../../../v2/community'),
   path.join(__dirname, '../../../v2/developers'),

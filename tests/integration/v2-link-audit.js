@@ -78,7 +78,7 @@ const NAV_ATTRS = new Set(['href', 'to']);
 const MIGRATED_V2_DOMAIN_DIRS = new Set([
   'home',
   'about',
-  'platforms',
+  'solutions',
   'community',
   'developers',
   'gateways',

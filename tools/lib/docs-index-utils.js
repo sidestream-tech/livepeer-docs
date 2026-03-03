@@ -32,7 +32,7 @@ const yaml = require('js-yaml');
 
 const DOMAIN_RENAME_MAP = {
   '00_home': 'home',
-  '010_products': 'platforms',
+  '010_products': 'solutions',
   '01_about': 'about',
   '02_community': 'community',
   '03_developers': 'developers',
@@ -353,13 +353,13 @@ function deriveEntities(frontmatter, relPath, apiEndpoints = []) {
   if (tokenSet.has('developers') || tokenSet.has('developer') || /developers/.test(pathString)) {
     entities.add('developer');
   }
-  if (pathString.includes('platforms/livepeer-studio') || tokenSet.has('livepeer-studio')) {
+  if (pathString.includes('solutions/livepeer-studio') || tokenSet.has('livepeer-studio')) {
     entities.add('livepeer-studio');
   }
-  if (pathString.includes('platforms/streamplace') || tokenSet.has('streamplace')) {
+  if (pathString.includes('solutions/streamplace') || tokenSet.has('streamplace')) {
     entities.add('streamplace');
   }
-  if (pathString.includes('platforms/daydream') || tokenSet.has('daydream')) {
+  if (pathString.includes('solutions/daydream') || tokenSet.has('daydream')) {
     entities.add('daydream');
   }
   if (tokenSet.has('lpt') || tokenSet.has('token') || /lpt/.test(pathString)) {

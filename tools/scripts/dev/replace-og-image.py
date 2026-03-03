@@ -35,7 +35,7 @@ skipped = 0
 roots = [
     'v2/pages',
     'v2/home',
-    'v2/platforms',
+    'v2/solutions',
     'v2/about',
     'v2/community',
     'v2/developers',
