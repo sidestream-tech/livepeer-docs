@@ -239,6 +239,18 @@ function pickUniqueCandidate(candidates) {
   return candidates[0];
 }
 
+function filterCandidatesBySameRoot(candidates, normalized) {
+  if (!Array.isArray(candidates) || candidates.length === 0) return candidates;
+  if (normalized.startsWith('docs-guide/')) {
+    return candidates.filter((candidate) => candidate.startsWith('docs-guide/'));
+  }
+  if (normalized.startsWith('v2/')) {
+    const root = normalized.split('/').slice(0, 2).join('/');
+    return candidates.filter((candidate) => candidate.startsWith(`${root}/`));
+  }
+  return candidates;
+}
+
 function findRenameTargetBySearch(repoRoot, sourcePath) {
   if (!sourcePath) return '';
   const normalized = normalizeRepoRel(sourcePath);
@@ -281,6 +293,10 @@ function findRenameTargetBySearch(repoRoot, sourcePath) {
         candidates.push(...(index.get(altGateway) || []));
       }
     }
+    const uniquePreferred = pickUniqueCandidate(
+      [...new Set(filterCandidatesBySameRoot(candidates, normalized))]
+    );
+    if (uniquePreferred) return uniquePreferred;
     const unique = pickUniqueCandidate([...new Set(candidates)]);
     if (unique) return unique;
   }
@@ -353,15 +369,20 @@ function cleanupLocalizedOrphans({ repoRoot, existingLocalizedEntries, runtime, 
         if (normalizeFileKey(targetLocalized) === localizedFile) {
           continue;
         }
-        if (fs.existsSync(targetLocalizedAbs)) {
-          fs.unlinkSync(absPath);
-          deletedFiles.add(localizedFile);
-          warnings.push(`orphan cleanup deleted (rename target exists): ${localizedFile} -> ${targetLocalized}`);
-        } else {
-          fs.mkdirSync(path.dirname(targetLocalizedAbs), { recursive: true });
-          fs.renameSync(absPath, targetLocalizedAbs);
-          movedFiles.add(localizedFile);
-          movedTargets.set(localizedFile, targetLocalized);
+        try {
+          if (fs.existsSync(targetLocalizedAbs)) {
+            fs.unlinkSync(absPath);
+            deletedFiles.add(localizedFile);
+            warnings.push(`orphan cleanup deleted (rename target exists): ${localizedFile} -> ${targetLocalized}`);
+          } else {
+            fs.mkdirSync(path.dirname(targetLocalizedAbs), { recursive: true });
+            fs.renameSync(absPath, targetLocalizedAbs);
+            movedFiles.add(localizedFile);
+            movedTargets.set(localizedFile, targetLocalized);
+            continue;
+          }
+        } catch (error) {
+          warnings.push(`orphan cleanup skipped (missing file): ${localizedFile} (${error.message})`);
           continue;
         }
       }
@@ -382,15 +403,20 @@ function cleanupLocalizedOrphans({ repoRoot, existingLocalizedEntries, runtime, 
           if (normalizeFileKey(targetLocalized) === localizedFile) {
             continue;
           }
-          if (fs.existsSync(targetLocalizedAbs)) {
-            fs.unlinkSync(absPath);
-            deletedFiles.add(localizedFile);
-            warnings.push(`orphan cleanup deleted (rename target exists): ${localizedFile} -> ${targetLocalized}`);
-          } else {
-            fs.mkdirSync(path.dirname(targetLocalizedAbs), { recursive: true });
-            fs.renameSync(absPath, targetLocalizedAbs);
-            movedFiles.add(localizedFile);
-            movedTargets.set(localizedFile, targetLocalized);
+          try {
+            if (fs.existsSync(targetLocalizedAbs)) {
+              fs.unlinkSync(absPath);
+              deletedFiles.add(localizedFile);
+              warnings.push(`orphan cleanup deleted (rename target exists): ${localizedFile} -> ${targetLocalized}`);
+            } else {
+              fs.mkdirSync(path.dirname(targetLocalizedAbs), { recursive: true });
+              fs.renameSync(absPath, targetLocalizedAbs);
+              movedFiles.add(localizedFile);
+              movedTargets.set(localizedFile, targetLocalized);
+              continue;
+            }
+          } catch (error) {
+            warnings.push(`orphan cleanup skipped (missing file): ${localizedFile} (${error.message})`);
             continue;
           }
         }
@@ -407,9 +433,135 @@ function cleanupLocalizedOrphans({ repoRoot, existingLocalizedEntries, runtime, 
       warnings.push(`orphan cleanup skipped (target exists): ${localizedFile} -> ${orphanPath}`);
       continue;
     }
-    fs.mkdirSync(path.dirname(orphanAbs), { recursive: true });
-    fs.renameSync(absPath, orphanAbs);
-    movedFiles.add(localizedFile);
+    try {
+      fs.mkdirSync(path.dirname(orphanAbs), { recursive: true });
+      fs.renameSync(absPath, orphanAbs);
+      movedFiles.add(localizedFile);
+    } catch (error) {
+      warnings.push(`orphan cleanup skipped (missing file): ${localizedFile} (${error.message})`);
+    }
+  }
+
+  return { deletedFiles, movedFiles, movedTargets, warnings };
+}
+
+function collectQuarantinedLocalizedFiles(repoRoot, language) {
+  const quarantined = [];
+  const rootRel = normalizeRepoRel(path.join('v2', language, 'group', 'x-orphaned'));
+  const rootAbs = path.join(repoRoot, rootRel);
+  function walk(dirAbs) {
+    let entries = [];
+    try {
+      entries = fs.readdirSync(dirAbs, { withFileTypes: true });
+    } catch (_err) {
+      return;
+    }
+    for (const entry of entries) {
+      const childAbs = path.join(dirAbs, entry.name);
+      if (entry.isDirectory()) {
+        walk(childAbs);
+        continue;
+      }
+      if (!/\.(md|mdx)$/i.test(entry.name)) continue;
+      const rel = normalizeRepoRel(path.relative(repoRoot, childAbs));
+      quarantined.push(rel);
+    }
+  }
+  if (fs.existsSync(rootAbs)) walk(rootAbs);
+  return quarantined;
+}
+
+function deriveSourcePathFromQuarantine(localizedFile, language) {
+  const normalized = normalizeRepoRel(localizedFile);
+  const prefix = `v2/${language}/group/x-orphaned/`;
+  if (!normalized.startsWith(prefix)) return '';
+  const remainder = normalized.slice(prefix.length);
+  if (remainder.startsWith('docs-guide/') || remainder.startsWith('contribute/')) {
+    return remainder;
+  }
+  return `v2/${remainder}`;
+}
+
+function recoverQuarantinedLocalizedFiles({ repoRoot, runtime, config }) {
+  const deletedFiles = new Set();
+  const movedFiles = new Set();
+  const movedTargets = new Map();
+  const warnings = [];
+
+  if (runtime.dryRun) {
+    return { deletedFiles, movedFiles, movedTargets, warnings };
+  }
+
+  for (const language of runtime.languages || []) {
+    const quarantinedFiles = collectQuarantinedLocalizedFiles(repoRoot, language);
+    for (const localizedFile of quarantinedFiles) {
+      const provenance = readLocalizedProvenance(repoRoot, localizedFile);
+      let sourcePath = normalizeRepoRel(String(provenance?.sourcePath || '').trim());
+      if (!sourcePath) {
+        sourcePath = normalizeRepoRel(deriveSourcePathFromQuarantine(localizedFile, language));
+        if (sourcePath) {
+          warnings.push(`quarantine used derived sourcePath: ${localizedFile} -> ${sourcePath}`);
+        } else {
+          warnings.push(`quarantine skipped (missing provenance sourcePath): ${localizedFile}`);
+          continue;
+        }
+      }
+      const absPath = path.join(repoRoot, localizedFile);
+      if (!fs.existsSync(absPath)) continue;
+
+      const sourceAbs = path.join(repoRoot, sourcePath);
+      if (localizedFile.includes('/platforms/')) {
+        const equivalent = resolveSolutionsEquivalent(localizedFile);
+        if (equivalent) {
+          const equivalentAbs = path.join(repoRoot, equivalent);
+          if (fs.existsSync(equivalentAbs)) {
+            fs.unlinkSync(absPath);
+            deletedFiles.add(localizedFile);
+            continue;
+          }
+          warnings.push(`quarantine platform orphan missing solutions equivalent: ${localizedFile} -> ${equivalent}`);
+        }
+      }
+
+      let renameTarget = '';
+      if (fs.existsSync(sourceAbs)) {
+        renameTarget = sourcePath;
+      }
+      if (!renameTarget) renameTarget = findRenameTargetFromMap(sourcePath);
+      if (!renameTarget) renameTarget = findRenameTarget(repoRoot, sourcePath);
+      if (!renameTarget) renameTarget = findRenameTargetBySearch(repoRoot, sourcePath);
+      if (!renameTarget) {
+        warnings.push(`quarantine skipped (no rename target): ${localizedFile}`);
+        continue;
+      }
+      const targetAbs = path.join(repoRoot, renameTarget);
+      if (!fs.existsSync(targetAbs)) {
+        warnings.push(`quarantine skipped (rename target missing): ${localizedFile} -> ${renameTarget}`);
+        continue;
+      }
+      const targetLocalized = repoFileRelToLocalizedFileRel(
+        renameTarget,
+        language,
+        config.generatedRoot,
+        config.generatedPathStyle
+      );
+      const targetLocalizedAbs = path.join(repoRoot, targetLocalized);
+      if (normalizeFileKey(targetLocalized) === normalizeFileKey(localizedFile)) continue;
+      try {
+        if (fs.existsSync(targetLocalizedAbs)) {
+          fs.unlinkSync(absPath);
+          deletedFiles.add(localizedFile);
+          warnings.push(`quarantine deleted (rename target exists): ${localizedFile} -> ${targetLocalized}`);
+        } else {
+          fs.mkdirSync(path.dirname(targetLocalizedAbs), { recursive: true });
+          fs.renameSync(absPath, targetLocalizedAbs);
+          movedFiles.add(localizedFile);
+          movedTargets.set(localizedFile, targetLocalized);
+        }
+      } catch (error) {
+        warnings.push(`quarantine skipped (missing file): ${localizedFile} (${error.message})`);
+      }
+    }
   }
 
   return { deletedFiles, movedFiles, movedTargets, warnings };
@@ -853,10 +1005,23 @@ async function run(argv = process.argv.slice(2)) {
     runtime,
     config
   });
+  const quarantineRecovery = recoverQuarantinedLocalizedFiles({
+    repoRoot,
+    runtime,
+    config
+  });
 
-  if (cleanup.deletedFiles.size > 0 || cleanup.movedFiles.size > 0) {
-    const deleted = cleanup.deletedFiles;
-    const moved = cleanup.movedFiles;
+  const deletedFiles = new Set([...cleanup.deletedFiles, ...quarantineRecovery.deletedFiles]);
+  const movedFiles = new Set([...cleanup.movedFiles, ...quarantineRecovery.movedFiles]);
+  const movedTargets = new Map([
+    ...(cleanup.movedTargets || []),
+    ...(quarantineRecovery.movedTargets || [])
+  ]);
+  const cleanupWarnings = [...cleanup.warnings, ...quarantineRecovery.warnings];
+
+  if (deletedFiles.size > 0 || movedFiles.size > 0) {
+    const deleted = deletedFiles;
+    const moved = movedFiles;
     for (let i = routeMapEntries.length - 1; i >= 0; i -= 1) {
       const entryFile = normalizeFileKey(routeMapEntries[i].localizedFile || '');
       if (entryFile && (deleted.has(entryFile) || moved.has(entryFile))) {
@@ -866,15 +1031,15 @@ async function run(argv = process.argv.slice(2)) {
   }
 
   report.cleanup = {
-    deletedCount: cleanup.deletedFiles.size,
-    movedCount: cleanup.movedFiles.size,
-    deletedFiles: [...cleanup.deletedFiles],
-    movedFiles: [...cleanup.movedFiles],
-    movedTargets: Object.fromEntries(cleanup.movedTargets || []),
-    warnings: cleanup.warnings
+    deletedCount: deletedFiles.size,
+    movedCount: movedFiles.size,
+    deletedFiles: [...deletedFiles],
+    movedFiles: [...movedFiles],
+    movedTargets: Object.fromEntries(movedTargets || []),
+    warnings: cleanupWarnings
   };
-  if (cleanup.warnings.length > 0) {
-    report.warnings.push(...cleanup.warnings.map((warning) => `cleanup: ${warning}`));
+  if (cleanupWarnings.length > 0) {
+    report.warnings.push(...cleanupWarnings.map((warning) => `cleanup: ${warning}`));
   }
 
   if (rewriteLinksEnabled) {
@@ -883,7 +1048,7 @@ async function run(argv = process.argv.slice(2)) {
       config,
       runtime,
       scope: rewriteScope === 'moved' ? 'moved' : 'all',
-      movedTargets: cleanup.movedTargets
+      movedTargets
     });
     report.linkRewrite = {
       rewrittenFiles: rewriteResult.rewrittenFiles,
