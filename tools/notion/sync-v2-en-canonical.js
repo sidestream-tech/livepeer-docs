@@ -19,6 +19,11 @@ const PAGE_INFO_END_MARKER = "AUTO-GENERATED PAGE INFO END";
 const REVIEW_START_MARKER = "AUTO-GENERATED REVIEW SECTION START";
 const REVIEW_END_MARKER = "AUTO-GENERATED REVIEW SECTION END";
 const LIVE_URL_PREFIX = "https://docs.livepeer.org/";
+const SIDEBAR_TITLE_PROP_NAME = "Sidebar Title";
+const NAV_ORDER_PROP_NAME = "Navigation Order";
+const PAGE_STATUS_PROP_NAME = "Page Status";
+const NOT_IN_NAV_STATUS = "Not In Navigation";
+const STALE_NAV_ORDER_BASE = 1000000;
 const SEVERITY_RANK = {
   critical: 4,
   serious: 3,
@@ -51,7 +56,14 @@ function parseArgs(argv) {
   const args = {
     write: false,
     staleTabName: "Stale",
-    outDir: path.join(__dirname, "reports")
+    outDir: path.join(__dirname, "reports"),
+    logEvery: 25,
+    contentConcurrency: 1,
+    skipContentSync: false,
+    rowSleepMs: 35,
+    deleteSleepMs: 20,
+    appendSleepMs: 20,
+    skipUnchangedBody: true
   };
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -72,6 +84,44 @@ function parseArgs(argv) {
     if (token === "--out-dir") {
       args.outDir = path.resolve(__dirname, String(argv[i + 1] || "").trim() || "reports");
       i += 1;
+      continue;
+    }
+    if (token === "--log-every") {
+      const value = Number(argv[i + 1]);
+      if (Number.isFinite(value) && value > 0) args.logEvery = Math.floor(value);
+      i += 1;
+      continue;
+    }
+    if (token === "--row-sleep-ms") {
+      const value = Number(argv[i + 1]);
+      if (Number.isFinite(value) && value >= 0) args.rowSleepMs = Math.floor(value);
+      i += 1;
+      continue;
+    }
+    if (token === "--content-concurrency") {
+      const value = Number(argv[i + 1]);
+      if (Number.isFinite(value) && value > 0) args.contentConcurrency = Math.floor(value);
+      i += 1;
+      continue;
+    }
+    if (token === "--block-delete-sleep-ms") {
+      const value = Number(argv[i + 1]);
+      if (Number.isFinite(value) && value >= 0) args.deleteSleepMs = Math.floor(value);
+      i += 1;
+      continue;
+    }
+    if (token === "--append-sleep-ms") {
+      const value = Number(argv[i + 1]);
+      if (Number.isFinite(value) && value >= 0) args.appendSleepMs = Math.floor(value);
+      i += 1;
+      continue;
+    }
+    if (token === "--no-skip-unchanged-body") {
+      args.skipUnchangedBody = false;
+      continue;
+    }
+    if (token === "--skip-content-sync") {
+      args.skipContentSync = true;
       continue;
     }
   }
@@ -237,7 +287,8 @@ function buildCanonicalDataFromDocsJson(repoRoot) {
       sectionGroup: normalizeText(context.sectionGroup),
       subSection: normalizeText(context.subSection),
       relativePathUrl: route,
-      url: `${LIVE_URL_PREFIX}${route}`
+      url: `${LIVE_URL_PREFIX}${route}`,
+      navigationOrder: rows.length + 1
     };
 
     const key = placementKey(
@@ -383,6 +434,11 @@ function getUrl(property) {
   return property?.url || "";
 }
 
+function getNumber(property) {
+  if (!property || typeof property.number !== "number") return null;
+  return property.number;
+}
+
 function getRichText(property) {
   const items = property?.rich_text;
   if (!Array.isArray(items)) return "";
@@ -426,6 +482,24 @@ function toRichTextProp(value) {
   };
 }
 
+function toNumberProp(value) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return { number: null };
+  return { number: value };
+}
+
+function toMultiSelectProp(values) {
+  const list = Array.isArray(values) ? values : [values];
+  const cleaned = dedupeOrdered(list);
+  return {
+    multi_select: cleaned.map((name) => ({ name }))
+  };
+}
+
+function hasExactSingleStatus(list, expected) {
+  const values = Array.isArray(list) ? list.map((item) => normalizeText(item)).filter(Boolean) : [];
+  return values.length === 1 && normalizeKeyPart(values[0]) === normalizeKeyPart(expected);
+}
+
 function canonicalProperties(row) {
   return {
     "Page Name": toTitleProp(row.pageName),
@@ -433,7 +507,9 @@ function canonicalProperties(row) {
     "Section Group": toSelectProp(row.sectionGroup),
     "Sub Section": toSelectProp(row.subSection),
     "Relative path URL": { url: row.relativePathUrl || null },
-    URL: { url: row.url || null }
+    URL: { url: row.url || null },
+    [SIDEBAR_TITLE_PROP_NAME]: toRichTextProp(row.sidebarTitle),
+    [NAV_ORDER_PROP_NAME]: toNumberProp(row.navigationOrder)
   };
 }
 
@@ -446,6 +522,9 @@ function rowNeedsCanonicalUpdate(existingRow, targetRow) {
   const subDifferent = normalizeKeyPart(existingRow.subSection) !== normalizeKeyPart(targetRow.subSection);
   const pathDifferent = normalizeRoute(existingRow.relativePathUrl) !== normalizeRoute(targetRow.relativePathUrl);
   const urlDifferent = normalizeText(existingRow.url) !== normalizeText(targetRow.url);
+  const sidebarTitleDifferent =
+    normalizeText(existingRow.sidebarTitle) !== normalizeText(targetRow.sidebarTitle);
+  const navOrderDifferent = Number(existingRow.navigationOrder || 0) !== Number(targetRow.navigationOrder || 0);
 
   return (
     pageNameDifferent ||
@@ -453,7 +532,9 @@ function rowNeedsCanonicalUpdate(existingRow, targetRow) {
     sectionDifferent ||
     subDifferent ||
     pathDifferent ||
-    urlDifferent
+    urlDifferent ||
+    sidebarTitleDifferent ||
+    navOrderDifferent
   );
 }
 
@@ -563,6 +644,48 @@ function buildRouteInfoFactory(repoRoot) {
 
   return {
     getRouteInfo,
+    cache
+  };
+}
+
+function buildSidebarTitleFactory(repoRoot) {
+  const cache = new Map();
+
+  function getSidebarTitle(route) {
+    const normalizedRoute = normalizeRoute(route);
+    if (!normalizedRoute) return "";
+    if (cache.has(normalizedRoute)) return cache.get(normalizedRoute);
+
+    const fallback = slugFromRoute(normalizedRoute);
+    const fileRel = resolveDocPath(normalizedRoute, repoRoot);
+    if (!fileRel) {
+      cache.set(normalizedRoute, fallback);
+      return fallback;
+    }
+
+    let resolved = fallback;
+    try {
+      const absPath = path.join(repoRoot, fileRel);
+      const raw = fs.readFileSync(absPath, "utf8");
+      const analysis = analyzeMdxPage({
+        content: raw,
+        filePath: toPosix(fileRel),
+        routePath: `/${normalizedRoute}`
+      });
+      const frontmatter = analysis?.frontmatter?.data || {};
+      const sidebarTitle = normalizeText(frontmatter.sidebarTitle);
+      const title = normalizeText(frontmatter.title);
+      resolved = sidebarTitle || title || fallback;
+    } catch (_error) {
+      resolved = fallback;
+    }
+
+    cache.set(normalizedRoute, resolved);
+    return resolved;
+  }
+
+  return {
+    getSidebarTitle,
     cache
   };
 }
@@ -712,15 +835,24 @@ function buildTranslationCoverage(route, localeTargets, localeRouteSets, repoRoo
 async function withRetry(fn, label) {
   let attempt = 0;
   let delay = 500;
-  while (attempt < 6) {
+  while (attempt < 12) {
     try {
       return await fn();
     } catch (error) {
       const code = String(error?.code || "").toLowerCase();
       const status = Number(error?.status || 0);
       const message = String(error?.message || "").toLowerCase();
-      const retriable =
+      const retryAfterHeader =
+        error?.headers?.["retry-after"] ??
+        error?.response?.headers?.["retry-after"] ??
+        null;
+      const retryAfterSeconds = Number(retryAfterHeader);
+      const isRateLimited =
         status === 429 ||
+        code.includes("rate_limited") ||
+        message.includes("rate limit");
+      const retriable =
+        isRateLimited ||
         status >= 500 ||
         code.includes("rate_limited") ||
         code.includes("timeout") ||
@@ -728,12 +860,27 @@ async function withRetry(fn, label) {
         message.includes("timeout") ||
         message.includes("temporarily");
 
-      if (!retriable || attempt === 5) {
+      if (!retriable || attempt === 11) {
         throw new Error(`${label}: ${error.message}`);
       }
 
-      await sleep(delay);
-      delay = Math.min(delay * 2, 6000);
+      let waitMs = delay;
+      if (isRateLimited) {
+        waitMs = Math.max(
+          waitMs,
+          Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
+            ? Math.floor(retryAfterSeconds * 1000)
+            : 15000
+        );
+      }
+
+      await sleep(waitMs);
+
+      if (isRateLimited) {
+        delay = Math.min(Math.floor(waitMs * 1.5), 120000);
+      } else {
+        delay = Math.min(delay * 2, 10000);
+      }
       attempt += 1;
     }
   }
@@ -746,11 +893,15 @@ async function fetchAllRows(notion, dataSourceId) {
   let startCursor = undefined;
   let hasMore = true;
   while (hasMore) {
-    const res = await notion.dataSources.query({
-      data_source_id: dataSourceId,
-      start_cursor: startCursor,
-      page_size: 100
-    });
+    const res = await withRetry(
+      () =>
+        notion.dataSources.query({
+          data_source_id: dataSourceId,
+          start_cursor: startCursor,
+          page_size: 100
+        }),
+      `query-data-source ${dataSourceId}`
+    );
     rows.push(...res.results);
     hasMore = Boolean(res.has_more);
     startCursor = res.next_cursor || undefined;
@@ -763,16 +914,40 @@ async function listAllTopLevelBlocks(notion, pageId) {
   let startCursor = undefined;
   let hasMore = true;
   while (hasMore) {
-    const res = await notion.blocks.children.list({
-      block_id: pageId,
-      start_cursor: startCursor,
-      page_size: 100
-    });
+    const res = await withRetry(
+      () =>
+        notion.blocks.children.list({
+          block_id: pageId,
+          start_cursor: startCursor,
+          page_size: 100
+        }),
+      `list-block-children ${pageId}`
+    );
     blocks.push(...res.results);
     hasMore = Boolean(res.has_more);
     startCursor = res.next_cursor || undefined;
   }
   return blocks;
+}
+
+async function mapWithConcurrency(items, concurrency, worker) {
+  const safeConcurrency = Math.max(1, Math.min(Number(concurrency) || 1, items.length || 1));
+  let nextIndex = 0;
+
+  async function runWorker() {
+    while (true) {
+      const current = nextIndex;
+      if (current >= items.length) return;
+      nextIndex += 1;
+      await worker(items[current], current);
+    }
+  }
+
+  const workers = [];
+  for (let i = 0; i < safeConcurrency; i += 1) {
+    workers.push(runWorker());
+  }
+  await Promise.all(workers);
 }
 
 function blockPlainText(block) {
@@ -948,7 +1123,7 @@ function buildPageInfoBlocks({
   return blocks;
 }
 
-async function appendBlocksInChunks(notion, pageId, blocks, chunkSize = 80) {
+async function appendBlocksInChunks(notion, pageId, blocks, chunkSize = 80, sleepMs = 80) {
   for (let i = 0; i < blocks.length; i += chunkSize) {
     const chunk = blocks.slice(i, i + chunkSize);
     await withRetry(
@@ -958,12 +1133,73 @@ async function appendBlocksInChunks(notion, pageId, blocks, chunkSize = 80) {
       }),
       `append-blocks ${pageId}`
     );
-    await sleep(80);
+    if (sleepMs > 0) await sleep(sleepMs);
   }
 }
 
-async function upsertGeneratedSections(notion, pageId, newBlocks) {
+function normalizeSignatureText(text) {
+  const raw = String(text || "").trim();
+  if (/^Synced At \(UTC\):/i.test(raw)) return "Synced At (UTC): <dynamic>";
+  if (/^Source Run IDs:/i.test(raw)) return "Source Run IDs: <dynamic>";
+  return raw;
+}
+
+function blockSignature(block) {
+  const type = block?.type || "";
+  const text = normalizeSignatureText(blockPlainText(block));
+  const isToggle = type === "heading_3" && Boolean(block?.heading_3?.is_toggleable);
+  return `${type}|${isToggle ? "toggle" : ""}|${text}`;
+}
+
+function pickLatestCompleteRange(blocks, startMarker, endMarker) {
+  const ranges = collectMarkerRanges(blocks, startMarker, endMarker);
+  for (let i = ranges.length - 1; i >= 0; i -= 1) {
+    const [start, end] = ranges[i];
+    if (start == null || end == null || end < start) continue;
+    if (blockPlainText(blocks[start]) !== startMarker) continue;
+    if (blockPlainText(blocks[end]) !== endMarker) continue;
+    return [start, end];
+  }
+  return null;
+}
+
+function rangeSignature(blocks, range) {
+  if (!range) return "";
+  const [start, end] = range;
+  const items = [];
+  for (let i = start; i <= end && i < blocks.length; i += 1) {
+    items.push(blockSignature(blocks[i]));
+  }
+  return items.join("\n");
+}
+
+function generatedSectionsSignature(blocks) {
+  const pageInfoRange = pickLatestCompleteRange(blocks, PAGE_INFO_START_MARKER, PAGE_INFO_END_MARKER);
+  const reviewRange = pickLatestCompleteRange(blocks, REVIEW_START_MARKER, REVIEW_END_MARKER);
+  if (!pageInfoRange || !reviewRange) return "";
+  return [rangeSignature(blocks, pageInfoRange), rangeSignature(blocks, reviewRange)].join("\n---\n");
+}
+
+async function upsertGeneratedSections(
+  notion,
+  pageId,
+  newBlocks,
+  { skipIfUnchanged = true, deleteSleepMs = 60, appendSleepMs = 80 } = {}
+) {
   const existing = await listAllTopLevelBlocks(notion, pageId);
+
+  if (skipIfUnchanged) {
+    const existingSig = generatedSectionsSignature(existing);
+    const newSig = generatedSectionsSignature(newBlocks);
+    if (existingSig && newSig && existingSig === newSig) {
+      return {
+        deletedBlocks: 0,
+        appendedBlocks: 0,
+        skipped: true
+      };
+    }
+  }
+
   const ranges = [
     ...collectMarkerRanges(existing, PAGE_INFO_START_MARKER, PAGE_INFO_END_MARKER),
     ...collectMarkerRanges(existing, REVIEW_START_MARKER, REVIEW_END_MARKER)
@@ -980,14 +1216,20 @@ async function upsertGeneratedSections(notion, pageId, newBlocks) {
   const dedupedIds = [...new Set(idsToDelete)];
   for (let i = dedupedIds.length - 1; i >= 0; i -= 1) {
     const blockId = dedupedIds[i];
-    await withRetry(() => notion.blocks.delete({ block_id: blockId }), `delete-block ${blockId}`);
-    await sleep(60);
+    try {
+      await withRetry(() => notion.blocks.delete({ block_id: blockId }), `delete-block ${blockId}`);
+    } catch (error) {
+      const message = String(error?.message || "").toLowerCase();
+      if (!message.includes("archived")) throw error;
+    }
+    if (deleteSleepMs > 0) await sleep(deleteSleepMs);
   }
 
-  await appendBlocksInChunks(notion, pageId, newBlocks);
+  await appendBlocksInChunks(notion, pageId, newBlocks, 80, appendSleepMs);
   return {
     deletedBlocks: dedupedIds.length,
-    appendedBlocks: newBlocks.length
+    appendedBlocks: newBlocks.length,
+    skipped: false
   };
 }
 
@@ -996,18 +1238,27 @@ async function resolveDataSourceIds(notion) {
   const envDatabase = normalizeText(process.env.NOTION_WRITABLE_DATABASE_ID);
 
   if (envDataSource) {
-    const ds = await notion.dataSources.retrieve({ data_source_id: envDataSource });
+    const ds = await withRetry(
+      () => notion.dataSources.retrieve({ data_source_id: envDataSource }),
+      `retrieve-data-source ${envDataSource}`
+    );
     const resolvedDbId = envDatabase || normalizeText(ds?.parent?.database_id) || null;
     return { dataSourceId: envDataSource, databaseId: resolvedDbId, dataSource: ds };
   }
 
   if (envDatabase) {
-    const db = await notion.databases.retrieve({ database_id: envDatabase });
+    const db = await withRetry(
+      () => notion.databases.retrieve({ database_id: envDatabase }),
+      `retrieve-database ${envDatabase}`
+    );
     const dataSourceId = db?.data_sources?.[0]?.id || "";
     if (!dataSourceId) {
       throw new Error("Could not resolve data source from NOTION_WRITABLE_DATABASE_ID.");
     }
-    const ds = await notion.dataSources.retrieve({ data_source_id: dataSourceId });
+    const ds = await withRetry(
+      () => notion.dataSources.retrieve({ data_source_id: dataSourceId }),
+      `retrieve-data-source ${dataSourceId}`
+    );
     return { dataSourceId, databaseId: envDatabase, dataSource: ds };
   }
 
@@ -1050,7 +1301,9 @@ function parseExistingRows(rows, reviewerPropertyNames) {
       tabGroup: getSelect(p["Tab Group"]),
       sectionGroup: getSelect(p["Section Group"]),
       subSection: getSelect(p["Sub Section"]),
-      pageStatusList: getMultiSelect(p["Page Status"]),
+      pageStatusList: getMultiSelect(p[PAGE_STATUS_PROP_NAME]),
+      sidebarTitle: getRichText(p[SIDEBAR_TITLE_PROP_NAME]),
+      navigationOrder: getNumber(p[NAV_ORDER_PROP_NAME]),
       notes: getRichText(p["Notes"]),
       relativePathUrl,
       url: getUrl(p["URL"]),
@@ -1118,7 +1371,11 @@ async function main() {
   ensureDir(args.outDir);
 
   const canonicalData = buildCanonicalDataFromDocsJson(repoRoot);
-  const canonicalRows = canonicalData.rows;
+  const sidebarTitleFactory = buildSidebarTitleFactory(repoRoot);
+  const canonicalRows = canonicalData.rows.map((row) => ({
+    ...row,
+    sidebarTitle: sidebarTitleFactory.getSidebarTitle(row.relativePathUrl)
+  }));
   const canonicalKeySet = new Set(
     canonicalRows.map((row) =>
       placementKey(row.relativePathUrl, row.tabGroup, row.sectionGroup, row.subSection)
@@ -1134,8 +1391,11 @@ async function main() {
 
   const reviewerCheckboxNames = getReviewerCheckboxNames(dataSource);
 
-  const sectionPropRef = findDataSourceProperty(dataSource, "Section Group");
-  const subSectionPropRef = findDataSourceProperty(dataSource, "Sub Section");
+  let sectionPropRef = findDataSourceProperty(dataSource, "Section Group");
+  let subSectionPropRef = findDataSourceProperty(dataSource, "Sub Section");
+  let pageStatusPropRef = findDataSourceProperty(dataSource, PAGE_STATUS_PROP_NAME);
+  let sidebarTitlePropRef = findDataSourceProperty(dataSource, SIDEBAR_TITLE_PROP_NAME);
+  let navigationOrderPropRef = findDataSourceProperty(dataSource, NAV_ORDER_PROP_NAME);
   const notesPropRef = findDataSourceProperty(dataSource, "Notes");
 
   if (!sectionPropRef || sectionPropRef.prop?.type !== "select") {
@@ -1147,6 +1407,10 @@ async function main() {
 
   const desiredSectionGroups = canonicalData.orderedSectionGroups;
   const desiredSubSections = canonicalData.orderedSubSections;
+  const desiredPageStatusOptions = dedupeOrdered([
+    ...(pageStatusPropRef?.prop?.multi_select?.options || []).map((option) => option?.name || ""),
+    NOT_IN_NAV_STATUS
+  ]);
 
   const sectionSchemaNeedsUpdate = !hasExactOptionOrder(
     sectionPropRef.prop?.select?.options || [],
@@ -1156,6 +1420,14 @@ async function main() {
     subSectionPropRef.prop?.select?.options || [],
     desiredSubSections
   );
+  const missingSidebarTitleProp = !sidebarTitlePropRef;
+  const missingNavigationOrderProp = !navigationOrderPropRef;
+  const missingPageStatusProp = !pageStatusPropRef;
+  const pageStatusOptionNeedsUpdate = Boolean(
+    pageStatusPropRef &&
+      pageStatusPropRef.prop?.type === "multi_select" &&
+      !hasExactOptionOrder(pageStatusPropRef.prop?.multi_select?.options || [], desiredPageStatusOptions)
+  );
 
   const rawExistingRows = await fetchAllRows(notion, dataSourceId);
   const existingRows = parseExistingRows(rawExistingRows, reviewerCheckboxNames).filter(
@@ -1164,7 +1436,6 @@ async function main() {
 
   const existingByKey = new Map();
   const existingByRoute = new Map();
-  const existingByPageTab = new Map();
 
   existingRows.forEach((row) => {
     if (!existingByKey.has(row.key)) existingByKey.set(row.key, []);
@@ -1174,12 +1445,6 @@ async function main() {
     if (routeKey) {
       if (!existingByRoute.has(routeKey)) existingByRoute.set(routeKey, []);
       existingByRoute.get(routeKey).push(row);
-    }
-
-    const pageTabKey = row.pageNameTabKey;
-    if (pageTabKey && pageTabKey !== "||") {
-      if (!existingByPageTab.has(pageTabKey)) existingByPageTab.set(pageTabKey, []);
-      existingByPageTab.get(pageTabKey).push(row);
     }
   });
 
@@ -1212,11 +1477,6 @@ async function main() {
       existing = nextUnmatched(existingByRoute.get(row.relativePathUrl));
     }
 
-    if (!existing) {
-      matchStrategy = "page+tab";
-      existing = nextUnmatched(existingByPageTab.get(pageNameTabKey(row.pageName, row.tabGroup)));
-    }
-
     if (existing) matchedIds.add(existing.id);
 
     const routeInfo = getRouteInfo(row.relativePathUrl);
@@ -1231,6 +1491,8 @@ async function main() {
         tabGroup: row.tabGroup,
         sectionGroup: row.sectionGroup,
         subSection: row.subSection,
+        sidebarTitle: row.sidebarTitle,
+        navigationOrder: row.navigationOrder,
         relativePathUrl: row.relativePathUrl,
         url: row.url,
         autoStatus: routeInfo.autoStatus,
@@ -1250,6 +1512,8 @@ async function main() {
       tabGroup: row.tabGroup,
       sectionGroup: row.sectionGroup,
       subSection: row.subSection,
+      sidebarTitle: row.sidebarTitle,
+      navigationOrder: row.navigationOrder,
       relativePathUrl: row.relativePathUrl,
       url: row.url,
       autoStatus: routeInfo.autoStatus,
@@ -1296,14 +1560,22 @@ async function main() {
     return !canonicalKeySet.has(row.key);
   });
 
-  staleCandidates.forEach((row) => {
-    const changed = normalizeText(row.tabGroup) !== normalizeText(args.staleTabName);
+  staleCandidates.forEach((row, index) => {
+    const navigationOrderAfter = STALE_NAV_ORDER_BASE + index + 1;
+    const tabChanged = normalizeText(row.tabGroup) !== normalizeText(args.staleTabName);
+    const statusChanged = !hasExactSingleStatus(row.pageStatusList, NOT_IN_NAV_STATUS);
+    const navOrderChanged = Number(row.navigationOrder || 0) !== navigationOrderAfter;
+    const changed = tabChanged || statusChanged || navOrderChanged;
     staleActions.push({
       action: changed ? "stale-update" : "stale-noop",
       pageId: row.id,
       pageName: row.pageName,
       oldTabGroup: row.tabGroup,
       newTabGroup: args.staleTabName,
+      pageStatusBefore: (row.pageStatusList || []).join("|"),
+      pageStatusAfter: NOT_IN_NAV_STATUS,
+      navigationOrderBefore: row.navigationOrder,
+      navigationOrderAfter,
       sectionGroup: row.sectionGroup,
       subSection: row.subSection,
       relativePathUrl: row.relativePathUrl,
@@ -1347,7 +1619,110 @@ async function main() {
     });
   }
 
+  schemaActions.push({
+    action: missingSidebarTitleProp ? "create-sidebar-title-property" : "sidebar-title-property-noop",
+    property: SIDEBAR_TITLE_PROP_NAME,
+    changed: missingSidebarTitleProp
+  });
+
+  schemaActions.push({
+    action: missingNavigationOrderProp
+      ? "create-navigation-order-property"
+      : "navigation-order-property-noop",
+    property: NAV_ORDER_PROP_NAME,
+    changed: missingNavigationOrderProp
+  });
+
+  schemaActions.push({
+    action: missingPageStatusProp ? "create-page-status-property" : "page-status-property-noop",
+    property: PAGE_STATUS_PROP_NAME,
+    changed: missingPageStatusProp
+  });
+
+  if (!missingPageStatusProp) {
+    schemaActions.push({
+      action: pageStatusOptionNeedsUpdate
+        ? "ensure-page-status-not-in-navigation-option"
+        : "page-status-options-noop",
+      property: PAGE_STATUS_PROP_NAME,
+      changed: pageStatusOptionNeedsUpdate,
+      fromCount: (pageStatusPropRef.prop?.multi_select?.options || []).length,
+      toCount: desiredPageStatusOptions.length
+    });
+  }
+
   if (args.write) {
+    if (
+      missingSidebarTitleProp ||
+      missingNavigationOrderProp ||
+      missingPageStatusProp ||
+      pageStatusOptionNeedsUpdate
+    ) {
+      try {
+        const properties = {};
+
+        if (missingSidebarTitleProp) {
+          properties[SIDEBAR_TITLE_PROP_NAME] = {
+            rich_text: {}
+          };
+        }
+
+        if (missingNavigationOrderProp) {
+          properties[NAV_ORDER_PROP_NAME] = {
+            number: {
+              format: "number"
+            }
+          };
+        }
+
+        if (missingPageStatusProp) {
+          properties[PAGE_STATUS_PROP_NAME] = {
+            multi_select: {
+              options: desiredPageStatusOptions.map((name) => ({ name }))
+            }
+          };
+        } else if (pageStatusOptionNeedsUpdate) {
+          properties[pageStatusPropRef.prop.id] = {
+            name: pageStatusPropRef.prop.name,
+            type: "multi_select",
+            multi_select: {
+              options: buildSelectOptions(
+                desiredPageStatusOptions,
+                pageStatusPropRef.prop?.multi_select?.options || []
+              )
+            }
+          };
+        }
+
+        if (Object.keys(properties).length > 0) {
+          await withRetry(
+            () =>
+              notion.dataSources.update({
+                data_source_id: dataSourceId,
+                properties
+              }),
+            "data-source-ensure-properties"
+          );
+
+          const refreshedDataSource = await withRetry(
+            () => notion.dataSources.retrieve({ data_source_id: dataSourceId }),
+            `retrieve-data-source ${dataSourceId}`
+          );
+          pageStatusPropRef = findDataSourceProperty(refreshedDataSource, PAGE_STATUS_PROP_NAME);
+          sidebarTitlePropRef = findDataSourceProperty(refreshedDataSource, SIDEBAR_TITLE_PROP_NAME);
+          navigationOrderPropRef = findDataSourceProperty(refreshedDataSource, NAV_ORDER_PROP_NAME);
+          sectionPropRef = findDataSourceProperty(refreshedDataSource, "Section Group");
+          subSectionPropRef = findDataSourceProperty(refreshedDataSource, "Sub Section");
+        }
+      } catch (error) {
+        errors.push({
+          scope: "schema",
+          action: "ensure-properties",
+          error: error.message
+        });
+      }
+    }
+
     for (const action of canonicalActions) {
       if (!action.changed) continue;
       try {
@@ -1438,7 +1813,9 @@ async function main() {
             notion.pages.update({
               page_id: action.pageId,
               properties: {
-                "Tab Group": toSelectProp(args.staleTabName)
+                "Tab Group": toSelectProp(args.staleTabName),
+                [PAGE_STATUS_PROP_NAME]: toMultiSelectProp([NOT_IN_NAV_STATUS]),
+                [NAV_ORDER_PROP_NAME]: toNumberProp(action.navigationOrderAfter)
               }
             }),
           `stale-update ${action.pageId}`
@@ -1496,62 +1873,111 @@ async function main() {
       }
     }
 
-    const refreshedRowsRaw = await fetchAllRows(notion, dataSourceId);
-    const refreshedRows = parseExistingRows(refreshedRowsRaw, reviewerCheckboxNames)
-      .filter((row) => !row.inTrash)
-      .filter((row) => normalizeRoute(row.relativePathUrl).startsWith("v2/"));
+    if (args.skipContentSync) {
+      console.log("[content] skipped due to --skip-content-sync");
+    } else {
+      const refreshedRowsRaw = await fetchAllRows(notion, dataSourceId);
+      const refreshedRows = parseExistingRows(refreshedRowsRaw, reviewerCheckboxNames)
+        .filter((row) => !row.inTrash)
+        .filter((row) => normalizeRoute(row.relativePathUrl).startsWith("v2/"));
 
-    const syncedAt = nowIso();
-    const sourceRunIds = [
-      `sync:${runStamp}`,
-      `link:${linkMissingRefsMap.size > 0 ? "loaded" : "missing"}`,
-      `wcag:${wcagBlockingMap.size > 0 ? "loaded" : "missing"}`,
-      `domain:${domainStatusMap.size > 0 ? "loaded" : "missing"}`
-    ].join(" | ");
+      const syncedAt = nowIso();
+      const sourceRunIds = [
+        `sync:${runStamp}`,
+        `link:${linkMissingRefsMap.size > 0 ? "loaded" : "missing"}`,
+        `wcag:${wcagBlockingMap.size > 0 ? "loaded" : "missing"}`,
+        `domain:${domainStatusMap.size > 0 ? "loaded" : "missing"}`
+      ].join(" | ");
 
-    for (const row of refreshedRows) {
-      try {
-        const route = normalizeRoute(row.relativePathUrl);
-        const routeInfo = getRouteInfo(route);
-        const translation = buildTranslationCoverage(
-          route,
-          canonicalData.localeTargets,
-          canonicalData.localeRouteSets,
-          repoRoot
-        );
+      const totalContentRows = refreshedRows.length;
+      let contentProcessed = 0;
+      let contentUpdated = 0;
+      let contentSkipped = 0;
+      let contentFailed = 0;
+      console.log(
+        `[content] starting body sync for ${totalContentRows} rows (skipUnchangedBody=${args.skipUnchangedBody}, concurrency=${args.contentConcurrency})`
+      );
 
-        const blocks = buildPageInfoBlocks({
-          row,
-          routeInfo,
-          translation,
-          linkMissingRefs: linkMissingRefsMap.has(route) ? linkMissingRefsMap.get(route) : null,
-          wcagBlocking: wcagBlockingMap.has(route) ? wcagBlockingMap.get(route) : null,
-          domainStatus: domainStatusMap.get(route) || null,
-          reviewerNames: reviewerCheckboxNames,
-          syncedAt,
-          sourceRunIds
-        });
+      async function processContentRow(row) {
+        try {
+          const route = normalizeRoute(row.relativePathUrl);
+          const routeInfo = getRouteInfo(route);
+          const translation = buildTranslationCoverage(
+            route,
+            canonicalData.localeTargets,
+            canonicalData.localeRouteSets,
+            repoRoot
+          );
 
-        const result = await upsertGeneratedSections(notion, row.id, blocks);
-        contentActions.push({
-          action: "upsert-page-content",
-          pageId: row.id,
-          relativePathUrl: row.relativePathUrl,
-          reviewerCount: reviewerCheckboxNames.length,
-          deletedBlocks: result.deletedBlocks,
-          appendedBlocks: result.appendedBlocks,
-          changed: true
-        });
-      } catch (error) {
-        errors.push({
-          scope: "content",
-          pageId: row.id,
-          relativePathUrl: row.relativePathUrl,
-          action: "upsert-page-content",
-          error: error.message
-        });
+          const blocks = buildPageInfoBlocks({
+            row,
+            routeInfo,
+            translation,
+            linkMissingRefs: linkMissingRefsMap.has(route) ? linkMissingRefsMap.get(route) : null,
+            wcagBlocking: wcagBlockingMap.has(route) ? wcagBlockingMap.get(route) : null,
+            domainStatus: domainStatusMap.get(route) || null,
+            reviewerNames: reviewerCheckboxNames,
+            syncedAt,
+            sourceRunIds
+          });
+
+          const result = await upsertGeneratedSections(notion, row.id, blocks, {
+            skipIfUnchanged: args.skipUnchangedBody,
+            deleteSleepMs: args.deleteSleepMs,
+            appendSleepMs: args.appendSleepMs
+          });
+
+          if (result.skipped) {
+            contentSkipped += 1;
+            contentActions.push({
+              action: "skip-page-content-noop",
+              pageId: row.id,
+              relativePathUrl: row.relativePathUrl,
+              reviewerCount: reviewerCheckboxNames.length,
+              deletedBlocks: 0,
+              appendedBlocks: 0,
+              changed: false
+            });
+          } else {
+            contentUpdated += 1;
+            contentActions.push({
+              action: "upsert-page-content",
+              pageId: row.id,
+              relativePathUrl: row.relativePathUrl,
+              reviewerCount: reviewerCheckboxNames.length,
+              deletedBlocks: result.deletedBlocks,
+              appendedBlocks: result.appendedBlocks,
+              changed: true
+            });
+          }
+        } catch (error) {
+          contentFailed += 1;
+          errors.push({
+            scope: "content",
+            pageId: row.id,
+            relativePathUrl: row.relativePathUrl,
+            action: "upsert-page-content",
+            error: error.message
+          });
+        }
+
+        contentProcessed += 1;
+        if (contentProcessed % args.logEvery === 0 || contentProcessed === totalContentRows) {
+          console.log(
+            `[content] ${contentProcessed}/${totalContentRows} processed | updated:${contentUpdated} skipped:${contentSkipped} errors:${contentFailed}`
+          );
+        }
+
+        if (args.rowSleepMs > 0) await sleep(args.rowSleepMs);
       }
-      await sleep(100);
+
+      if (args.contentConcurrency > 1) {
+        await mapWithConcurrency(refreshedRows, args.contentConcurrency, processContentRow);
+      } else {
+        for (const row of refreshedRows) {
+          await processContentRow(row);
+        }
+      }
     }
   } else {
     existingRows
@@ -1581,6 +2007,8 @@ async function main() {
     "matchStrategy",
     "pageId",
     "pageName",
+    "sidebarTitle",
+    "navigationOrder",
     "tabGroup",
     "sectionGroup",
     "subSection",
@@ -1610,6 +2038,10 @@ async function main() {
     "pageName",
     "oldTabGroup",
     "newTabGroup",
+    "pageStatusBefore",
+    "pageStatusAfter",
+    "navigationOrderBefore",
+    "navigationOrderAfter",
     "sectionGroup",
     "subSection",
     "relativePathUrl",
@@ -1639,7 +2071,8 @@ async function main() {
     mode: args.write ? "write" : "dry-run",
     staleTabName: args.staleTabName,
     reviewers: reviewerCheckboxNames,
-    note: "Page Status values are preserved and never overwritten by this script.",
+    note:
+      "Notion API does not support manual row ordering. Sort by `Navigation Order` ascending in the Notion view.",
     notionIds: {
       dataSourceId,
       databaseId
@@ -1660,7 +2093,10 @@ async function main() {
     stale: {
       candidates: staleActions.length,
       actions: countBy(staleActions, "action"),
-      changedRows: staleActions.filter((action) => action.changed).length
+      changedRows: staleActions.filter((action) => action.changed).length,
+      notInNavigationMarked: staleActions.filter(
+        (action) => normalizeKeyPart(action.pageStatusAfter) === normalizeKeyPart(NOT_IN_NAV_STATUS)
+      ).length
     },
     schema: {
       sectionGroupChanged: sectionSchemaNeedsUpdate,
@@ -1698,6 +2134,10 @@ async function main() {
       targetLocales: canonicalData.localeTargets,
       count: canonicalData.localeTargets.length
     },
+    ordering: {
+      property: NAV_ORDER_PROP_NAME,
+      recommendation: "Sort Notion view by Navigation Order ascending."
+    },
     outputs: {
       canonicalCsvPath,
       legacyCsvPath,
@@ -1720,6 +2160,7 @@ async function main() {
   console.log(`  content rows planned: ${summary.content.rowsPlanned}`);
   console.log(`  reviewers detected (checkbox props): ${summary.reviewers.length}`);
   console.log(`  errors: ${errors.length}`);
+  console.log(`  ordering hint: sort Notion by \`${NAV_ORDER_PROP_NAME}\` ascending`);
   console.log(`  summary: ${summaryPath}`);
 }
 
