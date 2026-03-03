@@ -204,7 +204,9 @@ function moveLocalizedToQuarantine({ repoRoot, localizedFile, language, reason }
     }
   }
   fs.mkdirSync(path.dirname(targetAbs), { recursive: true });
-  fs.renameSync(absPath, targetAbs);
+  execSync(`git -C ${JSON.stringify(repoRoot)} mv ${JSON.stringify(normalized)} ${JSON.stringify(target)}`, {
+    stdio: 'ignore'
+  });
   return { movedTo: target, warning: `${reason}: ${localizedFile} -> ${target}` };
 }
 
@@ -1034,74 +1036,89 @@ async function run(argv = process.argv.slice(2)) {
   }
 
   if (!cleanupOnly) {
-    const batches = chunkArray(scope.selected, runtime.maxConcurrency);
+    const tasks = [];
+    for (const item of scope.selected) {
+      for (const language of runtime.languages) {
+        tasks.push({ item, language });
+      }
+    }
+
+    const batches = chunkArray(tasks, runtime.maxConcurrency);
     for (const batch of batches) {
-      await Promise.all(
-        batch.map(async (item) => {
-          for (const language of runtime.languages) {
-            try {
-              const result = await processOneTranslation({
-                repoRoot,
-                config,
-                translator,
-                item,
-                language,
-                routeMapIndex,
-                runtime
-              });
-              updateRouteMapEntry(routeMapEntries, result.routeMapEntry);
-
-              const status = result.routeMapEntry.status;
-              if (status === 'translated') report.counts.translated += 1;
-              if (status === 'translated_dry_run') report.counts.dryRunTranslated += 1;
-              if (status === 'skipped_up_to_date') report.counts.skippedUpToDate += 1;
-              if (result.report.changed) report.counts.changedWrites += 1;
-              report.counts.successfulPageLanguagePairs += 1;
-
-              report.pages.push({
-                sourceRoute: item.route,
-                sourceFile: item.fileRel,
-                language,
-                requestedLanguage: requestedLanguageForEffective(runtime, language),
-                effectiveLanguage: language,
-                localizedRoute: result.routeMapEntry.localizedRoute,
-                localizedFile: result.routeMapEntry.localizedFile,
-                status,
-                translatedSegments: result.report.translatedSegments,
-                translatedFrontmatterFields: result.report.translatedFrontmatterFields,
-                linkRewrites: result.report.linkRewrites,
-                linkFallbacks: result.report.linkFallbacks,
-                modelUsed: result.report.modelUsed
-              });
-            } catch (error) {
-              report.counts.failed += 1;
-              const failure = {
-                sourceRoute: item.route,
-                sourceFile: item.fileRel,
-                language,
-                error: error.message
-              };
-              report.failures.push(failure);
-              updateRouteMapEntry(routeMapEntries, {
-                sourceRoute: item.route,
-                sourceFile: item.fileRel,
-                language,
-                requestedLanguage: requestedLanguageForEffective(runtime, language),
-                effectiveLanguage: language,
-                localizedRoute: normalizeRouteKey(
-                  repoFileRelToLocalizedFileRel(item.fileRel, language, config.generatedRoot, config.generatedPathStyle)
-                ),
-                localizedFile: repoFileRelToLocalizedFileRel(item.fileRel, language, config.generatedRoot, config.generatedPathStyle),
-                localizedRouteStyle: config.generatedPathStyle || '',
-                status: 'failed',
-                provider: translator.name,
-                provenanceKind: '',
-                artifactClass: 'failed'
-              });
-            }
+      const outcomes = await Promise.all(
+        batch.map(async ({ item, language }) => {
+          try {
+            const result = await processOneTranslation({
+              repoRoot,
+              config,
+              translator,
+              item,
+              language,
+              routeMapIndex,
+              runtime
+            });
+            return { ok: true, item, language, result };
+          } catch (error) {
+            return { ok: false, item, language, error };
           }
         })
       );
+
+      for (const outcome of outcomes) {
+        if (outcome.ok) {
+          const { item, language, result } = outcome;
+          updateRouteMapEntry(routeMapEntries, result.routeMapEntry);
+
+          const status = result.routeMapEntry.status;
+          if (status === 'translated') report.counts.translated += 1;
+          if (status === 'translated_dry_run') report.counts.dryRunTranslated += 1;
+          if (status === 'skipped_up_to_date') report.counts.skippedUpToDate += 1;
+          if (result.report.changed) report.counts.changedWrites += 1;
+          report.counts.successfulPageLanguagePairs += 1;
+
+          report.pages.push({
+            sourceRoute: item.route,
+            sourceFile: item.fileRel,
+            language,
+            requestedLanguage: requestedLanguageForEffective(runtime, language),
+            effectiveLanguage: language,
+            localizedRoute: result.routeMapEntry.localizedRoute,
+            localizedFile: result.routeMapEntry.localizedFile,
+            status,
+            translatedSegments: result.report.translatedSegments,
+            translatedFrontmatterFields: result.report.translatedFrontmatterFields,
+            linkRewrites: result.report.linkRewrites,
+            linkFallbacks: result.report.linkFallbacks,
+            modelUsed: result.report.modelUsed
+          });
+        } else {
+          const { item, language, error } = outcome;
+          report.counts.failed += 1;
+          const failure = {
+            sourceRoute: item.route,
+            sourceFile: item.fileRel,
+            language,
+            error: error.message
+          };
+          report.failures.push(failure);
+          updateRouteMapEntry(routeMapEntries, {
+            sourceRoute: item.route,
+            sourceFile: item.fileRel,
+            language,
+            requestedLanguage: requestedLanguageForEffective(runtime, language),
+            effectiveLanguage: language,
+            localizedRoute: normalizeRouteKey(
+              repoFileRelToLocalizedFileRel(item.fileRel, language, config.generatedRoot, config.generatedPathStyle)
+            ),
+            localizedFile: repoFileRelToLocalizedFileRel(item.fileRel, language, config.generatedRoot, config.generatedPathStyle),
+            localizedRouteStyle: config.generatedPathStyle || '',
+            status: 'failed',
+            provider: translator.name,
+            provenanceKind: '',
+            artifactClass: 'failed'
+          });
+        }
+      }
     }
   }
 
